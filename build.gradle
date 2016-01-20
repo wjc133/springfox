@@ -5,6 +5,7 @@ apply from: "$rootDir/gradle/idea.gradle"
 
 buildscript {
   repositories {
+    maven{ url 'http://maven.oschina.net/content/groups/public/'}
     jcenter()
   }
 
