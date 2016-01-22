@@ -23,19 +23,19 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 class ModelRefSpec extends Specification {
-  @Unroll
-  def "map types are reflected correctly" () {
-    expect:
-      model.isCollection() == isCollection
-      model.isMap() == isMap
-    where:
-      model                                               | isCollection | isMap
-      new ModelRef("string")                              | false        | false
-      new ModelRef("string", null as ModelReference)      | false        | false
-      new ModelRef("string", null, true)                  | false        | false
-      new ModelRef("string", new ModelRef("List"), true)  | false        | true
-      new ModelRef("string", new ModelRef("List"), false) | true         | false
-      new ModelRef("string", new ModelRef("Map"), true)   | false        | true
-      new ModelRef("string", new ModelRef("Map"), false)  | true         | false
-  }
+    @Unroll
+    def "map types are reflected correctly"() {
+        expect:
+        model.isCollection() == isCollection
+        model.isMap() == isMap
+        where:
+        model                                               | isCollection | isMap
+        new ModelRef("string")                              | false        | false
+        new ModelRef("string", null as ModelReference)      | false        | false
+        new ModelRef("string", null, true)                  | false        | false
+        new ModelRef("string", new ModelRef("List"), true)  | false        | true
+        new ModelRef("string", new ModelRef("List"), false) | true         | false
+        new ModelRef("string", new ModelRef("Map"), true)   | false        | true
+        new ModelRef("string", new ModelRef("Map"), false)  | true         | false
+    }
 }

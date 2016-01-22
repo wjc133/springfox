@@ -19,38 +19,38 @@
 package springfox.gradlebuild.version
 
 class SemanticVersion implements SoftwareVersion {
-  int major, minor, patch
-  private final String buildSuffix
+    int major, minor, patch
+    private final String buildSuffix
 
-  SemanticVersion(int major, int minor, int patch, String buildSuffix) {
-    this.buildSuffix = buildSuffix
-    this.major = major
-    this.minor = minor
-    this.patch = patch
-  }
-
-  SemanticVersion next(ReleaseType releaseType) {
-    if (releaseType == ReleaseType.MAJOR) {
-      new SemanticVersion(major + 1, 0, 0, buildSuffix)
-    } else if (releaseType == ReleaseType.MINOR) {
-      new SemanticVersion(major, minor + 1, 0, buildSuffix)
-    } else if (releaseType == ReleaseType.PATCH) {
-      new SemanticVersion(major, minor, patch + 1, buildSuffix)
+    SemanticVersion(int major, int minor, int patch, String buildSuffix) {
+        this.buildSuffix = buildSuffix
+        this.major = major
+        this.minor = minor
+        this.patch = patch
     }
-  }
 
-  public String asText() {
-    "${major}.${minor}.${patch}"
-  }
+    SemanticVersion next(ReleaseType releaseType) {
+        if (releaseType == ReleaseType.MAJOR) {
+            new SemanticVersion(major + 1, 0, 0, buildSuffix)
+        } else if (releaseType == ReleaseType.MINOR) {
+            new SemanticVersion(major, minor + 1, 0, buildSuffix)
+        } else if (releaseType == ReleaseType.PATCH) {
+            new SemanticVersion(major, minor, patch + 1, buildSuffix)
+        }
+    }
 
-  @Override
-  String getBuildSuffix() {
-    buildSuffix
-  }
+    public String asText() {
+        "${major}.${minor}.${patch}"
+    }
 
-  @Override
-  String toString() {
-    return asText()
-  }
+    @Override
+    String getBuildSuffix() {
+        buildSuffix
+    }
+
+    @Override
+    String toString() {
+        return asText()
+    }
 
 }

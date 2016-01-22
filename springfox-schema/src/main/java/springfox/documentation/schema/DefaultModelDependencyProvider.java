@@ -34,158 +34,159 @@ import springfox.documentation.spi.schema.contexts.ModelContext;
 import java.util.List;
 import java.util.Set;
 
-import static com.google.common.base.Predicates.*;
-import static com.google.common.collect.FluentIterable.*;
-import static com.google.common.collect.Lists.*;
-import static springfox.documentation.schema.Collections.*;
-import static springfox.documentation.schema.ResolvedTypes.*;
+import static com.google.common.base.Predicates.not;
+import static com.google.common.collect.FluentIterable.from;
+import static com.google.common.collect.Lists.newArrayList;
+import static springfox.documentation.schema.Collections.collectionElementType;
+import static springfox.documentation.schema.Collections.isContainerType;
+import static springfox.documentation.schema.ResolvedTypes.resolvedTypeSignature;
 
 @Component
 @Qualifier("default")
 public class DefaultModelDependencyProvider implements ModelDependencyProvider {
 
-  private static final Logger LOG = LoggerFactory.getLogger(DefaultModelDependencyProvider.class);
-  private final TypeResolver typeResolver;
-  private final ModelPropertiesProvider propertiesProvider;
-  private final TypeNameExtractor nameExtractor;
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultModelDependencyProvider.class);
+    private final TypeResolver typeResolver;
+    private final ModelPropertiesProvider propertiesProvider;
+    private final TypeNameExtractor nameExtractor;
 
-  @Autowired
-  public DefaultModelDependencyProvider(
-      TypeResolver typeResolver,
-      @Qualifier("cachedModelProperties") ModelPropertiesProvider propertiesProvider,
-      TypeNameExtractor nameExtractor) {
+    @Autowired
+    public DefaultModelDependencyProvider(
+            TypeResolver typeResolver,
+            @Qualifier("cachedModelProperties") ModelPropertiesProvider propertiesProvider,
+            TypeNameExtractor nameExtractor) {
 
-    this.typeResolver = typeResolver;
-    this.propertiesProvider = propertiesProvider;
-    this.nameExtractor = nameExtractor;
-  }
-
-  @Override
-  public Set<ResolvedType> dependentModels(ModelContext modelContext) {
-    return from(resolvedDependencies(modelContext))
-            .filter(ignorableTypes(modelContext))
-            .filter(not(baseTypes(modelContext)))
-            .toSet();
-  }
-
-  private Predicate<ResolvedType> baseTypes(final ModelContext modelContext) {
-    return new Predicate<ResolvedType>() {
-      @Override
-      public boolean apply(ResolvedType resolvedType) {
-        return isBaseType(ModelContext.fromParent(modelContext, resolvedType));
-      }
-    };
-  }
-
-  private boolean isBaseType(ModelContext modelContext) {
-    String typeName = nameExtractor.typeName(modelContext);
-    return Types.isBaseType(typeName);
-  }
-
-  private Predicate<ResolvedType> ignorableTypes(final ModelContext modelContext) {
-    return new Predicate<ResolvedType>() {
-      @Override
-      public boolean apply(ResolvedType input) {
-        return !modelContext.hasSeenBefore(input);
-      }
-    };
-  }
-
-
-  private List<ResolvedType> resolvedDependencies(ModelContext modelContext) {
-    ResolvedType resolvedType = modelContext.alternateFor(modelContext.resolvedType(typeResolver));
-    if (isBaseType(ModelContext.fromParent(modelContext, resolvedType))) {
-      LOG.debug("Marking base type {} as seen", resolvedType.getSignature());
-      modelContext.seen(resolvedType);
-      return newArrayList();
+        this.typeResolver = typeResolver;
+        this.propertiesProvider = propertiesProvider;
+        this.nameExtractor = nameExtractor;
     }
-    List<ResolvedType> dependencies = newArrayList(resolvedTypeParameters(modelContext, resolvedType));
-    dependencies.addAll(resolvedPropertiesAndFields(modelContext, resolvedType));
-    return dependencies;
-  }
 
-  private List<? extends ResolvedType> resolvedTypeParameters(ModelContext modelContext, ResolvedType resolvedType) {
-    List<ResolvedType> parameters = newArrayList();
-    for (ResolvedType parameter : resolvedType.getTypeParameters()) {
-      LOG.debug("Adding type for parameter {}", parameter.getSignature());
-      parameters.add(modelContext.alternateFor(parameter));
-      LOG.debug("Recursively resolving dependencies for parameter {}", parameter.getSignature());
-      parameters.addAll(resolvedDependencies(ModelContext.fromParent(modelContext, parameter)));
+    @Override
+    public Set<ResolvedType> dependentModels(ModelContext modelContext) {
+        return from(resolvedDependencies(modelContext))
+                .filter(ignorableTypes(modelContext))
+                .filter(not(baseTypes(modelContext)))
+                .toSet();
     }
-    return parameters;
-  }
 
-  private List<ResolvedType> resolvedPropertiesAndFields(ModelContext modelContext, ResolvedType resolvedType) {
-    if (modelContext.hasSeenBefore(resolvedType) || resolvedType.getErasedType().isEnum()) {
-      return newArrayList();
+    private Predicate<ResolvedType> baseTypes(final ModelContext modelContext) {
+        return new Predicate<ResolvedType>() {
+            @Override
+            public boolean apply(ResolvedType resolvedType) {
+                return isBaseType(ModelContext.fromParent(modelContext, resolvedType));
+            }
+        };
     }
-    modelContext.seen(resolvedType);
-    List<ResolvedType> properties = newArrayList();
-    for (ModelProperty property : nonTrivialProperties(modelContext, resolvedType)) {
-      LOG.debug("Adding type {} for parameter {}", property.getType().getSignature(), property.getName());
-      properties.add(property.getType());
-      properties.addAll(maybeFromCollectionElementType(modelContext, property));
-      properties.addAll(maybeFromMapValueType(modelContext, property));
-      properties.addAll(maybeFromRegularType(modelContext, property));
+
+    private boolean isBaseType(ModelContext modelContext) {
+        String typeName = nameExtractor.typeName(modelContext);
+        return Types.isBaseType(typeName);
     }
-    return properties;
-  }
 
-  private FluentIterable<ModelProperty> nonTrivialProperties(ModelContext modelContext, ResolvedType resolvedType) {
-    return from(propertiesFor(modelContext, resolvedType))
-        .filter(not(baseProperty(modelContext)));
-  }
-
-  private Predicate<? super ModelProperty> baseProperty(final ModelContext modelContext) {
-    return new Predicate<ModelProperty>() {
-      @Override
-      public boolean apply(ModelProperty input) {
-        return isBaseType(ModelContext.fromParent(modelContext, input.getType()));
-      }
-    };
-  }
-
-  private List<ResolvedType> maybeFromRegularType(ModelContext modelContext, ModelProperty property) {
-    if (isContainerType(property.getType()) || Maps.isMapType(property.getType())) {
-      return newArrayList();
+    private Predicate<ResolvedType> ignorableTypes(final ModelContext modelContext) {
+        return new Predicate<ResolvedType>() {
+            @Override
+            public boolean apply(ResolvedType input) {
+                return !modelContext.hasSeenBefore(input);
+            }
+        };
     }
-    LOG.debug("Recursively resolving dependencies for type {}", resolvedTypeSignature(property.getType()).or("<null>"));
-    return newArrayList(resolvedDependencies(ModelContext.fromParent(modelContext, property.getType())));
-  }
 
-  private List<ResolvedType> maybeFromCollectionElementType(ModelContext modelContext, ModelProperty property) {
-    List<ResolvedType> dependencies = newArrayList();
-    if (isContainerType(property.getType())) {
-      ResolvedType collectionElementType = collectionElementType(property.getType());
-      String resolvedTypeSignature = resolvedTypeSignature(collectionElementType).or("<null>");
-      if (!isBaseType(ModelContext.fromParent(modelContext, collectionElementType))) {
-        LOG.debug("Adding collectionElement type {}", resolvedTypeSignature);
-        dependencies.add(collectionElementType);
-      }
-      LOG.debug("Recursively resolving dependencies for collectionElement type {}", resolvedTypeSignature);
-      dependencies.addAll(resolvedDependencies(ModelContext.fromParent(modelContext, collectionElementType)));
+
+    private List<ResolvedType> resolvedDependencies(ModelContext modelContext) {
+        ResolvedType resolvedType = modelContext.alternateFor(modelContext.resolvedType(typeResolver));
+        if (isBaseType(ModelContext.fromParent(modelContext, resolvedType))) {
+            LOG.debug("Marking base type {} as seen", resolvedType.getSignature());
+            modelContext.seen(resolvedType);
+            return newArrayList();
+        }
+        List<ResolvedType> dependencies = newArrayList(resolvedTypeParameters(modelContext, resolvedType));
+        dependencies.addAll(resolvedPropertiesAndFields(modelContext, resolvedType));
+        return dependencies;
     }
-    return dependencies;
-  }
 
-  private List<ResolvedType> maybeFromMapValueType(ModelContext modelContext, ModelProperty property) {
-    List<ResolvedType> dependencies = newArrayList();
-    if (Maps.isMapType(property.getType())) {
-      ResolvedType valueType = Maps.mapValueType(property.getType());
-      String resolvedTypeSignature = resolvedTypeSignature(valueType).or("<null>");
-      if (!isBaseType(ModelContext.fromParent(modelContext, valueType))) {
-        LOG.debug("Adding value type {}", resolvedTypeSignature);
-        dependencies.add(valueType);
-      }
-      LOG.debug("Recursively resolving dependencies for value type {}", resolvedTypeSignature);
-      dependencies.addAll(resolvedDependencies(ModelContext.fromParent(modelContext, valueType)));
+    private List<? extends ResolvedType> resolvedTypeParameters(ModelContext modelContext, ResolvedType resolvedType) {
+        List<ResolvedType> parameters = newArrayList();
+        for (ResolvedType parameter : resolvedType.getTypeParameters()) {
+            LOG.debug("Adding type for parameter {}", parameter.getSignature());
+            parameters.add(modelContext.alternateFor(parameter));
+            LOG.debug("Recursively resolving dependencies for parameter {}", parameter.getSignature());
+            parameters.addAll(resolvedDependencies(ModelContext.fromParent(modelContext, parameter)));
+        }
+        return parameters;
     }
-    return dependencies;
-  }
 
-  private List<ModelProperty> propertiesFor(ModelContext modelContext, ResolvedType resolvedType) {
-    return propertiesProvider.propertiesFor(resolvedType, modelContext);
-  }
+    private List<ResolvedType> resolvedPropertiesAndFields(ModelContext modelContext, ResolvedType resolvedType) {
+        if (modelContext.hasSeenBefore(resolvedType) || resolvedType.getErasedType().isEnum()) {
+            return newArrayList();
+        }
+        modelContext.seen(resolvedType);
+        List<ResolvedType> properties = newArrayList();
+        for (ModelProperty property : nonTrivialProperties(modelContext, resolvedType)) {
+            LOG.debug("Adding type {} for parameter {}", property.getType().getSignature(), property.getName());
+            properties.add(property.getType());
+            properties.addAll(maybeFromCollectionElementType(modelContext, property));
+            properties.addAll(maybeFromMapValueType(modelContext, property));
+            properties.addAll(maybeFromRegularType(modelContext, property));
+        }
+        return properties;
+    }
+
+    private FluentIterable<ModelProperty> nonTrivialProperties(ModelContext modelContext, ResolvedType resolvedType) {
+        return from(propertiesFor(modelContext, resolvedType))
+                .filter(not(baseProperty(modelContext)));
+    }
+
+    private Predicate<? super ModelProperty> baseProperty(final ModelContext modelContext) {
+        return new Predicate<ModelProperty>() {
+            @Override
+            public boolean apply(ModelProperty input) {
+                return isBaseType(ModelContext.fromParent(modelContext, input.getType()));
+            }
+        };
+    }
+
+    private List<ResolvedType> maybeFromRegularType(ModelContext modelContext, ModelProperty property) {
+        if (isContainerType(property.getType()) || Maps.isMapType(property.getType())) {
+            return newArrayList();
+        }
+        LOG.debug("Recursively resolving dependencies for type {}", resolvedTypeSignature(property.getType()).or("<null>"));
+        return newArrayList(resolvedDependencies(ModelContext.fromParent(modelContext, property.getType())));
+    }
+
+    private List<ResolvedType> maybeFromCollectionElementType(ModelContext modelContext, ModelProperty property) {
+        List<ResolvedType> dependencies = newArrayList();
+        if (isContainerType(property.getType())) {
+            ResolvedType collectionElementType = collectionElementType(property.getType());
+            String resolvedTypeSignature = resolvedTypeSignature(collectionElementType).or("<null>");
+            if (!isBaseType(ModelContext.fromParent(modelContext, collectionElementType))) {
+                LOG.debug("Adding collectionElement type {}", resolvedTypeSignature);
+                dependencies.add(collectionElementType);
+            }
+            LOG.debug("Recursively resolving dependencies for collectionElement type {}", resolvedTypeSignature);
+            dependencies.addAll(resolvedDependencies(ModelContext.fromParent(modelContext, collectionElementType)));
+        }
+        return dependencies;
+    }
+
+    private List<ResolvedType> maybeFromMapValueType(ModelContext modelContext, ModelProperty property) {
+        List<ResolvedType> dependencies = newArrayList();
+        if (Maps.isMapType(property.getType())) {
+            ResolvedType valueType = Maps.mapValueType(property.getType());
+            String resolvedTypeSignature = resolvedTypeSignature(valueType).or("<null>");
+            if (!isBaseType(ModelContext.fromParent(modelContext, valueType))) {
+                LOG.debug("Adding value type {}", resolvedTypeSignature);
+                dependencies.add(valueType);
+            }
+            LOG.debug("Recursively resolving dependencies for value type {}", resolvedTypeSignature);
+            dependencies.addAll(resolvedDependencies(ModelContext.fromParent(modelContext, valueType)));
+        }
+        return dependencies;
+    }
+
+    private List<ModelProperty> propertiesFor(ModelContext modelContext, ResolvedType resolvedType) {
+        return propertiesProvider.propertiesFor(resolvedType, modelContext);
+    }
 
 
 }

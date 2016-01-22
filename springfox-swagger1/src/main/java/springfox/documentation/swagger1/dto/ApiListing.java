@@ -34,161 +34,161 @@ import static springfox.documentation.builders.BuilderDefaults.*;
 @JsonPropertyOrder({"apiVersion", "swaggerVersion", "basePath", "resourcePath", "produces", "consumes", "apis",
         "models"})
 public class ApiListing {
-  private String apiVersion;
-  private String swaggerVersion;
-  private String basePath;
-  private String resourcePath;
-  private Set<String> produces;
-  private Set<String> consumes;
-  private List<ApiDescription> apis;
+    private String apiVersion;
+    private String swaggerVersion;
+    private String basePath;
+    private String resourcePath;
+    private Set<String> produces;
+    private Set<String> consumes;
+    private List<ApiDescription> apis;
 
-  @JsonIgnore
-  private Set<String> protocols;
-  @JsonInclude(Include.NON_EMPTY)
-  private List<Authorization> authorizations;
-  @JsonInclude(Include.NON_EMPTY)
-  private Map<String, ModelDto> models;
-  @JsonIgnore
-  private String description;
-  @JsonIgnore
-  private int position;
+    @JsonIgnore
+    private Set<String> protocols;
+    @JsonInclude(Include.NON_EMPTY)
+    private List<Authorization> authorizations;
+    @JsonInclude(Include.NON_EMPTY)
+    private Map<String, ModelDto> models;
+    @JsonIgnore
+    private String description;
+    @JsonIgnore
+    private int position;
 
-  public String getApiVersion() {
-    return apiVersion;
-  }
-
-  public void setApiVersion(String apiVersion) {
-    this.apiVersion = apiVersion;
-  }
-
-  public String getSwaggerVersion() {
-    return swaggerVersion;
-  }
-
-  public void setSwaggerVersion(String swaggerVersion) {
-    this.swaggerVersion = swaggerVersion;
-  }
-
-  public String getBasePath() {
-    return basePath;
-  }
-
-  public void setBasePath(String basePath) {
-    this.basePath = basePath;
-  }
-
-  public String getResourcePath() {
-    return resourcePath;
-  }
-
-  public void setResourcePath(String resourcePath) {
-    this.resourcePath = resourcePath;
-  }
-
-  public Set<String> getProduces() {
-    return produces;
-  }
-
-  public void setProduces(Set<String> produces) {
-    this.produces = produces;
-  }
-
-  public Set<String> getConsumes() {
-    return consumes;
-  }
-
-  public void setConsumes(Set<String> consumes) {
-    this.consumes = consumes;
-  }
-
-  public Set<String> getProtocols() {
-    return protocols;
-  }
-
-  public void setProtocols(Set<String> protocols) {
-    this.protocols = protocols;
-  }
-
-  public List<Authorization> getAuthorizations() {
-    return authorizations;
-  }
-
-  public void setAuthorizations(List<Authorization> authorizations) {
-    this.authorizations = authorizations;
-  }
-
-  public List<ApiDescription> getApis() {
-    return apis;
-  }
-
-  public void setApis(List<ApiDescription> apis) {
-    this.apis = apis;
-  }
-
-  public Map<String, ModelDto> getModels() {
-    return models;
-  }
-
-  public void setModels(Map<String, ModelDto> models) {
-    this.models = models;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  public int getPosition() {
-    return position;
-  }
-
-  public void setPosition(int position) {
-    this.position = position;
-  }
-
-  public void appendAuthorizations(List<Authorization> authorizations) {
-    if (!nullToEmptyList(authorizations).isEmpty()) {
-      this.authorizations = nullToEmptyList(this.authorizations);
-      this.authorizations.addAll(authorizations);
+    public String getApiVersion() {
+        return apiVersion;
     }
-  }
 
-  public void appendApis(List<ApiDescription> apis) {
-    if (!nullToEmptyList(apis).isEmpty()) {
-      this.apis = nullToEmptyList(this.apis);
-      this.apis.addAll(apis);
+    public void setApiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
     }
-  }
 
-  public void appendProtocols(HashSet<String> protocols) {
-    if (!nullToEmptySet(protocols).isEmpty()) {
-      this.protocols = nullToEmptySet(this.protocols);
-      this.protocols.addAll(protocols);
+    public String getSwaggerVersion() {
+        return swaggerVersion;
     }
-  }
 
-  public void appendConsumes(HashSet<String> consumes) {
-    if (!nullToEmptySet(consumes).isEmpty()) {
-      this.consumes = nullToEmptySet(this.consumes);
-      this.consumes.addAll(consumes);
+    public void setSwaggerVersion(String swaggerVersion) {
+        this.swaggerVersion = swaggerVersion;
     }
-  }
 
-  public void appendProduces(HashSet<String> produces) {
-    if (!nullToEmptySet(produces).isEmpty()) {
-      this.produces = nullToEmptySet(this.produces);
-      this.produces.addAll(produces);
+    public String getBasePath() {
+        return basePath;
     }
-  }
 
-  public void appendModels(Map<String, ModelDto> models) {
-    if (!nullToEmptyMap(models).isEmpty()) {
-      this.models = nullToEmptyMap(this.models);
-      this.models.putAll(models);
+    public void setBasePath(String basePath) {
+        this.basePath = basePath;
     }
-  }
+
+    public String getResourcePath() {
+        return resourcePath;
+    }
+
+    public void setResourcePath(String resourcePath) {
+        this.resourcePath = resourcePath;
+    }
+
+    public Set<String> getProduces() {
+        return produces;
+    }
+
+    public void setProduces(Set<String> produces) {
+        this.produces = produces;
+    }
+
+    public Set<String> getConsumes() {
+        return consumes;
+    }
+
+    public void setConsumes(Set<String> consumes) {
+        this.consumes = consumes;
+    }
+
+    public Set<String> getProtocols() {
+        return protocols;
+    }
+
+    public void setProtocols(Set<String> protocols) {
+        this.protocols = protocols;
+    }
+
+    public List<Authorization> getAuthorizations() {
+        return authorizations;
+    }
+
+    public void setAuthorizations(List<Authorization> authorizations) {
+        this.authorizations = authorizations;
+    }
+
+    public List<ApiDescription> getApis() {
+        return apis;
+    }
+
+    public void setApis(List<ApiDescription> apis) {
+        this.apis = apis;
+    }
+
+    public Map<String, ModelDto> getModels() {
+        return models;
+    }
+
+    public void setModels(Map<String, ModelDto> models) {
+        this.models = models;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public void appendAuthorizations(List<Authorization> authorizations) {
+        if (!nullToEmptyList(authorizations).isEmpty()) {
+            this.authorizations = nullToEmptyList(this.authorizations);
+            this.authorizations.addAll(authorizations);
+        }
+    }
+
+    public void appendApis(List<ApiDescription> apis) {
+        if (!nullToEmptyList(apis).isEmpty()) {
+            this.apis = nullToEmptyList(this.apis);
+            this.apis.addAll(apis);
+        }
+    }
+
+    public void appendProtocols(HashSet<String> protocols) {
+        if (!nullToEmptySet(protocols).isEmpty()) {
+            this.protocols = nullToEmptySet(this.protocols);
+            this.protocols.addAll(protocols);
+        }
+    }
+
+    public void appendConsumes(HashSet<String> consumes) {
+        if (!nullToEmptySet(consumes).isEmpty()) {
+            this.consumes = nullToEmptySet(this.consumes);
+            this.consumes.addAll(consumes);
+        }
+    }
+
+    public void appendProduces(HashSet<String> produces) {
+        if (!nullToEmptySet(produces).isEmpty()) {
+            this.produces = nullToEmptySet(this.produces);
+            this.produces.addAll(produces);
+        }
+    }
+
+    public void appendModels(Map<String, ModelDto> models) {
+        if (!nullToEmptyMap(models).isEmpty()) {
+            this.models = nullToEmptyMap(this.models);
+            this.models.putAll(models);
+        }
+    }
 }
 

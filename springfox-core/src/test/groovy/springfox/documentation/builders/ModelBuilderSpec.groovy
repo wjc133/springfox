@@ -24,52 +24,52 @@ import spock.lang.Specification
 import springfox.documentation.schema.ModelProperty
 
 class ModelBuilderSpec extends Specification {
-  def "Setting properties on the builder with non-null values"() {
-    given:
-      def sut = new ModelBuilder()
-    when:
-      sut."$builderMethod"(value)
-    and:
-      def built = sut.build()
-    then:
-      built."$property" == value
+    def "Setting properties on the builder with non-null values"() {
+        given:
+        def sut = new ModelBuilder()
+        when:
+        sut."$builderMethod"(value)
+        and:
+        def built = sut.build()
+        then:
+        built."$property" == value
 
-    where:
-      builderMethod   | value                                 | property
-      'id'            | 'model1'                              | 'id'
-      'name'          | 'model1'                              | 'name'
-      'qualifiedType' | 'com.Model1'                          | 'qualifiedType'
-      'description'   | 'model1 desc'                         | 'description'
-      'baseModel'     | 'baseModel1'                          | 'baseModel'
-      'discriminator' | 'decriminator'                        | 'discriminator'
-      'type'          | new TypeResolver().resolve(String)    | 'type'
-      'subTypes'      | ["String"]                            | 'subTypes'
-      'properties'    | [p1: Mock(ModelProperty)]             | 'properties'
-      'example'       | 'example1'                            | 'example'
-  }
+        where:
+        builderMethod   | value                              | property
+        'id'            | 'model1'                           | 'id'
+        'name'          | 'model1'                           | 'name'
+        'qualifiedType' | 'com.Model1'                       | 'qualifiedType'
+        'description'   | 'model1 desc'                      | 'description'
+        'baseModel'     | 'baseModel1'                       | 'baseModel'
+        'discriminator' | 'decriminator'                     | 'discriminator'
+        'type'          | new TypeResolver().resolve(String) | 'type'
+        'subTypes'      | ["String"]                         | 'subTypes'
+        'properties'    | [p1: Mock(ModelProperty)]          | 'properties'
+        'example'       | 'example1'                         | 'example'
+    }
 
-  def "Setting builder properties to null values preserves existing values"() {
-    given:
-      def sut = new ModelBuilder()
-    when:
-      sut."$builderMethod"(value)
-      sut."$builderMethod"(null)
-    and:
-      def built = sut.build()
-    then:
-      built."$property" == value
+    def "Setting builder properties to null values preserves existing values"() {
+        given:
+        def sut = new ModelBuilder()
+        when:
+        sut."$builderMethod"(value)
+        sut."$builderMethod"(null)
+        and:
+        def built = sut.build()
+        then:
+        built."$property" == value
 
-    where:
-      builderMethod   | value                                 | property
-      'id'            | 'model1'                              | 'id'
-      'name'          | 'model1'                              | 'name'
-      'qualifiedType' | 'com.Model1'                          | 'qualifiedType'
-      'description'   | 'model1 desc'                         | 'description'
-      'baseModel'     | 'baseModel1'                          | 'baseModel'
-      'discriminator' | 'decriminator'                        | 'discriminator'
-      'type'          | new TypeResolver().resolve(String)    | 'type'
-      'subTypes'      | ["String"]                            | 'subTypes'
-      'properties'    | [p1: Mock(ModelProperty)]             | 'properties'
-      'example'       | 'example1'                            | 'example'
-  }
+        where:
+        builderMethod   | value                              | property
+        'id'            | 'model1'                           | 'id'
+        'name'          | 'model1'                           | 'name'
+        'qualifiedType' | 'com.Model1'                       | 'qualifiedType'
+        'description'   | 'model1 desc'                      | 'description'
+        'baseModel'     | 'baseModel1'                       | 'baseModel'
+        'discriminator' | 'decriminator'                     | 'discriminator'
+        'type'          | new TypeResolver().resolve(String) | 'type'
+        'subTypes'      | ["String"]                         | 'subTypes'
+        'properties'    | [p1: Mock(ModelProperty)]          | 'properties'
+        'example'       | 'example1'                         | 'example'
+    }
 }

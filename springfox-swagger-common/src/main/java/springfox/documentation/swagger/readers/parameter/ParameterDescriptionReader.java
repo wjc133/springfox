@@ -28,23 +28,23 @@ import springfox.documentation.spi.service.ParameterBuilderPlugin;
 import springfox.documentation.spi.service.contexts.ParameterContext;
 import springfox.documentation.swagger.common.SwaggerPluginSupport;
 
-import static org.springframework.util.StringUtils.*;
+import static org.springframework.util.StringUtils.hasText;
 
 @Component("swaggerParameterDescriptionReader")
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class ParameterDescriptionReader implements ParameterBuilderPlugin {
 
-  @Override
-  public void apply(ParameterContext context) {
-    MethodParameter methodParameter = context.methodParameter();
-    ApiParam apiParam = methodParameter.getParameterAnnotation(ApiParam.class);
-    if (null != apiParam && hasText(apiParam.value())) {
-      context.parameterBuilder().description(apiParam.value());
+    @Override
+    public void apply(ParameterContext context) {
+        MethodParameter methodParameter = context.methodParameter();
+        ApiParam apiParam = methodParameter.getParameterAnnotation(ApiParam.class);
+        if (null != apiParam && hasText(apiParam.value())) {
+            context.parameterBuilder().description(apiParam.value());
+        }
     }
-  }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return SwaggerPluginSupport.pluginDoesApply(delimiter);
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return SwaggerPluginSupport.pluginDoesApply(delimiter);
+    }
 }

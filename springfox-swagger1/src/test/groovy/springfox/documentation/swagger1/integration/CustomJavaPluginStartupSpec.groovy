@@ -18,6 +18,7 @@
  */
 
 package springfox.documentation.swagger1.integration
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.web.WebAppConfiguration
@@ -29,23 +30,23 @@ import spock.lang.Specification
 import springfox.documentation.spring.web.mixins.JsonSupport
 import springfox.documentation.swagger1.configuration.CustomJavaPluginConfig
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 
 @WebAppConfiguration
 @ContextConfiguration(classes = CustomJavaPluginConfig.class)
 @Mixin(JsonSupport)
 class CustomJavaPluginStartupSpec extends Specification {
 
-  @Autowired
-  WebApplicationContext context;
+    @Autowired
+    WebApplicationContext context;
 
-  def "Should start app with custom java config"() {
-    when:
-    MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build()
-    MvcResult petApi = mockMvc.perform(get('/api-docs?group=customPlugin')).andReturn()
-    MvcResult demoApi = mockMvc.perform(get('/api-docs?group=secondCustomPlugin')).andReturn()
-    then:
-    jsonBodyResponse(petApi).apis.size() == 4
-    jsonBodyResponse(demoApi).apis.size() == 1
-  }
+    def "Should start app with custom java config"() {
+        when:
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build()
+        MvcResult petApi = mockMvc.perform(get('/api-docs?group=customPlugin')).andReturn()
+        MvcResult demoApi = mockMvc.perform(get('/api-docs?group=secondCustomPlugin')).andReturn()
+        then:
+        jsonBodyResponse(petApi).apis.size() == 4
+        jsonBodyResponse(demoApi).apis.size() == 1
+    }
 }

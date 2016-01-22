@@ -30,27 +30,27 @@ import springfox.documentation.spring.web.plugins.DocumentationContextSpec
 class OperationMethodReaderSpec extends DocumentationContextSpec {
 
 
-  def "should return api method when using default reader"() {
+    def "should return api method when using default reader"() {
 
-    given:
-      OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
-              currentHttpMethod, handlerMethod, 0, requestMappingInfo("/somePath"),
-              context(), "/anyPath")
+        given:
+        OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
+                currentHttpMethod, handlerMethod, 0, requestMappingInfo("/somePath"),
+                context(), "/anyPath")
 
-      def operationMethodReader = new DefaultOperationReader();
-    when:
-      operationMethodReader.apply(operationContext)
-    and:
-      def operation = operationContext.operationBuilder().build()
+        def operationMethodReader = new DefaultOperationReader();
+        when:
+        operationMethodReader.apply(operationContext)
+        and:
+        def operation = operationContext.operationBuilder().build()
 
-    then:
-      operation.method == expected
-    where:
-      currentHttpMethod  | handlerMethod                                     | expected
-      RequestMethod.GET  | dummyHandlerMethod()                              | HttpMethod.GET
-      RequestMethod.PUT  | dummyHandlerMethod()                              | HttpMethod.PUT
-      RequestMethod.POST | dummyHandlerMethod('methodWithHttpGETMethod')     | HttpMethod.POST
-      RequestMethod.POST | dummyHandlerMethod('methodWithInvalidHttpMethod') | HttpMethod.POST
-  }
+        then:
+        operation.method == expected
+        where:
+        currentHttpMethod  | handlerMethod                                     | expected
+        RequestMethod.GET  | dummyHandlerMethod()                              | HttpMethod.GET
+        RequestMethod.PUT  | dummyHandlerMethod()                              | HttpMethod.PUT
+        RequestMethod.POST | dummyHandlerMethod('methodWithHttpGETMethod')     | HttpMethod.POST
+        RequestMethod.POST | dummyHandlerMethod('methodWithInvalidHttpMethod') | HttpMethod.POST
+    }
 
 }

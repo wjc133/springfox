@@ -24,78 +24,78 @@ import com.google.common.base.Optional;
 import springfox.documentation.schema.ModelReference;
 
 public class Parameter {
-  private final String name;
-  private final String description;
-  private final String defaultValue;
-  private final Boolean required;
-  private final Boolean allowMultiple;
-  private final ModelReference modelRef;
-  private final Optional<ResolvedType> type;
-  private final AllowableValues allowableValues;
-  private final String paramType;
-  private final String paramAccess;
+    private final String name;
+    private final String description;
+    private final String defaultValue;
+    private final Boolean required;
+    private final Boolean allowMultiple;
+    private final ModelReference modelRef;
+    private final Optional<ResolvedType> type;
+    private final AllowableValues allowableValues;
+    private final String paramType;
+    private final String paramAccess;
 
-  public Parameter(
-      String name,
-      String description,
-      String defaultValue,
-      boolean required,
-      boolean allowMultiple,
-      ModelReference modelRef,
-      Optional<ResolvedType> type,
-      AllowableValues allowableValues,
-      String paramType,
-      String paramAccess) {
+    public Parameter(
+            String name,
+            String description,
+            String defaultValue,
+            boolean required,
+            boolean allowMultiple,
+            ModelReference modelRef,
+            Optional<ResolvedType> type,
+            AllowableValues allowableValues,
+            String paramType,
+            String paramAccess) {
 
-    this.description = description;
-    this.defaultValue = defaultValue;
-    this.required = required;
-    this.allowMultiple = allowMultiple;
-    this.modelRef = modelRef;
-    this.type = type;
-    this.allowableValues = allowableValues;
-    this.paramType = paramType;
-    this.paramAccess = paramAccess;
-    this.name = name;
-  }
+        this.description = description;
+        this.defaultValue = defaultValue;
+        this.required = required;
+        this.allowMultiple = allowMultiple;
+        this.modelRef = modelRef;
+        this.type = type;
+        this.allowableValues = allowableValues;
+        this.paramType = paramType;
+        this.paramAccess = paramAccess;
+        this.name = name;
+    }
 
-  public Optional<ResolvedType> getType() {
-    return type;
-  }
+    public Optional<ResolvedType> getType() {
+        return type;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public String getDescription() {
-    return description;
-  }
+    public String getDescription() {
+        return description;
+    }
 
-  public String getDefaultValue() {
-    return defaultValue;
-  }
+    public String getDefaultValue() {
+        return defaultValue;
+    }
 
-  public Boolean isRequired() {
-    return required;
-  }
+    public Boolean isRequired() {
+        return required;
+    }
 
-  public Boolean isAllowMultiple() {
-    return allowMultiple;
-  }
+    public Boolean isAllowMultiple() {
+        return allowMultiple;
+    }
 
-  public AllowableValues getAllowableValues() {
-    return allowableValues;
-  }
+    public AllowableValues getAllowableValues() {
+        return allowableValues;
+    }
 
-  public String getParamType() {
-    return paramType;
-  }
+    public String getParamType() {
+        return paramType;
+    }
 
-  public String getParamAccess() {
-    return paramAccess;
-  }
+    public String getParamAccess() {
+        return paramAccess;
+    }
 
-  public ModelReference getModelRef() {
-    return modelRef;
-  }
+    public ModelReference getModelRef() {
+        return modelRef;
+    }
 }

@@ -26,11 +26,11 @@ import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.SecurityScheme;
 
 class ApiKeyAuthFactory implements SecuritySchemeFactory {
-  @Override
-  public SecuritySchemeDefinition create(SecurityScheme input) {
-    ApiKey apiKey = (ApiKey) input;
-    ApiKeyAuthDefinition definition = new ApiKeyAuthDefinition();
-    definition.name(apiKey.getName()).in(In.forValue(apiKey.getPassAs()));
-    return definition;
-  }
+    @Override
+    public SecuritySchemeDefinition create(SecurityScheme input) {
+        ApiKey apiKey = (ApiKey) input;
+        ApiKeyAuthDefinition definition = new ApiKeyAuthDefinition();
+        definition.name(apiKey.getName()).in(In.forValue(apiKey.getPassAs()));
+        return definition;
+    }
 }

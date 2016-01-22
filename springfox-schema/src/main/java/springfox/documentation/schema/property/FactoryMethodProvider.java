@@ -34,39 +34,40 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 
-import static com.google.common.collect.FluentIterable.*;
-import static com.google.common.collect.Iterables.*;
-import static com.google.common.collect.Lists.*;
+import static com.google.common.collect.FluentIterable.from;
+import static com.google.common.collect.Iterables.concat;
+import static com.google.common.collect.Lists.newArrayList;
 
 @Component
 public class FactoryMethodProvider {
-  private MemberResolver memberResolver;
+    private MemberResolver memberResolver;
 
-  @Autowired
-  public FactoryMethodProvider(TypeResolver resolver) {
-    memberResolver = new MemberResolver(resolver);
-  }
+    @Autowired
+    public FactoryMethodProvider(TypeResolver resolver) {
+        memberResolver = new MemberResolver(resolver);
+    }
 
-  public Optional<? extends ResolvedParameterizedMember> in(ResolvedType resolvedType,
-      Predicate<ResolvedParameterizedMember> predicate) {
-    return from(concat(constructors(resolvedType), delegatedFactoryMethods(resolvedType))).firstMatch(predicate);
-  }
+    public Optional<? extends ResolvedParameterizedMember> in(ResolvedType resolvedType,
+                                                              Predicate<ResolvedParameterizedMember> predicate) {
+        return from(concat(constructors(resolvedType), delegatedFactoryMethods(resolvedType))).firstMatch(predicate);
+    }
 
-  static Predicate<ResolvedParameterizedMember> factoryMethodOf(final AnnotatedParameter parameter) {
-    return new Predicate<ResolvedParameterizedMember>() {
-      @Override
-      public boolean apply(ResolvedParameterizedMember input) {
-        return input.getRawMember().equals(parameter.getOwner().getMember());
-      }
-    };
-  }
-  public Collection<ResolvedConstructor> constructors(ResolvedType resolvedType) {
-    ResolvedTypeWithMembers typeWithMembers = memberResolver.resolve(resolvedType, null, null);
-    return newArrayList(typeWithMembers.getConstructors());
-  }
+    static Predicate<ResolvedParameterizedMember> factoryMethodOf(final AnnotatedParameter parameter) {
+        return new Predicate<ResolvedParameterizedMember>() {
+            @Override
+            public boolean apply(ResolvedParameterizedMember input) {
+                return input.getRawMember().equals(parameter.getOwner().getMember());
+            }
+        };
+    }
 
-  public Collection<ResolvedMethod> delegatedFactoryMethods(ResolvedType resolvedType) {
-    ResolvedTypeWithMembers typeWithMembers = memberResolver.resolve(resolvedType, null, null);
-    return newArrayList(typeWithMembers.getStaticMethods());
-  }
+    public Collection<ResolvedConstructor> constructors(ResolvedType resolvedType) {
+        ResolvedTypeWithMembers typeWithMembers = memberResolver.resolve(resolvedType, null, null);
+        return newArrayList(typeWithMembers.getConstructors());
+    }
+
+    public Collection<ResolvedMethod> delegatedFactoryMethods(ResolvedType resolvedType) {
+        ResolvedTypeWithMembers typeWithMembers = memberResolver.resolve(resolvedType, null, null);
+        return newArrayList(typeWithMembers.getStaticMethods());
+    }
 }

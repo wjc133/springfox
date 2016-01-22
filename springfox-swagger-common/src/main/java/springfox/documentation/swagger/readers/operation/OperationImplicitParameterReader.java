@@ -36,47 +36,47 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import static springfox.documentation.swagger.schema.ApiModelProperties.*;
+import static springfox.documentation.swagger.schema.ApiModelProperties.allowableValueFromString;
 
 
 @Component
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class OperationImplicitParameterReader implements OperationBuilderPlugin {
 
-  @Override
-  public void apply(OperationContext context) {
-    context.operationBuilder().parameters(readParameters(context));
-  }
-
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return SwaggerPluginSupport.pluginDoesApply(delimiter);
-  }
-
-  protected List<Parameter> readParameters(OperationContext context) {
-    HandlerMethod handlerMethod = context.getHandlerMethod();
-    Method method = handlerMethod.getMethod();
-    ApiImplicitParam annotation = AnnotationUtils.findAnnotation(method, ApiImplicitParam.class);
-    List<Parameter> parameters = Lists.newArrayList();
-    if (null != annotation) {
-      parameters.add(OperationImplicitParameterReader.getImplicitParameter(annotation));
+    @Override
+    public void apply(OperationContext context) {
+        context.operationBuilder().parameters(readParameters(context));
     }
-    return parameters;
-  }
 
-  public static Parameter getImplicitParameter(ApiImplicitParam param) {
-    return new ParameterBuilder()
-            .name(param.name())
-            .description(param.value())
-            .defaultValue(param.defaultValue())
-            .required(param.required())
-            .allowMultiple(param.allowMultiple())
-            .modelRef(new ModelRef(param.dataType()))
-            .allowableValues(allowableValueFromString(param.allowableValues()))
-            .parameterType(param.paramType())
-            .parameterAccess(param.access())
-            .build();
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return SwaggerPluginSupport.pluginDoesApply(delimiter);
+    }
+
+    protected List<Parameter> readParameters(OperationContext context) {
+        HandlerMethod handlerMethod = context.getHandlerMethod();
+        Method method = handlerMethod.getMethod();
+        ApiImplicitParam annotation = AnnotationUtils.findAnnotation(method, ApiImplicitParam.class);
+        List<Parameter> parameters = Lists.newArrayList();
+        if (null != annotation) {
+            parameters.add(OperationImplicitParameterReader.getImplicitParameter(annotation));
+        }
+        return parameters;
+    }
+
+    public static Parameter getImplicitParameter(ApiImplicitParam param) {
+        return new ParameterBuilder()
+                .name(param.name())
+                .description(param.value())
+                .defaultValue(param.defaultValue())
+                .required(param.required())
+                .allowMultiple(param.allowMultiple())
+                .modelRef(new ModelRef(param.dataType()))
+                .allowableValues(allowableValueFromString(param.allowableValues()))
+                .parameterType(param.paramType())
+                .parameterAccess(param.access())
+                .build();
+    }
 
 }
 

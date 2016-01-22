@@ -22,37 +22,37 @@ package springfox.documentation.service;
 import com.google.common.base.Objects;
 
 public class Tag {
-  private final String name;
-  private final String description;
+    private final String name;
+    private final String description;
 
-  public Tag(String name, String description) {
-    this.name = name;
-    this.description = description;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public Tag(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Tag tag = (Tag) o;
-    return Objects.equal(name, tag.name) &&
-        Objects.equal(description, tag.description);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(name, description);
-  }
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Tag tag = (Tag) o;
+        return Objects.equal(name, tag.name) &&
+                Objects.equal(description, tag.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name, description);
+    }
 }

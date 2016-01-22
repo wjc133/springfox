@@ -37,61 +37,61 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.google.common.collect.Lists.*;
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 
 @Component
 @Qualifier("default")
 public class ApiOperationReader implements OperationReader {
 
-  private static final Set<RequestMethod> allRequestMethods
-      = new LinkedHashSet<RequestMethod>(asList(RequestMethod.values()));
-  private final DocumentationPluginsManager pluginsManager;
-  private final OperationNameGenerator nameGenerator;
+    private static final Set<RequestMethod> allRequestMethods
+            = new LinkedHashSet<RequestMethod>(asList(RequestMethod.values()));
+    private final DocumentationPluginsManager pluginsManager;
+    private final OperationNameGenerator nameGenerator;
 
-  @Autowired
-  public ApiOperationReader(DocumentationPluginsManager pluginsManager, OperationNameGenerator nameGenerator) {
-    this.pluginsManager = pluginsManager;
-    this.nameGenerator = nameGenerator;
-  }
-
-  @Override
-//  @Cacheable(value = "operations", keyGenerator = OperationsKeyGenerator.class)
-  public List<Operation> read(RequestMappingContext outerContext) {
-
-    RequestMappingInfo requestMappingInfo = outerContext.getRequestMappingInfo();
-    String requestMappingPattern = outerContext.getRequestMappingPattern();
-    RequestMethodsRequestCondition requestMethodsRequestCondition = requestMappingInfo.getMethodsCondition();
-    List<Operation> operations = newArrayList();
-
-    Set<RequestMethod> requestMethods = requestMethodsRequestCondition.getMethods();
-    Set<RequestMethod> supportedMethods = supportedMethods(requestMethods);
-
-    //Setup response message list
-    Integer currentCount = 0;
-    for (RequestMethod httpRequestMethod : supportedMethods) {
-      OperationContext operationContext = new OperationContext(new OperationBuilder(nameGenerator),
-          httpRequestMethod,
-          outerContext.getHandlerMethod(),
-          currentCount,
-          requestMappingInfo,
-          outerContext.getDocumentationContext(), requestMappingPattern);
-
-      Operation operation = pluginsManager.operation(operationContext);
-      if (!operation.isHidden()) {
-        operations.add(operation);
-        currentCount++;
-      }
+    @Autowired
+    public ApiOperationReader(DocumentationPluginsManager pluginsManager, OperationNameGenerator nameGenerator) {
+        this.pluginsManager = pluginsManager;
+        this.nameGenerator = nameGenerator;
     }
-    Collections.sort(operations, outerContext.operationOrdering());
 
-    return operations;
-  }
+    @Override
+//  @Cacheable(value = "operations", keyGenerator = OperationsKeyGenerator.class)
+    public List<Operation> read(RequestMappingContext outerContext) {
 
-  private Set<RequestMethod> supportedMethods(Set<RequestMethod> requestMethods) {
-    return requestMethods == null || requestMethods.isEmpty()
-           ? allRequestMethods
-           : requestMethods;
-  }
+        RequestMappingInfo requestMappingInfo = outerContext.getRequestMappingInfo();
+        String requestMappingPattern = outerContext.getRequestMappingPattern();
+        RequestMethodsRequestCondition requestMethodsRequestCondition = requestMappingInfo.getMethodsCondition();
+        List<Operation> operations = newArrayList();
+
+        Set<RequestMethod> requestMethods = requestMethodsRequestCondition.getMethods();
+        Set<RequestMethod> supportedMethods = supportedMethods(requestMethods);
+
+        //Setup response message list
+        Integer currentCount = 0;
+        for (RequestMethod httpRequestMethod : supportedMethods) {
+            OperationContext operationContext = new OperationContext(new OperationBuilder(nameGenerator),
+                    httpRequestMethod,
+                    outerContext.getHandlerMethod(),
+                    currentCount,
+                    requestMappingInfo,
+                    outerContext.getDocumentationContext(), requestMappingPattern);
+
+            Operation operation = pluginsManager.operation(operationContext);
+            if (!operation.isHidden()) {
+                operations.add(operation);
+                currentCount++;
+            }
+        }
+        Collections.sort(operations, outerContext.operationOrdering());
+
+        return operations;
+    }
+
+    private Set<RequestMethod> supportedMethods(Set<RequestMethod> requestMethods) {
+        return requestMethods == null || requestMethods.isEmpty()
+                ? allRequestMethods
+                : requestMethods;
+    }
 
 }

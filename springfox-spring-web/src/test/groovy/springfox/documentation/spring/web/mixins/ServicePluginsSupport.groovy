@@ -18,6 +18,7 @@
  */
 
 package springfox.documentation.spring.web.mixins
+
 import com.fasterxml.classmate.TypeResolver
 import springfox.documentation.service.PathDecorator
 import springfox.documentation.spi.service.*
@@ -32,53 +33,53 @@ import springfox.documentation.spring.web.readers.parameter.ParameterNameReader
 import springfox.documentation.spring.web.scanners.ApiListingReader
 import springfox.documentation.spring.web.scanners.MediaTypeReader
 
-import static com.google.common.collect.Lists.*
-import static org.springframework.plugin.core.OrderAwarePluginRegistry.*
+import static com.google.common.collect.Lists.newArrayList
+import static org.springframework.plugin.core.OrderAwarePluginRegistry.create
 
 @SuppressWarnings("GrMethodMayBeStatic")
 class ServicePluginsSupport {
 
-  DocumentationPluginsManager defaultWebPlugins() {
-    def resolver = new TypeResolver()
-    def plugins = new DocumentationPluginsManager()
-    plugins.apiListingPlugins = create(newArrayList(new MediaTypeReader(resolver), new ApiListingReader()))
-    plugins.documentationPlugins = create([])
-    plugins.parameterExpanderPlugins = create([new ExpandedParameterBuilder(resolver)])
-    plugins.parameterPlugins = create([new ParameterNameReader()])
-    plugins.operationBuilderPlugins = create([])
-    plugins.resourceGroupingStrategies = create([])
-    plugins.operationModelsProviders = create([new OperationModelsProvider(resolver)])
-    plugins.defaultsProviders = create([])
-    plugins.pathDecorators = create([
-        new OperationPathDecorator(),
-        new PathSanitizer(),
-        new PathMappingDecorator(),
-        new QueryStringUriTemplateDecorator()])
-    return plugins
-  }
+    DocumentationPluginsManager defaultWebPlugins() {
+        def resolver = new TypeResolver()
+        def plugins = new DocumentationPluginsManager()
+        plugins.apiListingPlugins = create(newArrayList(new MediaTypeReader(resolver), new ApiListingReader()))
+        plugins.documentationPlugins = create([])
+        plugins.parameterExpanderPlugins = create([new ExpandedParameterBuilder(resolver)])
+        plugins.parameterPlugins = create([new ParameterNameReader()])
+        plugins.operationBuilderPlugins = create([])
+        plugins.resourceGroupingStrategies = create([])
+        plugins.operationModelsProviders = create([new OperationModelsProvider(resolver)])
+        plugins.defaultsProviders = create([])
+        plugins.pathDecorators = create([
+                new OperationPathDecorator(),
+                new PathSanitizer(),
+                new PathMappingDecorator(),
+                new QueryStringUriTemplateDecorator()])
+        return plugins
+    }
 
-  DocumentationPluginsManager customWebPlugins(List<DocumentationPlugin> documentationPlugins = [],
-       List<ResourceGroupingStrategy> groupingStrategyPlugins = [],
-       List<OperationBuilderPlugin> operationPlugins = [],
-       List<ParameterBuilderPlugin> paramPlugins = [],
-       List<DefaultsProviderPlugin> defaultProviderPlugins = [],
-       List<PathDecorator> pathDecorators = [new OperationPathDecorator(),
-                                             new PathSanitizer(),
-                                             new PathMappingDecorator(),
-                                             new QueryStringUriTemplateDecorator()]) {
+    DocumentationPluginsManager customWebPlugins(List<DocumentationPlugin> documentationPlugins = [],
+                                                 List<ResourceGroupingStrategy> groupingStrategyPlugins = [],
+                                                 List<OperationBuilderPlugin> operationPlugins = [],
+                                                 List<ParameterBuilderPlugin> paramPlugins = [],
+                                                 List<DefaultsProviderPlugin> defaultProviderPlugins = [],
+                                                 List<PathDecorator> pathDecorators = [new OperationPathDecorator(),
+                                                                                       new PathSanitizer(),
+                                                                                       new PathMappingDecorator(),
+                                                                                       new QueryStringUriTemplateDecorator()]) {
 
-    def resolver = new TypeResolver()
-    def plugins = new DocumentationPluginsManager()
-    plugins.apiListingPlugins = create(newArrayList(new MediaTypeReader(resolver)))
-    plugins.documentationPlugins = create(documentationPlugins)
-    plugins.parameterExpanderPlugins = create([new ExpandedParameterBuilder(resolver)])
-    plugins.parameterPlugins = create(paramPlugins)
-    plugins.operationBuilderPlugins = create(operationPlugins)
-    plugins.resourceGroupingStrategies = create(groupingStrategyPlugins)
-    plugins.operationModelsProviders = create([new OperationModelsProvider(resolver)])
-    plugins.defaultsProviders = create(defaultProviderPlugins)
-    plugins.pathDecorators = create(pathDecorators)
-    return plugins
-  }
+        def resolver = new TypeResolver()
+        def plugins = new DocumentationPluginsManager()
+        plugins.apiListingPlugins = create(newArrayList(new MediaTypeReader(resolver)))
+        plugins.documentationPlugins = create(documentationPlugins)
+        plugins.parameterExpanderPlugins = create([new ExpandedParameterBuilder(resolver)])
+        plugins.parameterPlugins = create(paramPlugins)
+        plugins.operationBuilderPlugins = create(operationPlugins)
+        plugins.resourceGroupingStrategies = create(groupingStrategyPlugins)
+        plugins.operationModelsProviders = create([new OperationModelsProvider(resolver)])
+        plugins.defaultsProviders = create(defaultProviderPlugins)
+        plugins.pathDecorators = create(pathDecorators)
+        return plugins
+    }
 
 }

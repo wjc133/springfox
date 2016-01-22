@@ -21,22 +21,21 @@ package springfox.documentation.spring.web.paths
 
 import spock.lang.Specification
 import springfox.documentation.spring.web.mixins.RequestMappingSupport
-import springfox.documentation.spring.web.paths.RelativePathProvider
 
 import javax.servlet.ServletContext
 
 @Mixin(RequestMappingSupport)
 class RelativeSwaggerPathProviderSpec extends Specification {
 
-   def "assert urls"(){
-      given:
+    def "assert urls"() {
+        given:
         ServletContext servletContext = Mock()
         RelativePathProvider provider = new RelativePathProvider(servletContext)
         servletContext.contextPath >> "/"
 
-      expect:
+        expect:
         provider.applicationPath() == "/"
         provider.getDocumentationPath() == "/"
-   }
+    }
 
 }

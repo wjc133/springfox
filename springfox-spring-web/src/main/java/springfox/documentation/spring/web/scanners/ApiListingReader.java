@@ -25,22 +25,22 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.ApiListingBuilderPlugin;
 import springfox.documentation.spi.service.contexts.ApiListingContext;
 
-import static springfox.documentation.spring.web.paths.Paths.*;
+import static springfox.documentation.spring.web.paths.Paths.splitCamelCase;
 
 @Component
-@Order(value= Ordered.HIGHEST_PRECEDENCE)
+@Order(value = Ordered.HIGHEST_PRECEDENCE)
 public class ApiListingReader implements ApiListingBuilderPlugin {
-  @Override
-  public void apply(ApiListingContext apiListingContext) {
-    Class<?> controllerClass = apiListingContext.getResourceGroup().getControllerClass();
-    String description = splitCamelCase(controllerClass.getSimpleName(), " ");
+    @Override
+    public void apply(ApiListingContext apiListingContext) {
+        Class<?> controllerClass = apiListingContext.getResourceGroup().getControllerClass();
+        String description = splitCamelCase(controllerClass.getSimpleName(), " ");
 
-    apiListingContext.apiListingBuilder()
-        .description(description);
-  }
+        apiListingContext.apiListingBuilder()
+                .description(description);
+    }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return true;
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return true;
+    }
 }

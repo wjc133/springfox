@@ -22,16 +22,16 @@ package springfox.documentation.schema;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum JsonValuedEnum {
-  ONE("One"),
-  TWO("Two");
-  private final String name;
+    ONE("One"),
+    TWO("Two");
+    private final String name;
 
-  JsonValuedEnum(String name) {
-    this.name = name;
-  }
+    JsonValuedEnum(String name) {
+        this.name = name;
+    }
 
-  @JsonValue
-  public String getName() {
-    return name;
-  }
+    @JsonValue
+    public String getName() {
+        return name;
+    }
 }

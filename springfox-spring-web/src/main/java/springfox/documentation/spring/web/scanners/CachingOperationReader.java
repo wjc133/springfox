@@ -37,23 +37,23 @@ import java.util.concurrent.TimeUnit;
 @Qualifier("cachedOperations")
 public class CachingOperationReader implements OperationReader {
 
-  private final LoadingCache<Equivalence.Wrapper<RequestMappingContext>, List<Operation>> cache;
+    private final LoadingCache<Equivalence.Wrapper<RequestMappingContext>, List<Operation>> cache;
 
-  @Autowired
-  public CachingOperationReader(@Qualifier("default") final OperationReader delegate) {
-    cache = CacheBuilder.newBuilder()
-        .maximumSize(1000)
-        .expireAfterWrite(24, TimeUnit.HOURS)
-        .build(
-            new CacheLoader<Equivalence.Wrapper<RequestMappingContext>, List<Operation>>() {
-              public List<Operation> load(Equivalence.Wrapper<RequestMappingContext> key) {
-                return delegate.read(key.get());
-              }
-            });
-  }
+    @Autowired
+    public CachingOperationReader(@Qualifier("default") final OperationReader delegate) {
+        cache = CacheBuilder.newBuilder()
+                .maximumSize(1000)
+                .expireAfterWrite(24, TimeUnit.HOURS)
+                .build(
+                        new CacheLoader<Equivalence.Wrapper<RequestMappingContext>, List<Operation>>() {
+                            public List<Operation> load(Equivalence.Wrapper<RequestMappingContext> key) {
+                                return delegate.read(key.get());
+                            }
+                        });
+    }
 
-  @Override
-  public List<Operation> read(RequestMappingContext outerContext) {
-    return cache.getUnchecked(new OperationCachingEquivalence().wrap(outerContext));
-  }
+    @Override
+    public List<Operation> read(RequestMappingContext outerContext) {
+        return cache.getUnchecked(new OperationCachingEquivalence().wrap(outerContext));
+    }
 }

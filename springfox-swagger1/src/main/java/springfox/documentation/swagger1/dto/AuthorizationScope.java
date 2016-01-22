@@ -20,30 +20,30 @@
 package springfox.documentation.swagger1.dto;
 
 public class AuthorizationScope {
-  private String scope;
-  private String description;
+    private String scope;
+    private String description;
 
-  public AuthorizationScope() {
-  }
+    public AuthorizationScope() {
+    }
 
-  public AuthorizationScope(String scope, String description) {
-    this.description = description;
-    this.scope = scope;
-  }
+    public AuthorizationScope(String scope, String description) {
+        this.description = description;
+        this.scope = scope;
+    }
 
-  public String getScope() {
-    return scope;
-  }
+    public String getScope() {
+        return scope;
+    }
 
-  public void setScope(String scope) {
-    this.scope = scope;
-  }
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
 
-  public String getDescription() {
-    return description;
-  }
+    public String getDescription() {
+        return description;
+    }
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

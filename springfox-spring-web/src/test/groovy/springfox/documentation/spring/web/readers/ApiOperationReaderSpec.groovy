@@ -18,6 +18,7 @@
  */
 
 package springfox.documentation.spring.web.readers
+
 import org.springframework.http.HttpMethod
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo
@@ -33,50 +34,51 @@ import springfox.documentation.spring.web.readers.operation.ApiOperationReader
 import springfox.documentation.spring.web.readers.operation.CachingOperationNameGenerator
 import springfox.documentation.spring.web.readers.operation.DefaultOperationReader
 
-import static com.google.common.collect.Lists.*
-import static org.springframework.web.bind.annotation.RequestMethod.*
+import static com.google.common.collect.Lists.newArrayList
+import static org.springframework.web.bind.annotation.RequestMethod.PATCH
+import static org.springframework.web.bind.annotation.RequestMethod.POST
 
 @Mixin([RequestMappingSupport, AuthSupport, ServicePluginsSupport])
 class ApiOperationReaderSpec extends DocumentationContextSpec {
-  ApiOperationReader sut
+    ApiOperationReader sut
 
-  def setup() {
-    SecurityContext securityContext = SecurityContext.builder()
-            .securityReferences(defaultAuth())
-            .forPaths(PathSelectors.regex(".*"))
-            .build()
-    plugin.securityContexts(newArrayList(securityContext))
-    sut = new ApiOperationReader(customWebPlugins([], [], [new DefaultOperationReader()]), new CachingOperationNameGenerator())
-  }
+    def setup() {
+        SecurityContext securityContext = SecurityContext.builder()
+                .securityReferences(defaultAuth())
+                .forPaths(PathSelectors.regex(".*"))
+                .build()
+        plugin.securityContexts(newArrayList(securityContext))
+        sut = new ApiOperationReader(customWebPlugins([], [], [new DefaultOperationReader()]), new CachingOperationNameGenerator())
+    }
 
-  def "Should generate default operation on handler method without swagger annotations"() {
+    def "Should generate default operation on handler method without swagger annotations"() {
 
-    given:
-      RequestMappingInfo requestMappingInfo = requestMappingInfo("/doesNotMatterForThisTest",
-              [
-                      patternsRequestCondition      : patternsRequestCondition('/doesNotMatterForThisTest', '/somePath/{businessId:\\d+}'),
-                      requestMethodsRequestCondition: requestMethodsRequestCondition(PATCH, POST)
-              ]
-      )
+        given:
+        RequestMappingInfo requestMappingInfo = requestMappingInfo("/doesNotMatterForThisTest",
+                [
+                        patternsRequestCondition      : patternsRequestCondition('/doesNotMatterForThisTest', '/somePath/{businessId:\\d+}'),
+                        requestMethodsRequestCondition: requestMethodsRequestCondition(PATCH, POST)
+                ]
+        )
 
-      HandlerMethod handlerMethod = dummyHandlerMethod()
+        HandlerMethod handlerMethod = dummyHandlerMethod()
 
-      RequestMappingContext context = new RequestMappingContext(context(),
-              requestMappingInfo,
-              handlerMethod)
-    when:
-      def operations = sut.read(context)
+        RequestMappingContext context = new RequestMappingContext(context(),
+                requestMappingInfo,
+                handlerMethod)
+        when:
+        def operations = sut.read(context)
 
-    then:
-      Operation apiOperation = operations[0]
-      apiOperation.getMethod() == HttpMethod.PATCH
-      apiOperation.getSummary() == handlerMethod.method.name
-      apiOperation.getNotes() == null
-      apiOperation.getUniqueId() == handlerMethod.method.name + "Using" + PATCH.toString()
-      apiOperation.getPosition() == 0
-      apiOperation.getSecurityReferences().size() == 0
+        then:
+        Operation apiOperation = operations[0]
+        apiOperation.getMethod() == HttpMethod.PATCH
+        apiOperation.getSummary() == handlerMethod.method.name
+        apiOperation.getNotes() == null
+        apiOperation.getUniqueId() == handlerMethod.method.name + "Using" + PATCH.toString()
+        apiOperation.getPosition() == 0
+        apiOperation.getSecurityReferences().size() == 0
 
-      def secondApiOperation = operations[1]
-      secondApiOperation.position == 1
-  }
+        def secondApiOperation = operations[1]
+        secondApiOperation.position == 1
+    }
 }

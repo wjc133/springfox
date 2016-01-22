@@ -42,78 +42,78 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
 import java.util.List;
 
 import static com.google.common.base.Strings.*;
-import static com.google.common.collect.Lists.*;
+import static com.google.common.collect.Lists.newArrayList;
 
 @Component
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class VendorExtensionsReader implements OperationBuilderPlugin {
 
-  private static final Logger LOG = LoggerFactory.getLogger(VendorExtensionsReader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(VendorExtensionsReader.class);
 
-  @Override
-  public void apply(OperationContext context) {
+    @Override
+    public void apply(OperationContext context) {
 
-    HandlerMethod handlerMethod = context.getHandlerMethod();
-    Optional<ApiOperation> apiOperation = Annotations.findApiOperationAnnotation(handlerMethod.getMethod());
+        HandlerMethod handlerMethod = context.getHandlerMethod();
+        Optional<ApiOperation> apiOperation = Annotations.findApiOperationAnnotation(handlerMethod.getMethod());
 
-    if (apiOperation.isPresent()) {
-      Extension[] extensionsAnnotations = apiOperation.get().extensions();
-      List<VendorExtension> extensions = readExtensions(extensionsAnnotations);
-      LOG.debug("Extension count {} for method {}", extensions.size(), handlerMethod.getMethod().getName());
-      context.operationBuilder().extensions(extensions);
+        if (apiOperation.isPresent()) {
+            Extension[] extensionsAnnotations = apiOperation.get().extensions();
+            List<VendorExtension> extensions = readExtensions(extensionsAnnotations);
+            LOG.debug("Extension count {} for method {}", extensions.size(), handlerMethod.getMethod().getName());
+            context.operationBuilder().extensions(extensions);
+        }
     }
-  }
 
-  private List<VendorExtension> readExtensions(Extension[] vendorAnnotations) {
-    return FluentIterable.from(newArrayList(vendorAnnotations))
-        .transform(toVendorExtension()).toList();
-  }
-
-  private Function<Extension, VendorExtension> toVendorExtension() {
-    return new Function<Extension, VendorExtension>() {
-      @Override
-      public VendorExtension apply(Extension input) {
-        return Optional.fromNullable(emptyToNull(input.name()))
-            .transform(propertyExtension(input))
-            .or(objectExtension(input));
-      }
-    };
-  }
-
-  private VendorExtension objectExtension(Extension each) {
-    ObjectVendorExtension extension = new ObjectVendorExtension(ensurePrefixed(nullToEmpty(each.name())));
-    for (ExtensionProperty property : each.properties()) {
-      if (!isNullOrEmpty(property.name()) && !isNullOrEmpty(property.value())) {
-        extension.addProperty(new StringVendorExtension(property.name(), property.value()));
-      }
+    private List<VendorExtension> readExtensions(Extension[] vendorAnnotations) {
+        return FluentIterable.from(newArrayList(vendorAnnotations))
+                .transform(toVendorExtension()).toList();
     }
-    return extension;
-  }
 
-  private Function<String, VendorExtension> propertyExtension(final Extension annotation) {
-    return new Function<String, VendorExtension>() {
-      @Override
-      public VendorExtension apply(String input) {
-        ObjectVendorExtension extension = new ObjectVendorExtension(ensurePrefixed(input));
-        for (ExtensionProperty each : annotation.properties()) {
-          extension.addProperty(new StringVendorExtension(each.name(), each.value()));
+    private Function<Extension, VendorExtension> toVendorExtension() {
+        return new Function<Extension, VendorExtension>() {
+            @Override
+            public VendorExtension apply(Extension input) {
+                return Optional.fromNullable(emptyToNull(input.name()))
+                        .transform(propertyExtension(input))
+                        .or(objectExtension(input));
+            }
+        };
+    }
+
+    private VendorExtension objectExtension(Extension each) {
+        ObjectVendorExtension extension = new ObjectVendorExtension(ensurePrefixed(nullToEmpty(each.name())));
+        for (ExtensionProperty property : each.properties()) {
+            if (!isNullOrEmpty(property.name()) && !isNullOrEmpty(property.value())) {
+                extension.addProperty(new StringVendorExtension(property.name(), property.value()));
+            }
         }
         return extension;
-      }
-    };
-  }
-
-  private String ensurePrefixed(String name) {
-    if (!isNullOrEmpty(name)) {
-      if (!name.startsWith("x-")) {
-        name = "x-" + name;
-      }
     }
-    return name;
-  }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return SwaggerPluginSupport.pluginDoesApply(delimiter);
-  }
+    private Function<String, VendorExtension> propertyExtension(final Extension annotation) {
+        return new Function<String, VendorExtension>() {
+            @Override
+            public VendorExtension apply(String input) {
+                ObjectVendorExtension extension = new ObjectVendorExtension(ensurePrefixed(input));
+                for (ExtensionProperty each : annotation.properties()) {
+                    extension.addProperty(new StringVendorExtension(each.name(), each.value()));
+                }
+                return extension;
+            }
+        };
+    }
+
+    private String ensurePrefixed(String name) {
+        if (!isNullOrEmpty(name)) {
+            if (!name.startsWith("x-")) {
+                name = "x-" + name;
+            }
+        }
+        return name;
+    }
+
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return SwaggerPluginSupport.pluginDoesApply(delimiter);
+    }
 }

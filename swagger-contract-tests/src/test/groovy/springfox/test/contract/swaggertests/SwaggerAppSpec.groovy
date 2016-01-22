@@ -29,6 +29,6 @@ import spock.lang.Specification
 @TestExecutionListeners([DependencyInjectionTestExecutionListener, DirtiesContextTestExecutionListener])
 abstract class SwaggerAppSpec extends Specification {
 
-  @Value('${local.server.port}')
-  int port;
+    @Value('${local.server.port}')
+    int port;
 }

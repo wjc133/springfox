@@ -34,30 +34,30 @@ import java.util.concurrent.TimeUnit;
 @Qualifier("cachedModels")
 public class CachingModelProvider implements ModelProvider {
 
-  private final LoadingCache<ModelContext, Optional<Model>> cache;
-  private final ModelProvider delegate;
+    private final LoadingCache<ModelContext, Optional<Model>> cache;
+    private final ModelProvider delegate;
 
-  @Autowired
-  public CachingModelProvider(@Qualifier("default") final ModelProvider delegate) {
-    this.delegate = delegate;
-    cache = CacheBuilder.newBuilder()
-        .maximumSize(1000)
-        .expireAfterWrite(24, TimeUnit.HOURS)
-        .build(
-            new CacheLoader<ModelContext, Optional<Model>>() {
-              public Optional<Model> load(ModelContext key) {
-                return delegate.modelFor(key);
-              }
-            });
-  }
+    @Autowired
+    public CachingModelProvider(@Qualifier("default") final ModelProvider delegate) {
+        this.delegate = delegate;
+        cache = CacheBuilder.newBuilder()
+                .maximumSize(1000)
+                .expireAfterWrite(24, TimeUnit.HOURS)
+                .build(
+                        new CacheLoader<ModelContext, Optional<Model>>() {
+                            public Optional<Model> load(ModelContext key) {
+                                return delegate.modelFor(key);
+                            }
+                        });
+    }
 
-  @Override
-  public Optional<Model> modelFor(ModelContext modelContext) {
-    return cache.getUnchecked(modelContext);
-  }
+    @Override
+    public Optional<Model> modelFor(ModelContext modelContext) {
+        return cache.getUnchecked(modelContext);
+    }
 
-  @Override
-  public Map<String, Model> dependencies(ModelContext modelContext) {
-    return delegate.dependencies(modelContext);
-  }
+    @Override
+    public Map<String, Model> dependencies(ModelContext modelContext) {
+        return delegate.dependencies(modelContext);
+    }
 }

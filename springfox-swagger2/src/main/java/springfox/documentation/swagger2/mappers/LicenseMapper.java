@@ -31,21 +31,21 @@ import java.lang.annotation.Target;
 @Mapper
 public class LicenseMapper {
 
-  @License
-  public io.swagger.models.License apiInfoToLicense(ApiInfo from) {
-    return new io.swagger.models.License().name(from.getLicense()).url(from.getLicenseUrl());
-  }
+    @License
+    public io.swagger.models.License apiInfoToLicense(ApiInfo from) {
+        return new io.swagger.models.License().name(from.getLicense()).url(from.getLicenseUrl());
+    }
 
 
-  @Qualifier
-  @Target(ElementType.TYPE)
-  @Retention(RetentionPolicy.SOURCE)
-  public @interface LicenseTranslator {
-  }
+    @Qualifier
+    @Target(ElementType.TYPE)
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface LicenseTranslator {
+    }
 
-  @Qualifier
-  @Target(ElementType.METHOD)
-  @Retention(RetentionPolicy.SOURCE)
-  public @interface License {
-  }
+    @Qualifier
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface License {
+    }
 }

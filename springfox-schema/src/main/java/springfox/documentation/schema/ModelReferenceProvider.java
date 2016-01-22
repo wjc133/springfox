@@ -24,57 +24,59 @@ import com.google.common.base.Optional;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.spi.schema.contexts.ModelContext;
 
-import static springfox.documentation.schema.Collections.*;
-import static springfox.documentation.schema.Maps.*;
+import static springfox.documentation.schema.Collections.collectionElementType;
+import static springfox.documentation.schema.Collections.isContainerType;
+import static springfox.documentation.schema.Maps.isMapType;
+import static springfox.documentation.schema.Maps.mapValueType;
 import static springfox.documentation.schema.ResolvedTypes.allowableValues;
 import static springfox.documentation.spi.schema.contexts.ModelContext.fromParent;
 
 class ModelReferenceProvider implements Function<ResolvedType, ModelReference> {
-  private final TypeNameExtractor typeNameExtractor;
-  private final ModelContext parentContext;
+    private final TypeNameExtractor typeNameExtractor;
+    private final ModelContext parentContext;
 
-  public ModelReferenceProvider(TypeNameExtractor typeNameExtractor, ModelContext parentContext) {
-    this.typeNameExtractor = typeNameExtractor;
-    this.parentContext = parentContext;
-  }
-
-  @Override
-  public ModelReference apply(ResolvedType type) {
-    return collectionReference(type)
-        .or(mapReference(type))
-        .or(modelReference(type));
-  }
-
-  private ModelReference modelReference(ResolvedType type) {
-    if (Void.class.equals(type.getErasedType()) || Void.TYPE.equals(type.getErasedType())) {
-      return new ModelRef("void");
+    public ModelReferenceProvider(TypeNameExtractor typeNameExtractor, ModelContext parentContext) {
+        this.typeNameExtractor = typeNameExtractor;
+        this.parentContext = parentContext;
     }
-    if (MultipartFile.class.isAssignableFrom(type.getErasedType())) {
-      return new ModelRef("File");
-    }
-    String typeName = typeNameExtractor.typeName(fromParent(parentContext, type));
-    return new ModelRef(typeName, allowableValues(type));
-  }
 
-  private Optional<ModelReference> mapReference(ResolvedType type) {
-    if (isMapType(type)) {
-      ResolvedType mapValueType = mapValueType(type);
-      String typeName = typeNameExtractor.typeName(fromParent(parentContext, type));
-      return Optional.<ModelReference>of(new ModelRef(typeName, apply(mapValueType), true));
+    @Override
+    public ModelReference apply(ResolvedType type) {
+        return collectionReference(type)
+                .or(mapReference(type))
+                .or(modelReference(type));
     }
-    return Optional.absent();
-  }
 
-  private Optional<ModelReference> collectionReference(ResolvedType type) {
-    if (isContainerType(type)) {
-      ResolvedType collectionElementType = collectionElementType(type);
-      String typeName = typeNameExtractor.typeName(fromParent(parentContext, type));
-      return Optional.<ModelReference>of(
-          new ModelRef(
-              typeName,
-              apply(collectionElementType),
-              allowableValues(collectionElementType)));
+    private ModelReference modelReference(ResolvedType type) {
+        if (Void.class.equals(type.getErasedType()) || Void.TYPE.equals(type.getErasedType())) {
+            return new ModelRef("void");
+        }
+        if (MultipartFile.class.isAssignableFrom(type.getErasedType())) {
+            return new ModelRef("File");
+        }
+        String typeName = typeNameExtractor.typeName(fromParent(parentContext, type));
+        return new ModelRef(typeName, allowableValues(type));
     }
-    return Optional.absent();
-  }
+
+    private Optional<ModelReference> mapReference(ResolvedType type) {
+        if (isMapType(type)) {
+            ResolvedType mapValueType = mapValueType(type);
+            String typeName = typeNameExtractor.typeName(fromParent(parentContext, type));
+            return Optional.<ModelReference>of(new ModelRef(typeName, apply(mapValueType), true));
+        }
+        return Optional.absent();
+    }
+
+    private Optional<ModelReference> collectionReference(ResolvedType type) {
+        if (isContainerType(type)) {
+            ResolvedType collectionElementType = collectionElementType(type);
+            String typeName = typeNameExtractor.typeName(fromParent(parentContext, type));
+            return Optional.<ModelReference>of(
+                    new ModelRef(
+                            typeName,
+                            apply(collectionElementType),
+                            allowableValues(collectionElementType)));
+        }
+        return Optional.absent();
+    }
 }

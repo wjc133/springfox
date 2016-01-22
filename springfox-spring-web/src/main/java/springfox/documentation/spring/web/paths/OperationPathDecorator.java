@@ -28,18 +28,18 @@ import springfox.documentation.spi.service.contexts.PathContext;
 @Component
 @Order
 class OperationPathDecorator implements PathDecorator {
-  @Override
-  public Function<String, String> decorator(final PathContext context) {
-    return new Function<String, String>() {
-      @Override
-      public String apply(String input) {
-        return context.pathProvider().getOperationPath(input);
-      }
-    };
-  }
+    @Override
+    public Function<String, String> decorator(final PathContext context) {
+        return new Function<String, String>() {
+            @Override
+            public String apply(String input) {
+                return context.pathProvider().getOperationPath(input);
+            }
+        };
+    }
 
-  @Override
-  public boolean supports(DocumentationContext delimiter) {
-    return true;
-  }
+    @Override
+    public boolean supports(DocumentationContext delimiter) {
+        return true;
+    }
 }

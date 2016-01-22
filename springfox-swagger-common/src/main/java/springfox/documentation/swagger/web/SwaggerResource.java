@@ -22,42 +22,42 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ComparisonChain;
 
 public class SwaggerResource implements Comparable<SwaggerResource> {
-  private String name;
-  private String location;
-  private String swaggerVersion;
+    private String name;
+    private String location;
+    private String swaggerVersion;
 
-  @JsonProperty("name")
-  public String getName() {
-    return name;
-  }
+    @JsonProperty("name")
+    public String getName() {
+        return name;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  @JsonProperty("location")
-  public String getLocation() {
-    return location;
-  }
+    @JsonProperty("location")
+    public String getLocation() {
+        return location;
+    }
 
-  public void setLocation(String location) {
-    this.location = location;
-  }
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
-  @JsonProperty("swaggerVersion")
-  public String getSwaggerVersion() {
-    return swaggerVersion;
-  }
+    @JsonProperty("swaggerVersion")
+    public String getSwaggerVersion() {
+        return swaggerVersion;
+    }
 
-  public void setSwaggerVersion(String swaggerVersion) {
-    this.swaggerVersion = swaggerVersion;
-  }
+    public void setSwaggerVersion(String swaggerVersion) {
+        this.swaggerVersion = swaggerVersion;
+    }
 
-  @Override
-  public int compareTo(SwaggerResource other) {
-    return ComparisonChain.start()
-            .compare(this.swaggerVersion, other.swaggerVersion)
-            .compare(this.name, other.name)
-            .result();
-  }
+    @Override
+    public int compareTo(SwaggerResource other) {
+        return ComparisonChain.start()
+                .compare(this.swaggerVersion, other.swaggerVersion)
+                .compare(this.name, other.name)
+                .result();
+    }
 }

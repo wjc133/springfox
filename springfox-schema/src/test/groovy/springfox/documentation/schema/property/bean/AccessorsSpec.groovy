@@ -26,104 +26,104 @@ import springfox.documentation.schema.TypeWithGettersAndSetters
 import static springfox.documentation.schema.property.bean.Accessors.*
 
 class AccessorsSpec extends Specification {
-  def "Cannot instantiate the Accessors helper"() {
-    when:
-      new Accessors()
-    then:
-      thrown(UnsupportedOperationException)
-  }
+    def "Cannot instantiate the Accessors helper"() {
+        when:
+        new Accessors()
+        then:
+        thrown(UnsupportedOperationException)
+    }
 
-  def "Property names are identified correctly based on (get/set) method names"() {
-    given:
-      def sut = TypeForTestingPropertyNames
-      def method = sut.methods.find { it.name.equals(methodName) }
+    def "Property names are identified correctly based on (get/set) method names"() {
+        given:
+        def sut = TypeForTestingPropertyNames
+        def method = sut.methods.find { it.name.equals(methodName) }
 
-    expect:
-      propertyName(method) == property
+        expect:
+        propertyName(method) == property
 
-    where:
-      methodName       || property
-      "getProp"        || "prop"
-      "getProp1"       || "prop1"
-      "getProp_1"      || "prop_1"
-      "isProp"         || "prop"
-      "isProp1"        || "prop1"
-      "isProp_1"       || "prop_1"
-      "setProp"        || "prop"
-      "setProp1"       || "prop1"
-      "setProp_1"      || "prop_1"
-      "prop"           || ""
-      "getAnotherProp" || "prop"
-      "setAnotherProp" || "prop"
-      "getPropFallback"|| "propFallback"
-      "setPropFallback"|| "propFallback"
-  }
+        where:
+        methodName        || property
+        "getProp"         || "prop"
+        "getProp1"        || "prop1"
+        "getProp_1"       || "prop_1"
+        "isProp"          || "prop"
+        "isProp1"         || "prop1"
+        "isProp_1"        || "prop_1"
+        "setProp"         || "prop"
+        "setProp1"        || "prop1"
+        "setProp_1"       || "prop_1"
+        "prop"            || ""
+        "getAnotherProp"  || "prop"
+        "setAnotherProp"  || "prop"
+        "getPropFallback" || "propFallback"
+        "setPropFallback" || "propFallback"
+    }
 
-  def "Identifies JsonSetter annotation"() {
-    given:
-      def sut = TypeForTestingPropertyNames
+    def "Identifies JsonSetter annotation"() {
+        given:
+        def sut = TypeForTestingPropertyNames
 
-    when:
-      def method = sut.methods.find { it.name.equals(methodName) }
+        when:
+        def method = sut.methods.find { it.name.equals(methodName) }
 
-    then:
-      isSetter(method)
+        then:
+        isSetter(method)
 
-    where:
-      methodName << ["setAnotherProp", "anotherProp"]
-  }
+        where:
+        methodName << ["setAnotherProp", "anotherProp"]
+    }
 
-  def "Identifies JsonGetter annotation"() {
-    given:
-      def sut = TypeForTestingPropertyNames
+    def "Identifies JsonGetter annotation"() {
+        given:
+        def sut = TypeForTestingPropertyNames
 
-    when:
-      def method = sut.methods.find { it.name.equals(methodName) }
+        when:
+        def method = sut.methods.find { it.name.equals(methodName) }
 
-    then:
-      maybeAGetter(method)
+        then:
+        maybeAGetter(method)
 
-    where:
-      methodName << ["yetAnotherProp", "getAnotherProp"]
-  }
+        where:
+        methodName << ["yetAnotherProp", "getAnotherProp"]
+    }
 
-  def "Getters (#methodName) are identified correctly"() {
-    given:
-      def sut = TypeWithGettersAndSetters
-      def method = sut.methods.find { it.name.equals(methodName) }
+    def "Getters (#methodName) are identified correctly"() {
+        given:
+        def sut = TypeWithGettersAndSetters
+        def method = sut.methods.find { it.name.equals(methodName) }
 
-    expect:
-      maybeAGetter(method) == result
+        expect:
+        maybeAGetter(method) == result
 
-    where:
-      methodName      || result
-      "getIntProp"    || true
-      "setIntProp"    || false
-      "isBoolProp"    || true
-      "setBoolProp"   || false
-      "getVoid"       || false
-      "isNotGetter"   || true
-      "getWithParam"  || false
-      "setNotASetter" || true
-  }
+        where:
+        methodName      || result
+        "getIntProp"    || true
+        "setIntProp"    || false
+        "isBoolProp"    || true
+        "setBoolProp"   || false
+        "getVoid"       || false
+        "isNotGetter"   || true
+        "getWithParam"  || false
+        "setNotASetter" || true
+    }
 
-  def "Setters are identified correctly"() {
-    given:
-      def sut = TypeWithGettersAndSetters
-      def method = sut.methods.find { it.name.equals(methodName) }
+    def "Setters are identified correctly"() {
+        given:
+        def sut = TypeWithGettersAndSetters
+        def method = sut.methods.find { it.name.equals(methodName) }
 
-    expect:
-      isSetter(method) == result
+        expect:
+        isSetter(method) == result
 
-    where:
-      methodName      || result
-      "getIntProp"    || false
-      "setIntProp"    || true
-      "isBoolProp"    || false
-      "setBoolProp"   || true
-      "getVoid"       || false
-      "isNotGetter"   || false
-      "getWithParam"  || false
-      "setNotASetter" || false
-  }
+        where:
+        methodName      || result
+        "getIntProp"    || false
+        "setIntProp"    || true
+        "isBoolProp"    || false
+        "setBoolProp"   || true
+        "getVoid"       || false
+        "isNotGetter"   || false
+        "getWithParam"  || false
+        "setNotASetter" || false
+    }
 }

@@ -21,28 +21,23 @@ package springfox.documentation.spring.web.paths
 
 import spock.lang.Specification
 import springfox.documentation.spring.web.mixins.RequestMappingSupport
-import springfox.documentation.spring.web.paths.AbstractPathProvider
-import springfox.documentation.spring.web.paths.Paths
-import springfox.documentation.spring.web.paths.RelativePathProvider
 
 import javax.servlet.ServletContext
 
 @Mixin(RequestMappingSupport)
 class RelativePathProviderSpec extends Specification {
 
-  def "relative paths"() {
-    given:
-      ServletContext servletContext = Mock(ServletContext)
-      servletContext.contextPath >> "/"
-      AbstractPathProvider provider = new RelativePathProvider(servletContext)
+    def "relative paths"() {
+        given:
+        ServletContext servletContext = Mock(ServletContext)
+        servletContext.contextPath >> "/"
+        AbstractPathProvider provider = new RelativePathProvider(servletContext)
 //      provider.apiResourcePrefix = "some/prefix"
 
-    expect:
-      provider.getApplicationBasePath() == "/"
-      provider.getResourceListingPath('default', 'api-declaration') == "/default/api-declaration"
-  }
-
-
+        expect:
+        provider.getApplicationBasePath() == "/"
+        provider.getResourceListingPath('default', 'api-declaration') == "/default/api-declaration"
+    }
 
 //  def "Invalid prefix's"() {
 //    when:
@@ -74,26 +69,26 @@ class RelativePathProviderSpec extends Specification {
 //      ''          | "api/v1" | "/business/{businessId}" | "/api/v1/business/{businessId}"
 //  }
 
-  def "should never return a path with duplicate slash"() {
-    setup:
-      RelativePathProvider swaggerPathProvider = new RelativePathProvider(servletContext())
+    def "should never return a path with duplicate slash"() {
+        setup:
+        RelativePathProvider swaggerPathProvider = new RelativePathProvider(servletContext())
 
-    when:
-      String path = swaggerPathProvider.getResourceListingPath('/a', '/b')
-      String opPath = swaggerPathProvider.getOperationPath('//a/b')
-    then:
-      path == '/a/b'
-      opPath == path
-  }
+        when:
+        String path = swaggerPathProvider.getResourceListingPath('/a', '/b')
+        String opPath = swaggerPathProvider.getOperationPath('//a/b')
+        then:
+        path == '/a/b'
+        opPath == path
+    }
 
-  def "should replace slashes"() {
-    expect:
-      Paths.removeAdjacentForwardSlashes(input) == expected
-    where:
-      input             | expected
-      '//a/b'           | '/a/b'
-      '//a//b//c'       | '/a/b/c'
-      'http://some//a'  | 'http://some/a'
-      'https://some//a' | 'https://some/a'
-  }
+    def "should replace slashes"() {
+        expect:
+        Paths.removeAdjacentForwardSlashes(input) == expected
+        where:
+        input             | expected
+        '//a/b'           | '/a/b'
+        '//a//b//c'       | '/a/b/c'
+        'http://some//a'  | 'http://some/a'
+        'https://some//a' | 'https://some/a'
+    }
 }

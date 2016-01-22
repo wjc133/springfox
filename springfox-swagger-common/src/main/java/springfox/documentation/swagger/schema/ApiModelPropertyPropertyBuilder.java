@@ -28,37 +28,37 @@ import springfox.documentation.spi.schema.ModelPropertyBuilderPlugin;
 import springfox.documentation.spi.schema.contexts.ModelPropertyContext;
 import springfox.documentation.swagger.common.SwaggerPluginSupport;
 
-import static springfox.documentation.schema.Annotations.*;
+import static springfox.documentation.schema.Annotations.findPropertyAnnotation;
 import static springfox.documentation.swagger.schema.ApiModelProperties.*;
 
 @Component
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class ApiModelPropertyPropertyBuilder implements ModelPropertyBuilderPlugin {
-  @Override
-  public void apply(ModelPropertyContext context) {
-    Optional<ApiModelProperty> annotation = Optional.absent();
+    @Override
+    public void apply(ModelPropertyContext context) {
+        Optional<ApiModelProperty> annotation = Optional.absent();
 
-    if (context.getAnnotatedElement().isPresent()) {
-      annotation = annotation.or(findApiModePropertyAnnotation(context.getAnnotatedElement().get()));
+        if (context.getAnnotatedElement().isPresent()) {
+            annotation = annotation.or(findApiModePropertyAnnotation(context.getAnnotatedElement().get()));
+        }
+        if (context.getBeanPropertyDefinition().isPresent()) {
+            annotation = annotation.or(findPropertyAnnotation(
+                    context.getBeanPropertyDefinition().get(), ApiModelProperty.class));
+        }
+        if (annotation.isPresent()) {
+            context.getBuilder()
+                    .allowableValues(annotation.transform(toAllowableValues()).orNull())
+                    .required(annotation.transform(toIsRequired()).or(false))
+                    .readOnly(annotation.transform(toIsReadOnly()).or(false))
+                    .description(annotation.transform(toDescription()).orNull())
+                    .isHidden(annotation.transform(toHidden()).or(false))
+                    .type(annotation.transform(toType(context.getResolver())).orNull())
+                    .example(annotation.transform(toExample()).orNull());
+        }
     }
-    if (context.getBeanPropertyDefinition().isPresent()) {
-      annotation = annotation.or(findPropertyAnnotation(
-          context.getBeanPropertyDefinition().get(), ApiModelProperty.class));
-    }
-    if (annotation.isPresent()) {
-      context.getBuilder()
-          .allowableValues(annotation.transform(toAllowableValues()).orNull())
-          .required(annotation.transform(toIsRequired()).or(false))
-          .readOnly(annotation.transform(toIsReadOnly()).or(false))
-          .description(annotation.transform(toDescription()).orNull())
-          .isHidden(annotation.transform(toHidden()).or(false))
-          .type(annotation.transform(toType(context.getResolver())).orNull())
-          .example(annotation.transform(toExample()).orNull());
-    }
-  }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return SwaggerPluginSupport.pluginDoesApply(delimiter);
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return SwaggerPluginSupport.pluginDoesApply(delimiter);
+    }
 }

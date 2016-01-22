@@ -26,49 +26,50 @@ import springfox.documentation.service.OAuth;
 import java.util.ArrayList;
 import java.util.List;
 
-import static springfox.documentation.builders.BuilderDefaults.*;
+import static springfox.documentation.builders.BuilderDefaults.defaultIfAbsent;
+import static springfox.documentation.builders.BuilderDefaults.nullToEmptyList;
 
 public class OAuthBuilder {
 
-  private List<AuthorizationScope> scopes = new ArrayList<AuthorizationScope>();
-  private List<GrantType> grantTypes = new ArrayList<GrantType>();
-  private String name;
+    private List<AuthorizationScope> scopes = new ArrayList<AuthorizationScope>();
+    private List<GrantType> grantTypes = new ArrayList<GrantType>();
+    private String name;
 
 
-  /**
-   * Updates the authorization scopes with the new scopes
-   *
-   * @param scopes - represents the oauth scopes
-   * @return this
-   */
-  public OAuthBuilder scopes(List<AuthorizationScope> scopes) {
-    this.scopes.addAll(nullToEmptyList(scopes));
-    return this;
-  }
+    /**
+     * Updates the authorization scopes with the new scopes
+     *
+     * @param scopes - represents the oauth scopes
+     * @return this
+     */
+    public OAuthBuilder scopes(List<AuthorizationScope> scopes) {
+        this.scopes.addAll(nullToEmptyList(scopes));
+        return this;
+    }
 
-  /**
-   * Updates the grant types that this security definition represents
-   *
-   * @param grantTypes - grant types
-   * @return this
-   */
-  public OAuthBuilder grantTypes(List<GrantType> grantTypes) {
-    this.grantTypes.addAll(nullToEmptyList(grantTypes));
-    return this;
-  }
+    /**
+     * Updates the grant types that this security definition represents
+     *
+     * @param grantTypes - grant types
+     * @return this
+     */
+    public OAuthBuilder grantTypes(List<GrantType> grantTypes) {
+        this.grantTypes.addAll(nullToEmptyList(grantTypes));
+        return this;
+    }
 
-  /**
-   * Updates the unique name to identify the security definition
-   *
-   * @param name - name
-   * @return this
-   */
-  public OAuthBuilder name(String name) {
-    this.name = defaultIfAbsent(name, this.name);
-    return this;
-  }
+    /**
+     * Updates the unique name to identify the security definition
+     *
+     * @param name - name
+     * @return this
+     */
+    public OAuthBuilder name(String name) {
+        this.name = defaultIfAbsent(name, this.name);
+        return this;
+    }
 
-  public OAuth build() {
-    return new OAuth(name, scopes, grantTypes);
-  }
+    public OAuth build() {
+        return new OAuth(name, scopes, grantTypes);
+    }
 }

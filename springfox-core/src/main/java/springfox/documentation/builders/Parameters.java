@@ -24,25 +24,25 @@ import com.google.common.base.Predicate;
 import springfox.documentation.service.Parameter;
 
 public class Parameters {
-  private Parameters() {
-    throw new UnsupportedOperationException();
-  }
+    private Parameters() {
+        throw new UnsupportedOperationException();
+    }
 
-  public static Predicate<Parameter> withName(final String name) {
-    return new Predicate<Parameter>() {
-      @Override
-      public boolean apply(Parameter input) {
-        return name.equals(input.getName());
-      }
-    };
-  }
+    public static Predicate<Parameter> withName(final String name) {
+        return new Predicate<Parameter>() {
+            @Override
+            public boolean apply(Parameter input) {
+                return name.equals(input.getName());
+            }
+        };
+    }
 
-  public static Function<Parameter, String> toParameterName() {
-    return new Function<Parameter, String>() {
-      @Override
-      public String apply(Parameter input) {
-        return input.getName();
-      }
-    };
-  }
+    public static Function<Parameter, String> toParameterName() {
+        return new Function<Parameter, String>() {
+            @Override
+            public String apply(Parameter input) {
+                return input.getName();
+            }
+        };
+    }
 }

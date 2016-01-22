@@ -31,35 +31,35 @@ import springfox.documentation.spi.service.contexts.ApiSelector;
 import springfox.documentation.spi.service.contexts.DocumentationContext;
 import springfox.documentation.spi.service.contexts.RequestMappingContext;
 
-import static com.google.common.collect.FluentIterable.*;
-import static com.google.common.collect.Multimaps.*;
-import static springfox.documentation.spring.web.ControllerNamingUtils.*;
+import static com.google.common.collect.FluentIterable.from;
+import static com.google.common.collect.Multimaps.asMap;
+import static springfox.documentation.spring.web.ControllerNamingUtils.controllerNameAsGroup;
 
 @Component
 public class ApiListingReferenceScanner {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ApiListingReferenceScanner.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ApiListingReferenceScanner.class);
 
-  public ApiListingReferenceScanResult scan(DocumentationContext context) {
-    LOG.info("Scanning for api listing references");
+    public ApiListingReferenceScanResult scan(DocumentationContext context) {
+        LOG.info("Scanning for api listing references");
 
-    ArrayListMultimap<ResourceGroup, RequestMappingContext> resourceGroupRequestMappings
-        = ArrayListMultimap.create();
-    ApiSelector selector = context.getApiSelector();
-    Iterable<RequestHandler> matchingHandlers = from(context.getRequestHandlers())
-        .filter(selector.getRequestHandlerSelector());
-    for (RequestHandler handler : matchingHandlers) {
-      RequestMappingInfo requestMappingInfo = handler.getRequestMapping();
-      HandlerMethod handlerMethod = handler.getHandlerMethod();
-      ResourceGroup resourceGroup = new ResourceGroup(controllerNameAsGroup(handlerMethod),
-          handlerMethod.getBeanType(), 0);
+        ArrayListMultimap<ResourceGroup, RequestMappingContext> resourceGroupRequestMappings
+                = ArrayListMultimap.create();
+        ApiSelector selector = context.getApiSelector();
+        Iterable<RequestHandler> matchingHandlers = from(context.getRequestHandlers())
+                .filter(selector.getRequestHandlerSelector());
+        for (RequestHandler handler : matchingHandlers) {
+            RequestMappingInfo requestMappingInfo = handler.getRequestMapping();
+            HandlerMethod handlerMethod = handler.getHandlerMethod();
+            ResourceGroup resourceGroup = new ResourceGroup(controllerNameAsGroup(handlerMethod),
+                    handlerMethod.getBeanType(), 0);
 
-      RequestMappingContext requestMappingContext
-          = new RequestMappingContext(context, requestMappingInfo, handlerMethod);
+            RequestMappingContext requestMappingContext
+                    = new RequestMappingContext(context, requestMappingInfo, handlerMethod);
 
-      resourceGroupRequestMappings.put(resourceGroup, requestMappingContext);
+            resourceGroupRequestMappings.put(resourceGroup, requestMappingContext);
+        }
+        return new ApiListingReferenceScanResult(asMap(resourceGroupRequestMappings));
     }
-    return new ApiListingReferenceScanResult(asMap(resourceGroupRequestMappings));
-  }
 
 }

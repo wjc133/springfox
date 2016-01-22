@@ -2,15 +2,15 @@ apply plugin: 'groovy'
 apply plugin: 'idea'
 
 buildscript {
-  repositories {
-    jcenter()
-  }
-  dependencies {
-    classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.7.RELEASE")
-  }
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.7.RELEASE")
+    }
 }
 repositories {
-  jcenter()
+    jcenter()
 }
 
 apply plugin: 'war'
@@ -18,45 +18,45 @@ apply plugin: 'spring-boot'
 apply plugin: 'com.ofg.uptodate'
 
 configurations {
-  //Logback causing spring boot errors
-  all*.exclude group: 'ch.qos.logback'
+    //Logback causing spring boot errors
+    all*.exclude group: 'ch.qos.logback'
 }
 
 mainClassName = 'com.foo.Bar'
 
 ext {
-  limits = [
-      'instruction': 89.5,
-      'line'       : 85,
-      'complexity' : 80,
-      'method'     : 80,
-      'branch'     : 85,
-      'class'      : 94
-  ]
+    limits = [
+            'instruction': 89.5,
+            'line'       : 85,
+            'complexity' : 80,
+            'method'     : 80,
+            'branch'     : 85,
+            'class'      : 94
+    ]
 }
 
 dependencies {
-  compile("org.springframework.boot:spring-boot-starter-web")
-  compile("org.springframework.boot:spring-boot-starter-actuator")
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-actuator")
 
 
-  testCompile libs.test
-  testCompile 'org.skyscreamer:jsonassert:1.3.0'
+    testCompile libs.test
+    testCompile 'org.skyscreamer:jsonassert:1.3.0'
 
-  compile(project(path: ':springfox-swagger1', configuration: 'testArtifacts')) {
-    exclude group: 'org.springframework', module: 'spring-web'
-    exclude group: 'org.aspectj'
-  }
-  compile(project(path: ':springfox-swagger2', configuration: 'testArtifacts')) {
-    exclude group: 'org.springframework', module: 'spring-web'
-    exclude group: 'org.aspectj'
-  }
-  compile(project(path: ':springfox-petstore')) {
-    exclude group: 'org.springframework', module: 'spring-web'
-    exclude group: 'org.aspectj'
-  }
+    compile(project(path: ':springfox-swagger1', configuration: 'testArtifacts')) {
+        exclude group: 'org.springframework', module: 'spring-web'
+        exclude group: 'org.aspectj'
+    }
+    compile(project(path: ':springfox-swagger2', configuration: 'testArtifacts')) {
+        exclude group: 'org.springframework', module: 'spring-web'
+        exclude group: 'org.aspectj'
+    }
+    compile(project(path: ':springfox-petstore')) {
+        exclude group: 'org.springframework', module: 'spring-web'
+        exclude group: 'org.aspectj'
+    }
 
-  compile(project(path: ':springfox-swagger-ui')) {
-    exclude group: 'org.springframework', module: 'spring-web'
-  }
+    compile(project(path: ':springfox-swagger-ui')) {
+        exclude group: 'org.springframework', module: 'spring-web'
+    }
 }

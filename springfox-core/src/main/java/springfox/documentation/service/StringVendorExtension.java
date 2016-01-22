@@ -22,47 +22,47 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class StringVendorExtension implements VendorExtension<String> {
-  private String name;
-  private String value;
+    private String name;
+    private String value;
 
-  public StringVendorExtension(String name, String value) {
-    this.name = name;
-    this.value = value;
-  }
-
-  @Override
-  public String getName() {
-    return name;
-  }
-
-  @Override
-  public String getValue() {
-    return value;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public StringVendorExtension(String name, String value) {
+        this.name = name;
+        this.value = value;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    @Override
+    public String getName() {
+        return name;
     }
-    StringVendorExtension that = (StringVendorExtension) o;
-    return Objects.equal(name, that.name) &&
-        Objects.equal(value, that.value);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(name, value);
-  }
+    @Override
+    public String getValue() {
+        return value;
+    }
 
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("name", name)
-        .add("value", value)
-        .toString();
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        StringVendorExtension that = (StringVendorExtension) o;
+        return Objects.equal(name, that.name) &&
+                Objects.equal(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name, value);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("name", name)
+                .add("value", value)
+                .toString();
+    }
 }

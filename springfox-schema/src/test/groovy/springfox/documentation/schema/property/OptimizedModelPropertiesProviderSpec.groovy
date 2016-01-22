@@ -18,120 +18,139 @@
  */
 
 package springfox.documentation.schema.property
+
+import com.fasterxml.classmate.ResolvedType
 import com.fasterxml.classmate.ResolvedType
 import com.fasterxml.classmate.TypeResolver
+import com.fasterxml.classmate.TypeResolver
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.plugin.core.OrderAwarePluginRegistry
+import org.springframework.plugin.core.OrderAwarePluginRegistry
+import org.springframework.plugin.core.PluginRegistry
 import org.springframework.plugin.core.PluginRegistry
 import spock.lang.Specification
+import spock.lang.Specification
+import springfox.documentation.schema.*
 import springfox.documentation.schema.*
 import springfox.documentation.schema.configuration.ObjectMapperConfigured
+import springfox.documentation.schema.configuration.ObjectMapperConfigured
+import springfox.documentation.schema.mixins.SchemaPluginsSupport
 import springfox.documentation.schema.mixins.SchemaPluginsSupport
 import springfox.documentation.schema.property.bean.AccessorsProvider
+import springfox.documentation.schema.property.bean.AccessorsProvider
+import springfox.documentation.schema.property.field.FieldProvider
 import springfox.documentation.schema.property.field.FieldProvider
 import springfox.documentation.spi.DocumentationType
+import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spi.schema.AlternateTypeProvider
+import springfox.documentation.spi.schema.AlternateTypeProvider
+import springfox.documentation.spi.schema.TypeNameProviderPlugin
 import springfox.documentation.spi.schema.TypeNameProviderPlugin
 
 import static com.google.common.collect.Lists.*
+import static com.google.common.collect.Lists.newArrayList
 import static springfox.documentation.spi.DocumentationType.*
+import static springfox.documentation.spi.DocumentationType.SPRING_WEB
 import static springfox.documentation.spi.schema.contexts.ModelContext.*
+import static springfox.documentation.spi.schema.contexts.ModelContext.inputParam
+import static springfox.documentation.spi.schema.contexts.ModelContext.returnValue
 
 @Mixin(SchemaPluginsSupport)
 class OptimizedModelPropertiesProviderSpec extends Specification {
-  def "model properties are detected correctly"() {
-    given:
-      TypeResolver typeResolver = new TypeResolver()
-      BeanPropertyNamingStrategy namingStrategy = new ObjectMapperBeanPropertyNamingStrategy()
-      PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
-        OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
-      TypeNameExtractor typeNameExtractor = new TypeNameExtractor(typeResolver, modelNameRegistry)
-      OptimizedModelPropertiesProvider sut = new OptimizedModelPropertiesProvider(new AccessorsProvider(typeResolver)
-          , new FieldProvider(typeResolver), new FactoryMethodProvider(typeResolver), typeResolver,
-          namingStrategy, defaultSchemaPlugins(), typeNameExtractor)
-      ResolvedType type = typeResolver.resolve(TypeWithSetterButNoGetter)
+    def "model properties are detected correctly"() {
+        given:
+        TypeResolver typeResolver = new TypeResolver()
+        BeanPropertyNamingStrategy namingStrategy = new ObjectMapperBeanPropertyNamingStrategy()
+        PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
+                OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
+        TypeNameExtractor typeNameExtractor = new TypeNameExtractor(typeResolver, modelNameRegistry)
+        OptimizedModelPropertiesProvider sut = new OptimizedModelPropertiesProvider(new AccessorsProvider(typeResolver)
+                , new FieldProvider(typeResolver), new FactoryMethodProvider(typeResolver), typeResolver,
+                namingStrategy, defaultSchemaPlugins(), typeNameExtractor)
+        ResolvedType type = typeResolver.resolve(TypeWithSetterButNoGetter)
 
-    and:
-      def objectMapperConfigured = new ObjectMapperConfigured(this, new ObjectMapper())
-      namingStrategy.onApplicationEvent(objectMapperConfigured)
-      sut.onApplicationEvent(objectMapperConfigured)
-    when:
-      def inputValue = sut.propertiesFor(type, inputParam(type, SPRING_WEB,
-          new AlternateTypeProvider(newArrayList()),
-          new DefaultGenericTypeNamingStrategy())
-      )
-      def returnValue = sut.propertiesFor(type, returnValue(type, SPRING_WEB,
-          new AlternateTypeProvider(newArrayList()),
-          new DefaultGenericTypeNamingStrategy())
-      )
-    then:
-      inputValue.collect{ it.name }.containsAll(['property'])
-      returnValue.collect{ it.name }.containsAll(['property'])
-  }
+        and:
+        def objectMapperConfigured = new ObjectMapperConfigured(this, new ObjectMapper())
+        namingStrategy.onApplicationEvent(objectMapperConfigured)
+        sut.onApplicationEvent(objectMapperConfigured)
+        when:
+        def inputValue = sut.propertiesFor(type, inputParam(type, SPRING_WEB,
+                new AlternateTypeProvider(newArrayList()),
+                new DefaultGenericTypeNamingStrategy())
+        )
+        def returnValue = sut.propertiesFor(type, returnValue(type, SPRING_WEB,
+                new AlternateTypeProvider(newArrayList()),
+                new DefaultGenericTypeNamingStrategy())
+        )
+        then:
+        inputValue.collect { it.name }.containsAll(['property'])
+        returnValue.collect { it.name }.containsAll(['property'])
+    }
 
-  def "model unwrapped properties are detected correctly"() {
-    given:
-      TypeResolver typeResolver = new TypeResolver()
-      BeanPropertyNamingStrategy namingStrategy = new ObjectMapperBeanPropertyNamingStrategy()
-      PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
-          OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
-      TypeNameExtractor typeNameExtractor = new TypeNameExtractor(typeResolver, modelNameRegistry)
-      OptimizedModelPropertiesProvider sut = new OptimizedModelPropertiesProvider(new AccessorsProvider(typeResolver)
-          , new FieldProvider(typeResolver), new FactoryMethodProvider(typeResolver), typeResolver, namingStrategy,
-          defaultSchemaPlugins(), typeNameExtractor)
-      ResolvedType type = typeResolver.resolve(UnwrappedType)
+    def "model unwrapped properties are detected correctly"() {
+        given:
+        TypeResolver typeResolver = new TypeResolver()
+        BeanPropertyNamingStrategy namingStrategy = new ObjectMapperBeanPropertyNamingStrategy()
+        PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
+                OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
+        TypeNameExtractor typeNameExtractor = new TypeNameExtractor(typeResolver, modelNameRegistry)
+        OptimizedModelPropertiesProvider sut = new OptimizedModelPropertiesProvider(new AccessorsProvider(typeResolver)
+                , new FieldProvider(typeResolver), new FactoryMethodProvider(typeResolver), typeResolver, namingStrategy,
+                defaultSchemaPlugins(), typeNameExtractor)
+        ResolvedType type = typeResolver.resolve(UnwrappedType)
 
-    and:
-      def objectMapperConfigured = new ObjectMapperConfigured(this, new ObjectMapper())
-      namingStrategy.onApplicationEvent(objectMapperConfigured)
-      sut.onApplicationEvent(objectMapperConfigured)
-    when:
-      def inputValue = sut.propertiesFor(type, inputParam(type, SPRING_WEB,
-          new AlternateTypeProvider(newArrayList()),
-          new DefaultGenericTypeNamingStrategy())
-      )
-      def returnValue = sut.propertiesFor(type, returnValue(type, SPRING_WEB,
-          new AlternateTypeProvider(newArrayList()),
-          new DefaultGenericTypeNamingStrategy())
-      )
-    then:
-      inputValue.collect{ it.name }.containsAll(['name'])
-      returnValue.collect{ it.name }.containsAll(['name'])
-  }
+        and:
+        def objectMapperConfigured = new ObjectMapperConfigured(this, new ObjectMapper())
+        namingStrategy.onApplicationEvent(objectMapperConfigured)
+        sut.onApplicationEvent(objectMapperConfigured)
+        when:
+        def inputValue = sut.propertiesFor(type, inputParam(type, SPRING_WEB,
+                new AlternateTypeProvider(newArrayList()),
+                new DefaultGenericTypeNamingStrategy())
+        )
+        def returnValue = sut.propertiesFor(type, returnValue(type, SPRING_WEB,
+                new AlternateTypeProvider(newArrayList()),
+                new DefaultGenericTypeNamingStrategy())
+        )
+        then:
+        inputValue.collect { it.name }.containsAll(['name'])
+        returnValue.collect { it.name }.containsAll(['name'])
+    }
 
-  def "model ignored properties are detected correctly"() {
-    given:
-      TypeResolver typeResolver = new TypeResolver()
-      BeanPropertyNamingStrategy namingStrategy = new ObjectMapperBeanPropertyNamingStrategy()
-      PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
-          OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
-      TypeNameExtractor typeNameExtractor = new TypeNameExtractor(typeResolver, modelNameRegistry)
-      OptimizedModelPropertiesProvider sut = new OptimizedModelPropertiesProvider(new AccessorsProvider(typeResolver)
-          , new FieldProvider(typeResolver), new FactoryMethodProvider(typeResolver), typeResolver, namingStrategy,
-          defaultSchemaPlugins(),
-          typeNameExtractor)
-      ResolvedType type = typeResolver.resolve(UnwrappedType)
+    def "model ignored properties are detected correctly"() {
+        given:
+        TypeResolver typeResolver = new TypeResolver()
+        BeanPropertyNamingStrategy namingStrategy = new ObjectMapperBeanPropertyNamingStrategy()
+        PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
+                OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
+        TypeNameExtractor typeNameExtractor = new TypeNameExtractor(typeResolver, modelNameRegistry)
+        OptimizedModelPropertiesProvider sut = new OptimizedModelPropertiesProvider(new AccessorsProvider(typeResolver)
+                , new FieldProvider(typeResolver), new FactoryMethodProvider(typeResolver), typeResolver, namingStrategy,
+                defaultSchemaPlugins(),
+                typeNameExtractor)
+        ResolvedType type = typeResolver.resolve(UnwrappedType)
 
-    and:
-      def objectMapperConfigured = new ObjectMapperConfigured(this, new ObjectMapper())
-      namingStrategy.onApplicationEvent(objectMapperConfigured)
-      sut.onApplicationEvent(objectMapperConfigured)
+        and:
+        def objectMapperConfigured = new ObjectMapperConfigured(this, new ObjectMapper())
+        namingStrategy.onApplicationEvent(objectMapperConfigured)
+        sut.onApplicationEvent(objectMapperConfigured)
 
-    and:
-      def inputContext = inputParam(type, SPRING_WEB,
-          new AlternateTypeProvider(newArrayList()),
-          new DefaultGenericTypeNamingStrategy())
-      def returnContext = returnValue(type, SPRING_WEB,
-          new AlternateTypeProvider(newArrayList()),
-          new DefaultGenericTypeNamingStrategy())
-    when:
-      inputContext.seen(typeResolver.resolve(Category))
-      returnContext.seen(typeResolver.resolve(Category))
-    and:
-      def inputValue = sut.propertiesFor(type, inputContext)
-      def returnValue = sut.propertiesFor(type, returnContext)
-    then:
-      inputValue.collect{ it.name }.containsAll([])
-      returnValue.collect{ it.name }.containsAll([])
-  }
+        and:
+        def inputContext = inputParam(type, SPRING_WEB,
+                new AlternateTypeProvider(newArrayList()),
+                new DefaultGenericTypeNamingStrategy())
+        def returnContext = returnValue(type, SPRING_WEB,
+                new AlternateTypeProvider(newArrayList()),
+                new DefaultGenericTypeNamingStrategy())
+        when:
+        inputContext.seen(typeResolver.resolve(Category))
+        returnContext.seen(typeResolver.resolve(Category))
+        and:
+        def inputValue = sut.propertiesFor(type, inputContext)
+        def returnValue = sut.propertiesFor(type, returnContext)
+        then:
+        inputValue.collect { it.name }.containsAll([])
+        returnValue.collect { it.name }.containsAll([])
+    }
 }

@@ -27,32 +27,32 @@ import com.google.common.base.Preconditions;
 @JsonPropertyOrder({"type", "items"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ContainerDataType implements SwaggerDataType {
-  private String type = "array";
-  private final Boolean uniqueItems;
-  @JsonProperty
-  private final SwaggerDataType items;
+    private String type = "array";
+    private final Boolean uniqueItems;
+    @JsonProperty
+    private final SwaggerDataType items;
 
-  public ContainerDataType(String innerType, boolean uniqueItems) {
-    Preconditions.checkNotNull(innerType);
-    Preconditions.checkArgument(!innerType.equalsIgnoreCase("array"), "Nested arrays not supported");
-    items = new DataType(innerType);
-    this.uniqueItems = uniqueItems ? true : null;
-  }
+    public ContainerDataType(String innerType, boolean uniqueItems) {
+        Preconditions.checkNotNull(innerType);
+        Preconditions.checkArgument(!innerType.equalsIgnoreCase("array"), "Nested arrays not supported");
+        items = new DataType(innerType);
+        this.uniqueItems = uniqueItems ? true : null;
+    }
 
-  public String getType() {
-    return type;
-  }
+    public String getType() {
+        return type;
+    }
 
-  public Boolean isUniqueItems() {
-    return uniqueItems;
-  }
+    public Boolean isUniqueItems() {
+        return uniqueItems;
+    }
 
-  public SwaggerDataType getItems() {
-    return items;
-  }
+    public SwaggerDataType getItems() {
+        return items;
+    }
 
-  @Override
-  public String getAbsoluteType() {
-    return type;
-  }
+    @Override
+    public String getAbsoluteType() {
+        return type;
+    }
 }

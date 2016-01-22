@@ -26,13 +26,13 @@ import java.util.List;
 import java.util.Map;
 
 public class ApiListingReferenceScanResult {
-  private final Map<ResourceGroup, List<RequestMappingContext>> resourceGroupRequestMappings;
+    private final Map<ResourceGroup, List<RequestMappingContext>> resourceGroupRequestMappings;
 
-  public ApiListingReferenceScanResult(Map<ResourceGroup, List<RequestMappingContext>> resourceGroupRequestMappings) {
-    this.resourceGroupRequestMappings = resourceGroupRequestMappings;
-  }
+    public ApiListingReferenceScanResult(Map<ResourceGroup, List<RequestMappingContext>> resourceGroupRequestMappings) {
+        this.resourceGroupRequestMappings = resourceGroupRequestMappings;
+    }
 
-  public Map<ResourceGroup, List<RequestMappingContext>> getResourceGroupRequestMappings() {
-    return resourceGroupRequestMappings;
-  }
+    public Map<ResourceGroup, List<RequestMappingContext>> getResourceGroupRequestMappings() {
+        return resourceGroupRequestMappings;
+    }
 }

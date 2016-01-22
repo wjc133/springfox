@@ -23,10 +23,11 @@ import org.springframework.plugin.core.Plugin;
 import springfox.documentation.spi.DocumentationType;
 
 public interface TypeNameProviderPlugin extends Plugin<DocumentationType> {
-  /**
-   * Given a class name provides a name for it
-   * @param type - class to provide name for
-   * @return name
-   */
-  String nameFor(Class<?> type);
+    /**
+     * Given a class name provides a name for it
+     *
+     * @param type - class to provide name for
+     * @return name
+     */
+    String nameFor(Class<?> type);
 }

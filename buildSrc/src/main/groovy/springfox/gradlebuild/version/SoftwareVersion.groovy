@@ -20,15 +20,15 @@
 package springfox.gradlebuild.version
 
 interface SoftwareVersion {
-  SoftwareVersion next(ReleaseType releaseType)
+    SoftwareVersion next(ReleaseType releaseType)
 
-  String asText()
+    String asText()
 
-  int getMajor()
+    int getMajor()
 
-  int getMinor()
+    int getMinor()
 
-  int getPatch()
+    int getPatch()
 
-  String getBuildSuffix()
+    String getBuildSuffix()
 }

@@ -25,6 +25,6 @@ import springfox.documentation.spi.service.contexts.RequestMappingContext;
 import java.util.List;
 
 public interface OperationReader {
-  @Cacheable(value = "operations")
-  List<Operation> read(RequestMappingContext outerContext);
+    @Cacheable(value = "operations")
+    List<Operation> read(RequestMappingContext outerContext);
 }

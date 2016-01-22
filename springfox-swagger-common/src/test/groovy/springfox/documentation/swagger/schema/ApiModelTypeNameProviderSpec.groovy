@@ -18,6 +18,7 @@
  */
 
 package springfox.documentation.swagger.schema
+
 import spock.lang.Specification
 import springfox.documentation.schema.ExampleWithEnums
 import springfox.documentation.schema.TypeWithApiModelAnnotation
@@ -25,22 +26,22 @@ import springfox.documentation.schema.TypeWithEmptyApiModelAnnotation
 import springfox.documentation.spi.DocumentationType
 
 class ApiModelTypeNameProviderSpec extends Specification {
-  def "renders the type names correctly" () {
-    given:
-      def sut = new ApiModelTypeNameProvider()
-    when:
-      def name = sut.nameFor(clazz)
-    then:
-      name == expectedName
-    and:
-      !sut.supports(DocumentationType.SPRING_WEB)
-      sut.supports(DocumentationType.SWAGGER_12)
-      sut.supports(DocumentationType.SWAGGER_2)
+    def "renders the type names correctly"() {
+        given:
+        def sut = new ApiModelTypeNameProvider()
+        when:
+        def name = sut.nameFor(clazz)
+        then:
+        name == expectedName
+        and:
+        !sut.supports(DocumentationType.SPRING_WEB)
+        sut.supports(DocumentationType.SWAGGER_12)
+        sut.supports(DocumentationType.SWAGGER_2)
 
-    where:
-      clazz                           | expectedName
-      ExampleWithEnums                | "ExampleWithEnums"
-      TypeWithApiModelAnnotation      | "ApiModelTest"
-      TypeWithEmptyApiModelAnnotation | "TypeWithEmptyApiModelAnnotation"
-  }
+        where:
+        clazz                           | expectedName
+        ExampleWithEnums                | "ExampleWithEnums"
+        TypeWithApiModelAnnotation      | "ApiModelTest"
+        TypeWithEmptyApiModelAnnotation | "TypeWithEmptyApiModelAnnotation"
+    }
 }

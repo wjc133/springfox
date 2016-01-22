@@ -34,17 +34,17 @@ import springfox.documentation.swagger1.configuration.DefaultJavaPluginConfig
 @WebAppConfiguration
 @ContextConfiguration(classes = DefaultJavaPluginConfig.class)
 @Mixin(JsonSupport)
-class DefaultJavaPluginStartupSpec extends Specification{
+class DefaultJavaPluginStartupSpec extends Specification {
 
-  @Autowired
-  WebApplicationContext context;
+    @Autowired
+    WebApplicationContext context;
 
-  def "Should start app with default java config"() {
-    when:
-      MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build()
-      MvcResult petApi = mockMvc.perform(MockMvcRequestBuilders.get('/api-docs')).andReturn()
-    then:
-      jsonBodyResponse(petApi).apis.size() == 11
-  }
+    def "Should start app with default java config"() {
+        when:
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build()
+        MvcResult petApi = mockMvc.perform(MockMvcRequestBuilders.get('/api-docs')).andReturn()
+        then:
+        jsonBodyResponse(petApi).apis.size() == 11
+    }
 
 }

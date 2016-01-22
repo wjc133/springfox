@@ -20,4 +20,5 @@ package springfox.documentation.schema;
 
 import java.util.LinkedHashMap;
 
-public class CustomMap<T> extends LinkedHashMap<String, T> { }
+public class CustomMap<T> extends LinkedHashMap<String, T> {
+}

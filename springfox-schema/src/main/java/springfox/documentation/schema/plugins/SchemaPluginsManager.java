@@ -33,31 +33,31 @@ import springfox.documentation.spi.schema.contexts.ModelPropertyContext;
 
 @Component
 public class SchemaPluginsManager {
-  private final PluginRegistry<ModelPropertyBuilderPlugin, DocumentationType> propertyEnrichers;
-  private final PluginRegistry<ModelBuilderPlugin, DocumentationType> modelEnrichers;
+    private final PluginRegistry<ModelPropertyBuilderPlugin, DocumentationType> propertyEnrichers;
+    private final PluginRegistry<ModelBuilderPlugin, DocumentationType> modelEnrichers;
 
-  @Autowired
-  public SchemaPluginsManager(
-      @Qualifier("modelPropertyBuilderPluginRegistry")
-      PluginRegistry<ModelPropertyBuilderPlugin, DocumentationType> propertyEnrichers,
-      @Qualifier("modelBuilderPluginRegistry")
-      PluginRegistry<ModelBuilderPlugin, DocumentationType> modelEnrichers) {
-    this.propertyEnrichers = propertyEnrichers;
-    this.modelEnrichers = modelEnrichers;
-  }
-
-  public ModelProperty property(ModelPropertyContext context) {
-    for (ModelPropertyBuilderPlugin enricher : propertyEnrichers.getPluginsFor(context.getDocumentationType())) {
-      enricher.apply(context);
+    @Autowired
+    public SchemaPluginsManager(
+            @Qualifier("modelPropertyBuilderPluginRegistry")
+            PluginRegistry<ModelPropertyBuilderPlugin, DocumentationType> propertyEnrichers,
+            @Qualifier("modelBuilderPluginRegistry")
+            PluginRegistry<ModelBuilderPlugin, DocumentationType> modelEnrichers) {
+        this.propertyEnrichers = propertyEnrichers;
+        this.modelEnrichers = modelEnrichers;
     }
-    return context.getBuilder().build();
-  }
 
-  public Model model(ModelContext context) {
-    for (ModelBuilderPlugin enricher : modelEnrichers.getPluginsFor(context.getDocumentationType())) {
-      enricher.apply(context);
+    public ModelProperty property(ModelPropertyContext context) {
+        for (ModelPropertyBuilderPlugin enricher : propertyEnrichers.getPluginsFor(context.getDocumentationType())) {
+            enricher.apply(context);
+        }
+        return context.getBuilder().build();
     }
-    return context.getBuilder().build();
-  }
+
+    public Model model(ModelContext context) {
+        for (ModelBuilderPlugin enricher : modelEnrichers.getPluginsFor(context.getDocumentationType())) {
+            enricher.apply(context);
+        }
+        return context.getBuilder().build();
+    }
 
 }

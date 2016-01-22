@@ -31,36 +31,36 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
 
 import java.lang.annotation.Annotation;
 
-import static com.google.common.base.Strings.*;
-import static org.springframework.util.StringUtils.*;
+import static com.google.common.base.Strings.nullToEmpty;
+import static org.springframework.util.StringUtils.hasText;
 
 @Component("swaggerParameterDefaultReader")
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class ParameterDefaultReader implements ParameterBuilderPlugin {
-  @Override
-  public void apply(ParameterContext context) {
-    MethodParameter methodParameter = context.methodParameter();
-    String defaultValue = findAnnotatedDefaultValue(methodParameter);
-    boolean isSkip = ValueConstants.DEFAULT_NONE.equals(defaultValue);
-    if (!isSkip) {
-      context.parameterBuilder().defaultValue(nullToEmpty(defaultValue));
-    }
-  }
-
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return SwaggerPluginSupport.pluginDoesApply(delimiter);
-  }
-
-  private String findAnnotatedDefaultValue(MethodParameter methodParameter) {
-    Annotation[] methodAnnotations = methodParameter.getParameterAnnotations();
-    if (null != methodAnnotations) {
-      for (Annotation annotation : methodAnnotations) {
-        if (annotation instanceof ApiParam && hasText(((ApiParam) annotation).defaultValue())) {
-          return ((ApiParam) annotation).defaultValue();
+    @Override
+    public void apply(ParameterContext context) {
+        MethodParameter methodParameter = context.methodParameter();
+        String defaultValue = findAnnotatedDefaultValue(methodParameter);
+        boolean isSkip = ValueConstants.DEFAULT_NONE.equals(defaultValue);
+        if (!isSkip) {
+            context.parameterBuilder().defaultValue(nullToEmpty(defaultValue));
         }
-      }
     }
-    return null;
-  }
+
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return SwaggerPluginSupport.pluginDoesApply(delimiter);
+    }
+
+    private String findAnnotatedDefaultValue(MethodParameter methodParameter) {
+        Annotation[] methodAnnotations = methodParameter.getParameterAnnotations();
+        if (null != methodAnnotations) {
+            for (Annotation annotation : methodAnnotations) {
+                if (annotation instanceof ApiParam && hasText(((ApiParam) annotation).defaultValue())) {
+                    return ((ApiParam) annotation).defaultValue();
+                }
+            }
+        }
+        return null;
+    }
 }

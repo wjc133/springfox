@@ -18,6 +18,7 @@
  */
 
 package springfox.documentation.swagger1.integration
+
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
@@ -36,16 +37,16 @@ import springfox.documentation.spring.web.mixins.JsonSupport
 @Mixin(JsonSupport)
 class DefaultXmlPluginStartupSpec extends Specification {
 
-  @Autowired
-  WebApplicationContext context;
+    @Autowired
+    WebApplicationContext context;
 
-  def "Should start app with default xml config"() {
-    when:
-      MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build()
-      context.publishEvent(new ObjectMapperConfigured(this, new ObjectMapper()))
-      MvcResult petApi = mockMvc.perform(MockMvcRequestBuilders.get('/api-docs?group=default')).andReturn()
-    then:
-      jsonBodyResponse(petApi).apis.size() == 11
-  }
+    def "Should start app with default xml config"() {
+        when:
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build()
+        context.publishEvent(new ObjectMapperConfigured(this, new ObjectMapper()))
+        MvcResult petApi = mockMvc.perform(MockMvcRequestBuilders.get('/api-docs?group=default')).andReturn()
+        then:
+        jsonBodyResponse(petApi).apis.size() == 11
+    }
 
 }

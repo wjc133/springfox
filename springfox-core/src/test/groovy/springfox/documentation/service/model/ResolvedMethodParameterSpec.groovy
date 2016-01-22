@@ -25,14 +25,14 @@ import spock.lang.Specification
 import springfox.documentation.service.ResolvedMethodParameter
 
 class ResolvedMethodParameterSpec extends Specification {
-  def "Bean properties test" () {
-    given:
-      def resolved = new TypeResolver().resolve(String)
-      def methodParameter = Mock(MethodParameter)
-    when:
-      def sut = new ResolvedMethodParameter(methodParameter, resolved)
-    then:
-      sut.methodParameter == methodParameter
-      sut.resolvedParameterType == resolved
-  }
+    def "Bean properties test"() {
+        given:
+        def resolved = new TypeResolver().resolve(String)
+        def methodParameter = Mock(MethodParameter)
+        when:
+        def sut = new ResolvedMethodParameter(methodParameter, resolved)
+        then:
+        sut.methodParameter == methodParameter
+        sut.resolvedParameterType == resolved
+    }
 }

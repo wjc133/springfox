@@ -23,12 +23,12 @@ import spock.lang.Specification
 import springfox.documentation.service.ClientCredentialsGrant
 
 class ClientCredentialsGrantSpec extends Specification {
-  def "Bean properties are set as expected via constructor" () {
-    when:
-      def grant = new ClientCredentialsGrant("myUrl")
-    then:
-      grant.type == "application"
-    and:
-      grant.tokenUrl == "myUrl"
-  }
+    def "Bean properties are set as expected via constructor"() {
+        when:
+        def grant = new ClientCredentialsGrant("myUrl")
+        then:
+        grant.type == "application"
+        and:
+        grant.tokenUrl == "myUrl"
+    }
 }

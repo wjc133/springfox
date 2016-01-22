@@ -36,53 +36,54 @@ import springfox.documentation.spring.web.readers.operation.HandlerMethodResolve
 import springfox.documentation.swagger.common.SwaggerPluginSupport;
 
 import static springfox.documentation.schema.ResolvedTypes.modelRefFactory;
-import static springfox.documentation.spi.schema.contexts.ModelContext.*;
-import static springfox.documentation.swagger.annotations.Annotations.*;
+import static springfox.documentation.spi.schema.contexts.ModelContext.returnValue;
+import static springfox.documentation.swagger.annotations.Annotations.findApiOperationAnnotation;
+import static springfox.documentation.swagger.annotations.Annotations.resolvedTypeFromOperation;
 
 @Component
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class SwaggerOperationResponseClassReader implements OperationBuilderPlugin {
-  private static Logger log = LoggerFactory.getLogger(SwaggerOperationResponseClassReader.class);
-  private final TypeResolver typeResolver;
-  private final TypeNameExtractor nameExtractor;
+    private static Logger log = LoggerFactory.getLogger(SwaggerOperationResponseClassReader.class);
+    private final TypeResolver typeResolver;
+    private final TypeNameExtractor nameExtractor;
 
-  @Autowired
-  public SwaggerOperationResponseClassReader(TypeResolver typeResolver,
-                                             TypeNameExtractor nameExtractor) {
-    this.typeResolver = typeResolver;
-    this.nameExtractor = nameExtractor;
-  }
-
-  @Override
-  public void apply(OperationContext context) {
-
-    HandlerMethod handlerMethod = context.getHandlerMethod();
-    ResolvedType returnType = new HandlerMethodResolver(typeResolver).methodReturnType(handlerMethod);
-    returnType = context.alternateFor(returnType);
-    returnType = findApiOperationAnnotation(handlerMethod.getMethod())
-        .transform(resolvedTypeFromOperation(typeResolver, returnType))
-        .or(returnType);
-    if (canSkip(context, returnType)) {
-      return;
+    @Autowired
+    public SwaggerOperationResponseClassReader(TypeResolver typeResolver,
+                                               TypeNameExtractor nameExtractor) {
+        this.typeResolver = typeResolver;
+        this.nameExtractor = nameExtractor;
     }
-    ModelContext modelContext = returnValue(returnType,
-        context.getDocumentationType(),
-        context.getAlternateTypeProvider(),
-        context.getDocumentationContext().getGenericsNamingStrategy());
 
-    String responseTypeName = nameExtractor.typeName(modelContext);
-    log.debug("Setting response class to:" + responseTypeName);
+    @Override
+    public void apply(OperationContext context) {
 
-    context.operationBuilder()
-            .responseModel(modelRefFactory(modelContext, nameExtractor).apply(returnType));
-  }
+        HandlerMethod handlerMethod = context.getHandlerMethod();
+        ResolvedType returnType = new HandlerMethodResolver(typeResolver).methodReturnType(handlerMethod);
+        returnType = context.alternateFor(returnType);
+        returnType = findApiOperationAnnotation(handlerMethod.getMethod())
+                .transform(resolvedTypeFromOperation(typeResolver, returnType))
+                .or(returnType);
+        if (canSkip(context, returnType)) {
+            return;
+        }
+        ModelContext modelContext = returnValue(returnType,
+                context.getDocumentationType(),
+                context.getAlternateTypeProvider(),
+                context.getDocumentationContext().getGenericsNamingStrategy());
 
-  private boolean canSkip(OperationContext context, ResolvedType returnType) {
-    return context.getDocumentationContext().getIgnorableParameterTypes().contains(returnType);
-  }
+        String responseTypeName = nameExtractor.typeName(modelContext);
+        log.debug("Setting response class to:" + responseTypeName);
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return SwaggerPluginSupport.pluginDoesApply(delimiter);
-  }
+        context.operationBuilder()
+                .responseModel(modelRefFactory(modelContext, nameExtractor).apply(returnType));
+    }
+
+    private boolean canSkip(OperationContext context, ResolvedType returnType) {
+        return context.getDocumentationContext().getIgnorableParameterTypes().contains(returnType);
+    }
+
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return SwaggerPluginSupport.pluginDoesApply(delimiter);
+    }
 }

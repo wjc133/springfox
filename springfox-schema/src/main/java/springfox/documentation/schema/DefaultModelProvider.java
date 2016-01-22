@@ -40,114 +40,115 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.collect.Maps.*;
-import static springfox.documentation.schema.Collections.*;
-import static springfox.documentation.schema.Maps.*;
-import static springfox.documentation.schema.ResolvedTypes.*;
-import static springfox.documentation.schema.Types.*;
+import static springfox.documentation.schema.Collections.isContainerType;
+import static springfox.documentation.schema.Maps.isMapType;
+import static springfox.documentation.schema.ResolvedTypes.resolvedTypeSignature;
+import static springfox.documentation.schema.ResolvedTypes.simpleQualifiedTypeName;
+import static springfox.documentation.schema.Types.isBaseType;
 
 
 @Component
 @Qualifier("default")
 public class DefaultModelProvider implements ModelProvider {
-  private static final Logger LOG = LoggerFactory.getLogger(DefaultModelProvider.class);
-  private final TypeResolver resolver;
-  private final ModelPropertiesProvider propertiesProvider;
-  private final ModelDependencyProvider dependencyProvider;
-  private final SchemaPluginsManager schemaPluginsManager;
-  private final TypeNameExtractor typeNameExtractor;
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultModelProvider.class);
+    private final TypeResolver resolver;
+    private final ModelPropertiesProvider propertiesProvider;
+    private final ModelDependencyProvider dependencyProvider;
+    private final SchemaPluginsManager schemaPluginsManager;
+    private final TypeNameExtractor typeNameExtractor;
 
-  @Autowired
-  public DefaultModelProvider(TypeResolver resolver,
-                              @Qualifier("cachedModelProperties") ModelPropertiesProvider propertiesProvider,
-                              @Qualifier("cachedModelDependencies") ModelDependencyProvider dependencyProvider,
-                              SchemaPluginsManager schemaPluginsManager,
-                              TypeNameExtractor typeNameExtractor) {
-    this.resolver = resolver;
-    this.propertiesProvider = propertiesProvider;
-    this.dependencyProvider = dependencyProvider;
-    this.schemaPluginsManager = schemaPluginsManager;
-    this.typeNameExtractor = typeNameExtractor;
-  }
-
-  @Override
-  public com.google.common.base.Optional<Model> modelFor(ModelContext modelContext) {
-    ResolvedType propertiesHost = modelContext.alternateFor(modelContext.resolvedType(resolver));
-    if (isContainerType(propertiesHost)
-        || isMapType(propertiesHost)
-        || propertiesHost.getErasedType().isEnum()
-        || isBaseType(Types.typeNameFor(propertiesHost.getErasedType()))
-        || modelContext.hasSeenBefore(propertiesHost)) {
-      LOG.debug("Skipping model of type {} as its either a container type, map, enum or base type, or its already "
-          + "been handled", resolvedTypeSignature(propertiesHost).or("<null>"));
-      return Optional.absent();
+    @Autowired
+    public DefaultModelProvider(TypeResolver resolver,
+                                @Qualifier("cachedModelProperties") ModelPropertiesProvider propertiesProvider,
+                                @Qualifier("cachedModelDependencies") ModelDependencyProvider dependencyProvider,
+                                SchemaPluginsManager schemaPluginsManager,
+                                TypeNameExtractor typeNameExtractor) {
+        this.resolver = resolver;
+        this.propertiesProvider = propertiesProvider;
+        this.dependencyProvider = dependencyProvider;
+        this.schemaPluginsManager = schemaPluginsManager;
+        this.typeNameExtractor = typeNameExtractor;
     }
-    ImmutableMap<String, ModelProperty> propertiesIndex
-        = uniqueIndex(properties(modelContext, propertiesHost), byPropertyName());
-    LOG.debug("Inferred {} properties. Properties found {}", propertiesIndex.size(),
-        Joiner.on(", ").join(propertiesIndex.keySet()));
-    Map<String, ModelProperty> properties = newTreeMap();
-    properties.putAll(propertiesIndex);
-    return Optional.of(modelBuilder(propertiesHost, properties, modelContext));
-  }
 
-  private Model modelBuilder(ResolvedType propertiesHost,
-                             Map<String, ModelProperty> properties,
-                             ModelContext modelContext) {
-    String typeName = typeNameExtractor.typeName(ModelContext.fromParent(modelContext, propertiesHost));
-    modelContext.getBuilder()
-        .id(typeName)
-        .type(propertiesHost)
-        .name(typeName)
-        .qualifiedType(simpleQualifiedTypeName(propertiesHost))
-        .properties(properties)
-        .description("")
-        .baseModel("")
-        .discriminator("")
-        .subTypes(new ArrayList<String>());
-    return schemaPluginsManager.model(modelContext);
-  }
-
-  @Override
-  public Map<String, Model> dependencies(ModelContext modelContext) {
-    Map<String, Model> models = newHashMap();
-    for (ResolvedType resolvedType : dependencyProvider.dependentModels(modelContext)) {
-      ModelContext parentContext = ModelContext.fromParent(modelContext, resolvedType);
-      Optional<Model> model = modelFor(parentContext).or(mapModel(parentContext, resolvedType));
-      if (model.isPresent()) {
-        models.put(model.get().getName(), model.get());
-      }
+    @Override
+    public com.google.common.base.Optional<Model> modelFor(ModelContext modelContext) {
+        ResolvedType propertiesHost = modelContext.alternateFor(modelContext.resolvedType(resolver));
+        if (isContainerType(propertiesHost)
+                || isMapType(propertiesHost)
+                || propertiesHost.getErasedType().isEnum()
+                || isBaseType(Types.typeNameFor(propertiesHost.getErasedType()))
+                || modelContext.hasSeenBefore(propertiesHost)) {
+            LOG.debug("Skipping model of type {} as its either a container type, map, enum or base type, or its already "
+                    + "been handled", resolvedTypeSignature(propertiesHost).or("<null>"));
+            return Optional.absent();
+        }
+        ImmutableMap<String, ModelProperty> propertiesIndex
+                = uniqueIndex(properties(modelContext, propertiesHost), byPropertyName());
+        LOG.debug("Inferred {} properties. Properties found {}", propertiesIndex.size(),
+                Joiner.on(", ").join(propertiesIndex.keySet()));
+        Map<String, ModelProperty> properties = newTreeMap();
+        properties.putAll(propertiesIndex);
+        return Optional.of(modelBuilder(propertiesHost, properties, modelContext));
     }
-    return models;
-  }
 
-  private Optional<Model> mapModel(ModelContext parentContext, ResolvedType resolvedType) {
-    if (isMapType(resolvedType) && !parentContext.hasSeenBefore(resolvedType)) {
-      String typeName = typeNameExtractor.typeName(parentContext);
-      return Optional.of(parentContext.getBuilder()
-          .id(typeName)
-          .type(resolvedType)
-          .name(typeName)
-          .qualifiedType(simpleQualifiedTypeName(resolvedType))
-          .properties(new HashMap<String, ModelProperty>())
-          .description("")
-          .baseModel("")
-          .discriminator("")
-          .subTypes(new ArrayList<String>())
-          .build());
+    private Model modelBuilder(ResolvedType propertiesHost,
+                               Map<String, ModelProperty> properties,
+                               ModelContext modelContext) {
+        String typeName = typeNameExtractor.typeName(ModelContext.fromParent(modelContext, propertiesHost));
+        modelContext.getBuilder()
+                .id(typeName)
+                .type(propertiesHost)
+                .name(typeName)
+                .qualifiedType(simpleQualifiedTypeName(propertiesHost))
+                .properties(properties)
+                .description("")
+                .baseModel("")
+                .discriminator("")
+                .subTypes(new ArrayList<String>());
+        return schemaPluginsManager.model(modelContext);
     }
-    return Optional.absent();
-  }
 
-  private Function<ModelProperty, String> byPropertyName() {
-    return new Function<ModelProperty, String>() {
-      @Override
-      public String apply(ModelProperty input) {
-        return input.getName();
-      }
-    };
-  }
+    @Override
+    public Map<String, Model> dependencies(ModelContext modelContext) {
+        Map<String, Model> models = newHashMap();
+        for (ResolvedType resolvedType : dependencyProvider.dependentModels(modelContext)) {
+            ModelContext parentContext = ModelContext.fromParent(modelContext, resolvedType);
+            Optional<Model> model = modelFor(parentContext).or(mapModel(parentContext, resolvedType));
+            if (model.isPresent()) {
+                models.put(model.get().getName(), model.get());
+            }
+        }
+        return models;
+    }
 
-  private List<ModelProperty> properties(ModelContext context, ResolvedType propertiesHost) {
-    return propertiesProvider.propertiesFor(propertiesHost, context);
-  }
+    private Optional<Model> mapModel(ModelContext parentContext, ResolvedType resolvedType) {
+        if (isMapType(resolvedType) && !parentContext.hasSeenBefore(resolvedType)) {
+            String typeName = typeNameExtractor.typeName(parentContext);
+            return Optional.of(parentContext.getBuilder()
+                    .id(typeName)
+                    .type(resolvedType)
+                    .name(typeName)
+                    .qualifiedType(simpleQualifiedTypeName(resolvedType))
+                    .properties(new HashMap<String, ModelProperty>())
+                    .description("")
+                    .baseModel("")
+                    .discriminator("")
+                    .subTypes(new ArrayList<String>())
+                    .build());
+        }
+        return Optional.absent();
+    }
+
+    private Function<ModelProperty, String> byPropertyName() {
+        return new Function<ModelProperty, String>() {
+            @Override
+            public String apply(ModelProperty input) {
+                return input.getName();
+            }
+        };
+    }
+
+    private List<ModelProperty> properties(ModelContext context, ResolvedType propertiesHost) {
+        return propertiesProvider.propertiesFor(propertiesHost, context);
+    }
 }

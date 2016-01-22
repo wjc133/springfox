@@ -18,6 +18,7 @@
  */
 
 package springfox.documentation.spring.web.readers.operation
+
 import org.springframework.web.bind.annotation.RequestMethod
 import springfox.documentation.builders.OperationBuilder
 import springfox.documentation.spi.service.contexts.OperationContext
@@ -27,24 +28,24 @@ import springfox.documentation.spring.web.plugins.DocumentationContextSpec
 
 @Mixin([RequestMappingSupport, ServicePluginsSupport, ServicePluginsSupport])
 class OperationTagsReaderSpec extends DocumentationContextSpec {
-  def "should have correct tags"() {
-    given:
-      OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
-              RequestMethod.GET, handlerMethod, 0, requestMappingInfo("/somePath"),
-              context(), "/anyPath")
+    def "should have correct tags"() {
+        given:
+        OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
+                RequestMethod.GET, handlerMethod, 0, requestMappingInfo("/somePath"),
+                context(), "/anyPath")
 
-    and:
-      OperationTagsReader sut = new OperationTagsReader(new DefaultTagsProvider())
+        and:
+        OperationTagsReader sut = new OperationTagsReader(new DefaultTagsProvider())
 
-    when:
-      sut.apply(operationContext)
-      def operation = operationContext.operationBuilder().build()
-    then:
-      operation.tags.containsAll([group])
+        when:
+        sut.apply(operationContext)
+        def operation = operationContext.operationBuilder().build()
+        then:
+        operation.tags.containsAll([group])
 
-    where:
-      handlerMethod                                                        | group
-      dummyHandlerMethod('methodWithConcreteResponseBody')                 | "dummy-class"
-      dummyControllerHandlerMethod()                                       | "dummy-controller"
-  }
+        where:
+        handlerMethod                                        | group
+        dummyHandlerMethod('methodWithConcreteResponseBody') | "dummy-class"
+        dummyControllerHandlerMethod()                       | "dummy-controller"
+    }
 }

@@ -25,26 +25,25 @@ import springfox.documentation.spi.service.contexts.OperationContext
 import springfox.documentation.spring.web.mixins.RequestMappingSupport
 import springfox.documentation.spring.web.plugins.DocumentationContextSpec
 import springfox.documentation.spring.web.readers.operation.CachingOperationNameGenerator
-import springfox.documentation.swagger.readers.operation.OperationPositionReader
 
 @Mixin([RequestMappingSupport])
 class OperationPositionReaderSpec extends DocumentationContextSpec {
 
-  def "should have correct api position using swagger reader"() {
-    given:
-      OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
-              RequestMethod.GET, handlerMethod, contextCount, requestMappingInfo("/somePath"),
-              context(), "/anyPath")
+    def "should have correct api position using swagger reader"() {
+        given:
+        OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
+                RequestMethod.GET, handlerMethod, contextCount, requestMappingInfo("/somePath"),
+                context(), "/anyPath")
 
-      OperationPositionReader operationPositionReader = new OperationPositionReader();
-    when:
-      operationPositionReader.apply(operationContext)
-      def operation = operationContext.operationBuilder().build()
-    then:
-      operation.position == expectedCount
-    where:
-      handlerMethod                            | contextCount  | expectedCount
-      dummyHandlerMethod()                     | 2             | 0
-      dummyHandlerMethod('methodWithPosition') | 3             | 5
-  }
+        OperationPositionReader operationPositionReader = new OperationPositionReader();
+        when:
+        operationPositionReader.apply(operationContext)
+        def operation = operationContext.operationBuilder().build()
+        then:
+        operation.position == expectedCount
+        where:
+        handlerMethod                            | contextCount | expectedCount
+        dummyHandlerMethod()                     | 2            | 0
+        dummyHandlerMethod('methodWithPosition') | 3            | 5
+    }
 }

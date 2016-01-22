@@ -33,78 +33,79 @@ import springfox.documentation.builders.AuthorizationScopeBuilder;
 import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.OperationBuilderPlugin;
-import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spi.service.contexts.OperationContext;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.swagger.common.SwaggerPluginSupport;
 
 import java.util.List;
 
-import static com.google.common.base.Strings.*;
-import static com.google.common.collect.Lists.*;
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Lists.newArrayList;
 
 @Component
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class OperationAuthReader implements OperationBuilderPlugin {
 
-  private static final Logger LOG = LoggerFactory.getLogger(OperationAuthReader.class);
-  @Override
-  public void apply(OperationContext context) {
+    private static final Logger LOG = LoggerFactory.getLogger(OperationAuthReader.class);
 
-    Optional<SecurityContext> securityContext = context.securityContext();
+    @Override
+    public void apply(OperationContext context) {
 
-    HandlerMethod handlerMethod = context.getHandlerMethod();
-    String requestMappingPattern = context.requestMappingPattern();
-    List<SecurityReference> securityReferences = newArrayList();
+        Optional<SecurityContext> securityContext = context.securityContext();
 
-    if (securityContext.isPresent()) {
-      securityReferences = securityContext.get().securityForPath(requestMappingPattern);
-    }
+        HandlerMethod handlerMethod = context.getHandlerMethod();
+        String requestMappingPattern = context.requestMappingPattern();
+        List<SecurityReference> securityReferences = newArrayList();
 
-    ApiOperation apiOperationAnnotation = handlerMethod.getMethodAnnotation(ApiOperation.class);
-
-    if (null != apiOperationAnnotation && null != apiOperationAnnotation.authorizations()) {
-      Authorization[] authorizationAnnotations = apiOperationAnnotation.authorizations();
-      if (authorizationAnnotations != null
-              && authorizationAnnotations.length > 0
-              && StringUtils.hasText(authorizationAnnotations[0].value())) {
-
-        securityReferences = newArrayList();
-        for (Authorization authorization : authorizationAnnotations) {
-          String value = authorization.value();
-          AuthorizationScope[] scopes = authorization.scopes();
-          List<springfox.documentation.service.AuthorizationScope> authorizationScopeList = newArrayList();
-          for (AuthorizationScope authorizationScope : scopes) {
-            String description = authorizationScope.description();
-            String scope = authorizationScope.scope();
-            // @Authorization has a default blank authorization scope, which we need to
-            // ignore in the case of api keys.
-            if (!isNullOrEmpty(scope)) {
-              authorizationScopeList.add(
-                      new AuthorizationScopeBuilder()
-                              .scope(scope)
-                              .description(description)
-                              .build());
-            }
-          }
-          springfox.documentation.service.AuthorizationScope[] authorizationScopes = authorizationScopeList
-                  .toArray(new springfox.documentation.service.AuthorizationScope[authorizationScopeList.size()]);
-          SecurityReference securityReference =
-                  SecurityReference.builder()
-                          .reference(value)
-                          .scopes(authorizationScopes)
-                          .build();
-          securityReferences.add(securityReference);
+        if (securityContext.isPresent()) {
+            securityReferences = securityContext.get().securityForPath(requestMappingPattern);
         }
-      }
-    }
-    if (securityReferences != null) {
-      LOG.debug("Authorization count {} for method {}", securityReferences.size(), handlerMethod.getMethod().getName());
-      context.operationBuilder().authorizations(securityReferences);
-    }
-  }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return SwaggerPluginSupport.pluginDoesApply(delimiter);
-  }
+        ApiOperation apiOperationAnnotation = handlerMethod.getMethodAnnotation(ApiOperation.class);
+
+        if (null != apiOperationAnnotation && null != apiOperationAnnotation.authorizations()) {
+            Authorization[] authorizationAnnotations = apiOperationAnnotation.authorizations();
+            if (authorizationAnnotations != null
+                    && authorizationAnnotations.length > 0
+                    && StringUtils.hasText(authorizationAnnotations[0].value())) {
+
+                securityReferences = newArrayList();
+                for (Authorization authorization : authorizationAnnotations) {
+                    String value = authorization.value();
+                    AuthorizationScope[] scopes = authorization.scopes();
+                    List<springfox.documentation.service.AuthorizationScope> authorizationScopeList = newArrayList();
+                    for (AuthorizationScope authorizationScope : scopes) {
+                        String description = authorizationScope.description();
+                        String scope = authorizationScope.scope();
+                        // @Authorization has a default blank authorization scope, which we need to
+                        // ignore in the case of api keys.
+                        if (!isNullOrEmpty(scope)) {
+                            authorizationScopeList.add(
+                                    new AuthorizationScopeBuilder()
+                                            .scope(scope)
+                                            .description(description)
+                                            .build());
+                        }
+                    }
+                    springfox.documentation.service.AuthorizationScope[] authorizationScopes = authorizationScopeList
+                            .toArray(new springfox.documentation.service.AuthorizationScope[authorizationScopeList.size()]);
+                    SecurityReference securityReference =
+                            SecurityReference.builder()
+                                    .reference(value)
+                                    .scopes(authorizationScopes)
+                                    .build();
+                    securityReferences.add(securityReference);
+                }
+            }
+        }
+        if (securityReferences != null) {
+            LOG.debug("Authorization count {} for method {}", securityReferences.size(), handlerMethod.getMethod().getName());
+            context.operationBuilder().authorizations(securityReferences);
+        }
+    }
+
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return SwaggerPluginSupport.pluginDoesApply(delimiter);
+    }
 }

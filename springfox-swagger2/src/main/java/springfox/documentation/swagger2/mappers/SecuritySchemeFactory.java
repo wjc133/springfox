@@ -23,5 +23,5 @@ import io.swagger.models.auth.SecuritySchemeDefinition;
 import springfox.documentation.service.SecurityScheme;
 
 interface SecuritySchemeFactory {
-  SecuritySchemeDefinition create(SecurityScheme input);
+    SecuritySchemeDefinition create(SecurityScheme input);
 }

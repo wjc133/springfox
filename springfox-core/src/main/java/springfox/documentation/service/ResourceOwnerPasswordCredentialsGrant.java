@@ -21,8 +21,8 @@ package springfox.documentation.service;
 
 public class ResourceOwnerPasswordCredentialsGrant extends CredentialsGrant {
 
-  public ResourceOwnerPasswordCredentialsGrant(String tokenUrl) {
-    super("password", tokenUrl);
-  }
+    public ResourceOwnerPasswordCredentialsGrant(String tokenUrl) {
+        super("password", tokenUrl);
+    }
 
 }

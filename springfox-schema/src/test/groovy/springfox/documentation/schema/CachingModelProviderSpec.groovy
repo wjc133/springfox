@@ -24,28 +24,28 @@ import springfox.documentation.schema.mixins.TypesForTestingSupport
 import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spi.schema.AlternateTypeProvider
 
-import static springfox.documentation.spi.schema.contexts.ModelContext.*
+import static springfox.documentation.spi.schema.contexts.ModelContext.inputParam
 
 @Mixin(TypesForTestingSupport)
 class CachingModelProviderSpec extends Specification {
-  def "Implementation caches the invocations" () {
-    given:
-      def context = inputParam(
-            complexType(),
-            DocumentationType.SWAGGER_2,
-            new AlternateTypeProvider([]),
-            new CodeGenGenericTypeNamingStrategy())
-      def model = aModel()
-      def mock = Mock(ModelProvider) {
-        modelFor(context) >> Optional.of(model)
-      }
-    when:
-      def sut = new CachingModelProvider(mock)
-    then:
-      sut.modelFor(context) == sut.modelFor(context)
-  }
+    def "Implementation caches the invocations"() {
+        given:
+        def context = inputParam(
+                complexType(),
+                DocumentationType.SWAGGER_2,
+                new AlternateTypeProvider([]),
+                new CodeGenGenericTypeNamingStrategy())
+        def model = aModel()
+        def mock = Mock(ModelProvider) {
+            modelFor(context) >> Optional.of(model)
+        }
+        when:
+        def sut = new CachingModelProvider(mock)
+        then:
+        sut.modelFor(context) == sut.modelFor(context)
+    }
 
-  def aModel() {
-    Mock(Model)
-  }
+    def aModel() {
+        Mock(Model)
+    }
 }

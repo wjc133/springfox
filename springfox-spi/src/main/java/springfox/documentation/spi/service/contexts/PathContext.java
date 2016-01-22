@@ -26,31 +26,31 @@ import springfox.documentation.service.Parameter;
 
 import java.util.List;
 
-import static com.google.common.collect.Lists.*;
+import static com.google.common.collect.Lists.newArrayList;
 
 @Incubating("2.1.0")
 public class PathContext {
 
-  private final RequestMappingContext parent;
-  private final Optional<Operation> operation;
+    private final RequestMappingContext parent;
+    private final Optional<Operation> operation;
 
-  public PathContext(RequestMappingContext parent, Optional<Operation> operation) {
-    this.parent = parent;
-    this.operation = operation;
-  }
-
-  public DocumentationContext documentationContext() {
-    return parent.getDocumentationContext();
-  }
-
-  public PathProvider pathProvider() {
-    return parent.getDocumentationContext().getPathProvider();
-  }
-
-  public List<Parameter> getParameters() {
-    if (operation.isPresent()) {
-      return operation.get().getParameters();
+    public PathContext(RequestMappingContext parent, Optional<Operation> operation) {
+        this.parent = parent;
+        this.operation = operation;
     }
-    return newArrayList();
-  }
+
+    public DocumentationContext documentationContext() {
+        return parent.getDocumentationContext();
+    }
+
+    public PathProvider pathProvider() {
+        return parent.getDocumentationContext().getPathProvider();
+    }
+
+    public List<Parameter> getParameters() {
+        if (operation.isPresent()) {
+            return operation.get().getParameters();
+        }
+        return newArrayList();
+    }
 }

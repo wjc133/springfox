@@ -30,30 +30,30 @@ import springfox.documentation.spring.web.readers.operation.CachingOperationName
 
 @Mixin([RequestMappingSupport])
 class OperationCommandReaderSpec extends DocumentationContextSpec {
-  private static final int CURRENT_COUNT = 3
+    private static final int CURRENT_COUNT = 3
 
-  @Unroll("property #property expected: #expected")
-  def "should set various properties based on method name or swagger annotation"() {
-    given:
-      OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
-              RequestMethod.GET, handlerMethod, CURRENT_COUNT, requestMappingInfo("somePath"),
-              context(), "/anyPath")
-    when:
-      sut.apply(operationContext)
-      def operation = operationContext.operationBuilder().build()
+    @Unroll("property #property expected: #expected")
+    def "should set various properties based on method name or swagger annotation"() {
+        given:
+        OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
+                RequestMethod.GET, handlerMethod, CURRENT_COUNT, requestMappingInfo("somePath"),
+                context(), "/anyPath")
+        when:
+        sut.apply(operationContext)
+        def operation = operationContext.operationBuilder().build()
 
-    then:
-      operation."$property" == expected
-    and:
-      !sut.supports(DocumentationType.SPRING_WEB)
-      sut.supports(DocumentationType.SWAGGER_12)
-      sut.supports(DocumentationType.SWAGGER_2)
-    where:
-      sut                             | property     | handlerMethod                              | expected
-      new OperationSummaryReader()    | 'summary'    | dummyHandlerMethod('methodWithSummary')    | 'summary'
-      new OperationHiddenReader()     | 'hidden'     | dummyHandlerMethod('methodThatIsHidden')   | true
-      new OperationHiddenReader()     | 'hidden'     | dummyHandlerMethod('dummyMethod')          | false
-      new OperationNotesReader()      | 'notes'      | dummyHandlerMethod('methodWithNotes')      | 'some notes'
-      new OperationPositionReader()   | 'position'   | dummyHandlerMethod('methodWithPosition')   | 5
-  }
+        then:
+        operation."$property" == expected
+        and:
+        !sut.supports(DocumentationType.SPRING_WEB)
+        sut.supports(DocumentationType.SWAGGER_12)
+        sut.supports(DocumentationType.SWAGGER_2)
+        where:
+        sut                           | property   | handlerMethod                            | expected
+        new OperationSummaryReader()  | 'summary'  | dummyHandlerMethod('methodWithSummary')  | 'summary'
+        new OperationHiddenReader()   | 'hidden'   | dummyHandlerMethod('methodThatIsHidden') | true
+        new OperationHiddenReader()   | 'hidden'   | dummyHandlerMethod('dummyMethod')        | false
+        new OperationNotesReader()    | 'notes'    | dummyHandlerMethod('methodWithNotes')    | 'some notes'
+        new OperationPositionReader() | 'position' | dummyHandlerMethod('methodWithPosition') | 5
+    }
 }

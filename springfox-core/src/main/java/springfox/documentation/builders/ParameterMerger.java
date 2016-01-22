@@ -21,88 +21,89 @@ package springfox.documentation.builders;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
-import com.google.common.collect.Sets.*;
+import com.google.common.collect.Sets.SetView;
 import springfox.documentation.service.Parameter;
 
 import java.util.List;
 import java.util.Set;
 
-import static com.google.common.collect.FluentIterable.*;
-import static com.google.common.collect.Lists.*;
-import static com.google.common.collect.Sets.*;
-import static springfox.documentation.builders.Parameters.*;
+import static com.google.common.collect.FluentIterable.from;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.difference;
+import static springfox.documentation.builders.Parameters.toParameterName;
+import static springfox.documentation.builders.Parameters.withName;
 
 class ParameterMerger {
 
-  private final List<Parameter> destination;
-  private final List<Parameter> source;
+    private final List<Parameter> destination;
+    private final List<Parameter> source;
 
-  public ParameterMerger(List<Parameter> destination, List<Parameter> source) {
-    this.destination = newArrayList(destination);
-    this.source = newArrayList(source);
-  }
-
-  public List<Parameter> merged() {
-    Set<String> existingParameterNames = from(destination).transform(toParameterName()).toSet();
-    Set<String> newParameterNames = from(source).transform(toParameterName()).toSet();
-    List<Parameter> merged = newArrayList();
-
-    SetView<String> asIsParams = difference(existingParameterNames, newParameterNames);
-    SetView<String> missingParamNames = difference(newParameterNames, existingParameterNames);
-    SetView<String> paramsToMerge = Sets.intersection(newParameterNames, existingParameterNames);
-
-    merged.addAll(asIsParameters(asIsParams, destination));
-    merged.addAll(newParameters(missingParamNames, source));
-    merged.addAll(mergedParameters(paramsToMerge, destination, source));
-    return merged;
-  }
-
-  private List<Parameter> asIsParameters(SetView<String> asIsParams, List<Parameter> source) {
-    List<Parameter> parameters = newArrayList();
-    for (Parameter each : source) {
-      if (asIsParams.contains(each.getName())) {
-        parameters.add(each);
-      }
+    public ParameterMerger(List<Parameter> destination, List<Parameter> source) {
+        this.destination = newArrayList(destination);
+        this.source = newArrayList(source);
     }
-    return parameters;
-  }
 
-  private List<Parameter> mergedParameters(SetView<String> paramsToMerge,
-                                           List<Parameter> existingParameters,
-                                           List<Parameter> newParams) {
-    List<Parameter> parameters = newArrayList();
-    for (Parameter newParam : newParams) {
-      Optional<Parameter> original = from(existingParameters).firstMatch(withName(newParam.getName()));
-      if (paramsToMerge.contains(newParam.getName()) && original.isPresent()) {
-        parameters.add(merged(original.get(), newParam));
-      }
+    public List<Parameter> merged() {
+        Set<String> existingParameterNames = from(destination).transform(toParameterName()).toSet();
+        Set<String> newParameterNames = from(source).transform(toParameterName()).toSet();
+        List<Parameter> merged = newArrayList();
+
+        SetView<String> asIsParams = difference(existingParameterNames, newParameterNames);
+        SetView<String> missingParamNames = difference(newParameterNames, existingParameterNames);
+        SetView<String> paramsToMerge = Sets.intersection(newParameterNames, existingParameterNames);
+
+        merged.addAll(asIsParameters(asIsParams, destination));
+        merged.addAll(newParameters(missingParamNames, source));
+        merged.addAll(mergedParameters(paramsToMerge, destination, source));
+        return merged;
     }
-    return parameters;
-  }
 
-  private Parameter merged(Parameter destination, Parameter source) {
-    return new ParameterBuilder()
-        .from(destination)
-        .name(source.getName())
-        .allowableValues(source.getAllowableValues())
-        .allowMultiple(source.isAllowMultiple())
-        .defaultValue(source.getDefaultValue())
-        .description(source.getDescription())
-        .modelRef(source.getModelRef())
-        .parameterAccess(source.getParamAccess())
-        .parameterType(source.getParamType())
-        .required(source.isRequired())
-        .type(source.getType().orNull())
-        .build();
-  }
-
-  private List<Parameter> newParameters(SetView<String> missingParamNames, List<Parameter> newParams) {
-    List<Parameter> parameters = newArrayList();
-    for (Parameter each : newParams) {
-      if (missingParamNames.contains(each.getName())) {
-        parameters.add(each);
-      }
+    private List<Parameter> asIsParameters(SetView<String> asIsParams, List<Parameter> source) {
+        List<Parameter> parameters = newArrayList();
+        for (Parameter each : source) {
+            if (asIsParams.contains(each.getName())) {
+                parameters.add(each);
+            }
+        }
+        return parameters;
     }
-    return parameters;
-  }
+
+    private List<Parameter> mergedParameters(SetView<String> paramsToMerge,
+                                             List<Parameter> existingParameters,
+                                             List<Parameter> newParams) {
+        List<Parameter> parameters = newArrayList();
+        for (Parameter newParam : newParams) {
+            Optional<Parameter> original = from(existingParameters).firstMatch(withName(newParam.getName()));
+            if (paramsToMerge.contains(newParam.getName()) && original.isPresent()) {
+                parameters.add(merged(original.get(), newParam));
+            }
+        }
+        return parameters;
+    }
+
+    private Parameter merged(Parameter destination, Parameter source) {
+        return new ParameterBuilder()
+                .from(destination)
+                .name(source.getName())
+                .allowableValues(source.getAllowableValues())
+                .allowMultiple(source.isAllowMultiple())
+                .defaultValue(source.getDefaultValue())
+                .description(source.getDescription())
+                .modelRef(source.getModelRef())
+                .parameterAccess(source.getParamAccess())
+                .parameterType(source.getParamType())
+                .required(source.isRequired())
+                .type(source.getType().orNull())
+                .build();
+    }
+
+    private List<Parameter> newParameters(SetView<String> missingParamNames, List<Parameter> newParams) {
+        List<Parameter> parameters = newArrayList();
+        for (Parameter each : newParams) {
+            if (missingParamNames.contains(each.getName())) {
+                parameters.add(each);
+            }
+        }
+        return parameters;
+    }
 }

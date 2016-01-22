@@ -26,16 +26,16 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @Configuration
 @ComponentScan(basePackages = {
-    "springfox.documentation.swagger.schema",
-    "springfox.documentation.swagger.readers",
-    "springfox.documentation.swagger.web"
+        "springfox.documentation.swagger.schema",
+        "springfox.documentation.swagger.readers",
+        "springfox.documentation.swagger.web"
 })
 public class SwaggerCommonConfiguration {
 
-  @Bean
-  public static PropertySourcesPlaceholderConfigurer swaggerProperties() {
-    PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
-    propertySourcesPlaceholderConfigurer.setIgnoreUnresolvablePlaceholders(true);
-    return propertySourcesPlaceholderConfigurer;
-  }
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer swaggerProperties() {
+        PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
+        propertySourcesPlaceholderConfigurer.setIgnoreUnresolvablePlaceholders(true);
+        return propertySourcesPlaceholderConfigurer;
+    }
 }

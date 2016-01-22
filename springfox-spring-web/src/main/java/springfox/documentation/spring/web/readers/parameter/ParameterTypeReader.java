@@ -26,12 +26,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.service.ResolvedMethodParameter;
 import springfox.documentation.spi.DocumentationType;
@@ -45,50 +40,50 @@ import java.lang.annotation.Annotation;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ParameterTypeReader implements ParameterBuilderPlugin {
 
-  @Override
-  public void apply(ParameterContext context) {
-    context.parameterBuilder().parameterType(findParameterType(context));
-  }
-
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return true;
-  }
-
-  public static String findParameterType(ParameterContext parameterContext) {
-    MethodParameter methodParameter = parameterContext.methodParameter();
-    ResolvedMethodParameter resolvedMethodParameter = parameterContext.resolvedMethodParameter();
-    ResolvedType parameterType = resolvedMethodParameter.getResolvedParameterType();
-    parameterType = parameterContext.alternateFor(parameterType);
-
-    //Multi-part file trumps any other annotations
-    if (MultipartFile.class.isAssignableFrom(parameterType.getErasedType())) {
-      return "form";
+    @Override
+    public void apply(ParameterContext context) {
+        context.parameterBuilder().parameterType(findParameterType(context));
     }
-    Annotation[] methodAnnotations = methodParameter.getParameterAnnotations();
-    for (Annotation annotation : methodAnnotations) {
-      if (annotation instanceof PathVariable) {
-        return "path";
-      } else if (annotation instanceof ModelAttribute) {
+
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return true;
+    }
+
+    public static String findParameterType(ParameterContext parameterContext) {
+        MethodParameter methodParameter = parameterContext.methodParameter();
+        ResolvedMethodParameter resolvedMethodParameter = parameterContext.resolvedMethodParameter();
+        ResolvedType parameterType = resolvedMethodParameter.getResolvedParameterType();
+        parameterType = parameterContext.alternateFor(parameterType);
+
+        //Multi-part file trumps any other annotations
+        if (MultipartFile.class.isAssignableFrom(parameterType.getErasedType())) {
+            return "form";
+        }
+        Annotation[] methodAnnotations = methodParameter.getParameterAnnotations();
+        for (Annotation annotation : methodAnnotations) {
+            if (annotation instanceof PathVariable) {
+                return "path";
+            } else if (annotation instanceof ModelAttribute) {
+                return "body";
+            } else if (annotation instanceof RequestBody) {
+                return "body";
+            } else if (annotation instanceof RequestParam) {
+                return queryOrForm(parameterContext.getOperationContext());
+            } else if (annotation instanceof RequestHeader) {
+                return "header";
+            } else if (annotation instanceof RequestPart) {
+                return "form";
+            }
+        }
         return "body";
-      } else if (annotation instanceof RequestBody) {
-        return "body";
-      } else if (annotation instanceof RequestParam) {
-        return queryOrForm(parameterContext.getOperationContext());
-      } else if (annotation instanceof RequestHeader) {
-        return "header";
-      } else if (annotation instanceof RequestPart) {
-          return "form";
-      }
     }
-    return "body";
-  }
 
-  private static String queryOrForm(OperationContext context) {
-    if (context.consumes().contains(MediaType.APPLICATION_FORM_URLENCODED) && context.httpMethod() == HttpMethod
-        .POST) {
-      return "form";
+    private static String queryOrForm(OperationContext context) {
+        if (context.consumes().contains(MediaType.APPLICATION_FORM_URLENCODED) && context.httpMethod() == HttpMethod
+                .POST) {
+            return "form";
+        }
+        return "query";
     }
-    return "query";
-  }
 }

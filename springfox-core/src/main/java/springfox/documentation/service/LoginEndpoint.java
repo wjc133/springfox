@@ -20,13 +20,13 @@
 package springfox.documentation.service;
 
 public class LoginEndpoint {
-  private final String url;
+    private final String url;
 
-  public LoginEndpoint(String url) {
-    this.url = url;
-  }
+    public LoginEndpoint(String url) {
+        this.url = url;
+    }
 
-  public String getUrl() {
-    return url;
-  }
+    public String getUrl() {
+        return url;
+    }
 }

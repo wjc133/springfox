@@ -18,27 +18,28 @@
  */
 
 package springfox.documentation.spring.web.authorization
+
 import spock.lang.Specification
-import springfox.documentation.spring.web.mixins.AuthSupport
 import springfox.documentation.builders.PathSelectors
 import springfox.documentation.spi.service.contexts.SecurityContext
+import springfox.documentation.spring.web.mixins.AuthSupport
 
 @Mixin(AuthSupport)
 class AuthorizationContextSpec extends Specification {
 
-   def "scala authorizations"() {
-    given:
-      SecurityContext authorizationContext = SecurityContext.builder()
-              .securityReferences(auth)
-              .forPaths(PathSelectors.any())
-              .build()
-    expect:
-      authorizationContext.getSecurityReferences().size() == expected
+    def "scala authorizations"() {
+        given:
+        SecurityContext authorizationContext = SecurityContext.builder()
+                .securityReferences(auth)
+                .forPaths(PathSelectors.any())
+                .build()
+        expect:
+        authorizationContext.getSecurityReferences().size() == expected
 
-    where:
-      auth          | expected
-      defaultAuth() | 1
-      []            | 0
-   }
+        where:
+        auth          | expected
+        defaultAuth() | 1
+        []            | 0
+    }
 
 }

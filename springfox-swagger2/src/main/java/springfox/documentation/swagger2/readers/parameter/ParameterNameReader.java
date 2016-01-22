@@ -31,32 +31,32 @@ import springfox.documentation.spi.service.contexts.ParameterContext;
 import springfox.documentation.swagger.common.SwaggerPluginSupport;
 import springfox.documentation.swagger.readers.parameter.ParameterAnnotationReader;
 
-import static com.google.common.base.Optional.*;
+import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Strings.emptyToNull;
 
 @Component("swagger2ParameterNameReader")
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class ParameterNameReader implements ParameterBuilderPlugin {
 
-  private ParameterAnnotationReader annotations = new ParameterAnnotationReader();
+    private ParameterAnnotationReader annotations = new ParameterAnnotationReader();
 
-  @Override
-  public void apply(ParameterContext context) {
-    MethodParameter methodParameter = context.methodParameter();
-    Optional<ApiParam> apiParam = apiParam(methodParameter);
-    if (apiParam.isPresent()) {
-      context.parameterBuilder().name(emptyToNull(apiParam.get().name()));
+    @Override
+    public void apply(ParameterContext context) {
+        MethodParameter methodParameter = context.methodParameter();
+        Optional<ApiParam> apiParam = apiParam(methodParameter);
+        if (apiParam.isPresent()) {
+            context.parameterBuilder().name(emptyToNull(apiParam.get().name()));
+        }
     }
-  }
 
-  @VisibleForTesting
-  Optional<ApiParam> apiParam(MethodParameter methodParameter) {
-    return fromNullable(methodParameter.getParameterAnnotation(ApiParam.class))
-            .or(annotations.fromHierarchy(methodParameter, ApiParam.class));
-  }
+    @VisibleForTesting
+    Optional<ApiParam> apiParam(MethodParameter methodParameter) {
+        return fromNullable(methodParameter.getParameterAnnotation(ApiParam.class))
+                .or(annotations.fromHierarchy(methodParameter, ApiParam.class));
+    }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return DocumentationType.SWAGGER_2.equals(delimiter);
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return DocumentationType.SWAGGER_2.equals(delimiter);
+    }
 }

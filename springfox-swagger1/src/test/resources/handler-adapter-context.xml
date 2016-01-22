@@ -13,6 +13,6 @@
 
     <!-- A RequestMappingHandlerAdapter to simulate other libraries which may add to the spring context-->
     <bean class="springfox.documentation.spring.web.dummy.DummyRequestMappingHandlerAdapter" autowire-candidate="true"/>
-    <bean class="springfox.documentation.swagger1.configuration.MultipleRMHAConfig" />
+    <bean class="springfox.documentation.swagger1.configuration.MultipleRMHAConfig"/>
 
 </beans>

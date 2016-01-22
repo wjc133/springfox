@@ -38,56 +38,56 @@ import static com.google.common.base.Strings.isNullOrEmpty
 
 @Mixin([RequestMappingSupport, ServicePluginsSupport, SchemaPluginsSupport])
 class OperationResponseClassReaderSpec extends DocumentationContextSpec {
-  OperationResponseClassReader sut
-  
-  def setup() {
-    PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
-        OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
-    def typeNameExtractor = new TypeNameExtractor(new TypeResolver(),  modelNameRegistry)
+    OperationResponseClassReader sut
 
-    sut = new OperationResponseClassReader(new TypeResolver(), typeNameExtractor)
-  }
-  
-  def "Should support all documentation types"() {
-    expect:
-      sut.supports(DocumentationType.SPRING_WEB)
-      sut.supports(DocumentationType.SWAGGER_12)
-      sut.supports(DocumentationType.SWAGGER_2)
-  }
+    def setup() {
+        PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
+                OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
+        def typeNameExtractor = new TypeNameExtractor(new TypeResolver(), modelNameRegistry)
 
-  def "should have correct response class"() {
-    given:
-      OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
-              RequestMethod.GET, handlerMethod, 0, requestMappingInfo("/somePath"),
-              context(), "/anyPath")
+        sut = new OperationResponseClassReader(new TypeResolver(), typeNameExtractor)
+    }
 
-    when:
-      sut.apply(operationContext)
-      def operation = operationContext.operationBuilder().build()
-    then:
-      if (operation.responseModel.collection) {
-        assert expectedClass == String.format("%s[%s]", operation.responseModel.type, operation.responseModel.itemType)
-      } else {
-        assert expectedClass == operation.responseModel.type
-        if ("Map".equals(operation.responseModel.type)) {
-          assert operation.responseModel.isMap()
-          assert !isNullOrEmpty(operation.responseModel.itemType)
-        }
-        if (allowableValues == null) {
-          assert operation.responseModel.getAllowableValues() == null
+    def "Should support all documentation types"() {
+        expect:
+        sut.supports(DocumentationType.SPRING_WEB)
+        sut.supports(DocumentationType.SWAGGER_12)
+        sut.supports(DocumentationType.SWAGGER_2)
+    }
+
+    def "should have correct response class"() {
+        given:
+        OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
+                RequestMethod.GET, handlerMethod, 0, requestMappingInfo("/somePath"),
+                context(), "/anyPath")
+
+        when:
+        sut.apply(operationContext)
+        def operation = operationContext.operationBuilder().build()
+        then:
+        if (operation.responseModel.collection) {
+            assert expectedClass == String.format("%s[%s]", operation.responseModel.type, operation.responseModel.itemType)
         } else {
-          assert allowableValues == operation.responseModel.getAllowableValues().values
+            assert expectedClass == operation.responseModel.type
+            if ("Map".equals(operation.responseModel.type)) {
+                assert operation.responseModel.isMap()
+                assert !isNullOrEmpty(operation.responseModel.itemType)
+            }
+            if (allowableValues == null) {
+                assert operation.responseModel.getAllowableValues() == null
+            } else {
+                assert allowableValues == operation.responseModel.getAllowableValues().values
+            }
         }
-      }
 
-    where:
-      handlerMethod                                                        | expectedClass              | allowableValues
-      dummyHandlerMethod('methodWithConcreteResponseBody')                 | 'BusinessModel'            |  null
-      dummyHandlerMethod('methodWithAPiAnnotationButWithoutResponseClass') | 'FunkyBusiness'            |  null
-      dummyHandlerMethod('methodWithGenericType')                          | 'Paginated«string»'        | null
-      dummyHandlerMethod('methodWithListOfBusinesses')                     | 'List[BusinessModel]'      | null
-      dummyHandlerMethod('methodWithMapReturn')                            | 'Map«string,BusinessModel»'| null
-      dummyHandlerMethod('methodWithEnumResponse')                         | 'string'                   | ['ONE', 'TWO']
-  }
+        where:
+        handlerMethod                                                        | expectedClass               | allowableValues
+        dummyHandlerMethod('methodWithConcreteResponseBody')                 | 'BusinessModel'             | null
+        dummyHandlerMethod('methodWithAPiAnnotationButWithoutResponseClass') | 'FunkyBusiness'             | null
+        dummyHandlerMethod('methodWithGenericType')                          | 'Paginated«string»'         | null
+        dummyHandlerMethod('methodWithListOfBusinesses')                     | 'List[BusinessModel]'       | null
+        dummyHandlerMethod('methodWithMapReturn')                            | 'Map«string,BusinessModel»' | null
+        dummyHandlerMethod('methodWithEnumResponse')                         | 'string'                    | ['ONE', 'TWO']
+    }
 
 }

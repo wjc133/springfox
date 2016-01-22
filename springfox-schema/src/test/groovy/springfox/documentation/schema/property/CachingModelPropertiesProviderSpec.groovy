@@ -26,28 +26,28 @@ import springfox.documentation.schema.mixins.TypesForTestingSupport
 import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spi.schema.AlternateTypeProvider
 
-import static springfox.documentation.spi.schema.contexts.ModelContext.*
+import static springfox.documentation.spi.schema.contexts.ModelContext.inputParam
 
 @Mixin(TypesForTestingSupport)
 class CachingModelPropertiesProviderSpec extends Specification {
-  def "Implementation caches the invocations" () {
-    given:
-      def context = inputParam(
-            complexType(),
-            DocumentationType.SWAGGER_2,
-            new AlternateTypeProvider([]),
-            new CodeGenGenericTypeNamingStrategy())
-      def property = aProperty()
-      def mock = Mock(ModelPropertiesProvider) {
-        propertiesFor(_, context) >> [ property ]
-      }
-    when:
-      def sut = new CachingModelPropertiesProvider(new TypeResolver(), mock)
-    then:
-      sut.propertiesFor(Mock(ResolvedType), context) == sut.propertiesFor(Mock(ResolvedType), context)
-  }
+    def "Implementation caches the invocations"() {
+        given:
+        def context = inputParam(
+                complexType(),
+                DocumentationType.SWAGGER_2,
+                new AlternateTypeProvider([]),
+                new CodeGenGenericTypeNamingStrategy())
+        def property = aProperty()
+        def mock = Mock(ModelPropertiesProvider) {
+            propertiesFor(_, context) >> [property]
+        }
+        when:
+        def sut = new CachingModelPropertiesProvider(new TypeResolver(), mock)
+        then:
+        sut.propertiesFor(Mock(ResolvedType), context) == sut.propertiesFor(Mock(ResolvedType), context)
+    }
 
-  def aProperty() {
-    Mock(ModelProperty)
-  }
+    def aProperty() {
+        Mock(ModelProperty)
+    }
 }

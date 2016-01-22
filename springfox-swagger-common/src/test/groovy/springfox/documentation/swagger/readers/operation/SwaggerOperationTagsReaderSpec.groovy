@@ -11,26 +11,26 @@ import springfox.documentation.spring.web.readers.operation.DefaultTagsProvider
 
 @Mixin([RequestMappingSupport, ServicePluginsSupport, ServicePluginsSupport])
 class SwaggerOperationTagsReaderSpec extends DocumentationContextSpec {
-  def "should have correct tags"() {
-    given:
-    OperationContext operationContext =
-        new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
-        RequestMethod.GET, handlerMethod, 0, requestMappingInfo("/somePath"),
-        context(), "/anyPath")
+    def "should have correct tags"() {
+        given:
+        OperationContext operationContext =
+                new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
+                        RequestMethod.GET, handlerMethod, 0, requestMappingInfo("/somePath"),
+                        context(), "/anyPath")
 
-    and:
-      SwaggerOperationTagsReader sut = new SwaggerOperationTagsReader(new DefaultTagsProvider())
+        and:
+        SwaggerOperationTagsReader sut = new SwaggerOperationTagsReader(new DefaultTagsProvider())
 
-    when:
-    sut.apply(operationContext)
-    def operation = operationContext.operationBuilder().build()
-    then:
-    operation.tags.containsAll(tags)
+        when:
+        sut.apply(operationContext)
+        def operation = operationContext.operationBuilder().build()
+        then:
+        operation.tags.containsAll(tags)
 
-    where:
-    handlerMethod                                        | tags
-    dummyHandlerMethod('methodWithConcreteResponseBody') | ["dummy-class"]
-    dummyControllerHandlerMethod()                       | ["dummy-controller"]
-    dummyOperationWithTags()                             | ["Tag1", "Tag2", "Tag3", "Tag4"]
-  }
+        where:
+        handlerMethod                                        | tags
+        dummyHandlerMethod('methodWithConcreteResponseBody') | ["dummy-class"]
+        dummyControllerHandlerMethod()                       | ["dummy-controller"]
+        dummyOperationWithTags()                             | ["Tag1", "Tag2", "Tag3", "Tag4"]
+    }
 }

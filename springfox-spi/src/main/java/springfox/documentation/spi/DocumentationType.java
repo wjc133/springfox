@@ -23,53 +23,53 @@ import org.springframework.http.MediaType;
 import org.springframework.plugin.metadata.SimplePluginMetadata;
 
 public class DocumentationType extends SimplePluginMetadata {
-  public static final DocumentationType SWAGGER_12 = new DocumentationType("swagger", "1.2");
-  public static final DocumentationType SWAGGER_2 = new DocumentationType("swagger", "2.0");
-  public static final DocumentationType SPRING_WEB = new DocumentationType("spring-web", "1.0");
-  private final MediaType mediaType;
+    public static final DocumentationType SWAGGER_12 = new DocumentationType("swagger", "1.2");
+    public static final DocumentationType SWAGGER_2 = new DocumentationType("swagger", "2.0");
+    public static final DocumentationType SPRING_WEB = new DocumentationType("spring-web", "1.0");
+    private final MediaType mediaType;
 
-  /**
-   * Creates a new instance of {@code SimplePluginMetadata}.
-   *
-   * @param name      must not be {@literal null}.
-   * @param version   must not be {@literal null}.
-   * @param mediaType must not be {@literal null}
-   */
-  public DocumentationType(String name, String version, MediaType mediaType) {
-    super(name, version);
-    this.mediaType = mediaType;
-  }
-
-  public DocumentationType(String name, String version) {
-    this(name, version, MediaType.APPLICATION_JSON);
-  }
-
-  public MediaType getMediaType() {
-    return mediaType;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof DocumentationType)) {
-      return false;
-    }
-    if (!super.equals(o)) {
-      return false;
+    /**
+     * Creates a new instance of {@code SimplePluginMetadata}.
+     *
+     * @param name      must not be {@literal null}.
+     * @param version   must not be {@literal null}.
+     * @param mediaType must not be {@literal null}
+     */
+    public DocumentationType(String name, String version, MediaType mediaType) {
+        super(name, version);
+        this.mediaType = mediaType;
     }
 
-    DocumentationType that = (DocumentationType) o;
+    public DocumentationType(String name, String version) {
+        this(name, version, MediaType.APPLICATION_JSON);
+    }
 
-    return super.equals(that) && mediaType.equals(that.mediaType);
+    public MediaType getMediaType() {
+        return mediaType;
+    }
 
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DocumentationType)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
-  @Override
-  public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + mediaType.hashCode();
-    return result;
-  }
+        DocumentationType that = (DocumentationType) o;
+
+        return super.equals(that) && mediaType.equals(that.mediaType);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + mediaType.hashCode();
+        return result;
+    }
 }

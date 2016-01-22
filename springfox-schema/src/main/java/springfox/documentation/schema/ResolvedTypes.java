@@ -30,51 +30,51 @@ import springfox.documentation.spi.schema.contexts.ModelContext;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import static springfox.documentation.schema.Collections.*;
-import static springfox.documentation.schema.Types.*;
+import static springfox.documentation.schema.Collections.isContainerType;
+import static springfox.documentation.schema.Types.typeNameFor;
 
 public class ResolvedTypes {
 
-  private ResolvedTypes() {
-    throw new UnsupportedOperationException();
-  }
-
-  public static String simpleQualifiedTypeName(ResolvedType type) {
-    if (type instanceof ResolvedPrimitiveType) {
-      Type primitiveType = type.getErasedType();
-      return typeNameFor(primitiveType);
-    }
-    if (type instanceof ResolvedArrayType) {
-      return typeNameFor(type.getArrayElementType().getErasedType());
+    private ResolvedTypes() {
+        throw new UnsupportedOperationException();
     }
 
-    return type.getErasedType().getName();
-  }
+    public static String simpleQualifiedTypeName(ResolvedType type) {
+        if (type instanceof ResolvedPrimitiveType) {
+            Type primitiveType = type.getErasedType();
+            return typeNameFor(primitiveType);
+        }
+        if (type instanceof ResolvedArrayType) {
+            return typeNameFor(type.getArrayElementType().getErasedType());
+        }
 
-  public static AllowableValues allowableValues(ResolvedType resolvedType) {
-    if (isContainerType(resolvedType)) {
-      List<ResolvedType> typeParameters = resolvedType.getTypeParameters();
-      if (typeParameters != null && typeParameters.size() == 1) {
-        return Enums.allowableValues(typeParameters.get(0).getErasedType());
-      }
+        return type.getErasedType().getName();
     }
-    return Enums.allowableValues(resolvedType.getErasedType());
-  }
 
-  public static Optional<String> resolvedTypeSignature(ResolvedType resolvedType) {
-    return Optional.fromNullable(resolvedType).transform(new Function<ResolvedType, String>() {
-      @Override
-      public String apply(ResolvedType input) {
-        return input.getSignature();
-      }
-    });
-  }
+    public static AllowableValues allowableValues(ResolvedType resolvedType) {
+        if (isContainerType(resolvedType)) {
+            List<ResolvedType> typeParameters = resolvedType.getTypeParameters();
+            if (typeParameters != null && typeParameters.size() == 1) {
+                return Enums.allowableValues(typeParameters.get(0).getErasedType());
+            }
+        }
+        return Enums.allowableValues(resolvedType.getErasedType());
+    }
 
-  public static Function<ResolvedType, ? extends ModelReference> modelRefFactory(
-      final ModelContext parentContext,
-      final TypeNameExtractor typeNameExtractor) {
+    public static Optional<String> resolvedTypeSignature(ResolvedType resolvedType) {
+        return Optional.fromNullable(resolvedType).transform(new Function<ResolvedType, String>() {
+            @Override
+            public String apply(ResolvedType input) {
+                return input.getSignature();
+            }
+        });
+    }
 
-    return new ModelReferenceProvider(typeNameExtractor, parentContext);
-  }
+    public static Function<ResolvedType, ? extends ModelReference> modelRefFactory(
+            final ModelContext parentContext,
+            final TypeNameExtractor typeNameExtractor) {
+
+        return new ModelReferenceProvider(typeNameExtractor, parentContext);
+    }
 
 }

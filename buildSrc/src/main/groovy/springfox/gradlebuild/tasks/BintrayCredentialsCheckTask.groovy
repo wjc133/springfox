@@ -23,22 +23,22 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 class BintrayCredentialsCheckTask extends DefaultTask {
-  public static final TASK_NAME = "bintrayCredentialsCheck"
-  String description = 'verifies bintray credentials'
-  String group = 'release'
+    public static final TASK_NAME = "bintrayCredentialsCheck"
+    String description = 'verifies bintray credentials'
+    String group = 'release'
 
-  @TaskAction
-  def action() {
-    requiredProperty('bintrayUsername')
-    requiredProperty('bintrayPassword')
-  }
-
-  String requiredProperty(String propName) {
-    if (project.hasProperty(propName)) {
-      assert project.property(propName): "Property ${propName} must not be blank!"
-      return project.property(propName)
-    } else {
-      throw new IllegalArgumentException("Property ${propName} is required!")
+    @TaskAction
+    def action() {
+        requiredProperty('bintrayUsername')
+        requiredProperty('bintrayPassword')
     }
-  }
+
+    String requiredProperty(String propName) {
+        if (project.hasProperty(propName)) {
+            assert project.property(propName): "Property ${propName} must not be blank!"
+            return project.property(propName)
+        } else {
+            throw new IllegalArgumentException("Property ${propName} is required!")
+        }
+    }
 }

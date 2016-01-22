@@ -27,35 +27,35 @@ import springfox.documentation.schema.AlternateTypeRule;
 
 import java.util.List;
 
-import static com.google.common.collect.Lists.*;
+import static com.google.common.collect.Lists.newArrayList;
 
 
 public class AlternateTypeProvider {
-  private List<AlternateTypeRule> rules = newArrayList();
+    private List<AlternateTypeRule> rules = newArrayList();
 
-  public AlternateTypeProvider(List<AlternateTypeRule> alternateTypeRules) {
-    rules.addAll(alternateTypeRules);
-  }
-
-  public ResolvedType alternateFor(ResolvedType type) {
-    Optional<AlternateTypeRule> matchingRule = FluentIterable.from(rules)
-            .firstMatch(thatAppliesTo(type));
-    if (matchingRule.isPresent()) {
-      return matchingRule.get().alternateFor(type);
+    public AlternateTypeProvider(List<AlternateTypeRule> alternateTypeRules) {
+        rules.addAll(alternateTypeRules);
     }
-    return type;
-  }
 
-  public void addRule(AlternateTypeRule rule) {
-    rules.add(rule);
-  }
+    public ResolvedType alternateFor(ResolvedType type) {
+        Optional<AlternateTypeRule> matchingRule = FluentIterable.from(rules)
+                .firstMatch(thatAppliesTo(type));
+        if (matchingRule.isPresent()) {
+            return matchingRule.get().alternateFor(type);
+        }
+        return type;
+    }
 
-  private Predicate<AlternateTypeRule> thatAppliesTo(final ResolvedType type) {
-    return new Predicate<AlternateTypeRule>() {
-      @Override
-      public boolean apply(AlternateTypeRule input) {
-        return input.appliesTo(type);
-      }
-    };
-  }
+    public void addRule(AlternateTypeRule rule) {
+        rules.add(rule);
+    }
+
+    private Predicate<AlternateTypeRule> thatAppliesTo(final ResolvedType type) {
+        return new Predicate<AlternateTypeRule>() {
+            @Override
+            public boolean apply(AlternateTypeRule input) {
+                return input.appliesTo(type);
+            }
+        };
+    }
 }

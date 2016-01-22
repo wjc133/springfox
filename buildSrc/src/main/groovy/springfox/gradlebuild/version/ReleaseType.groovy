@@ -19,5 +19,5 @@
 package springfox.gradlebuild.version
 
 enum ReleaseType {
-  MAJOR, MINOR, PATCH
+    MAJOR, MINOR, PATCH
 }

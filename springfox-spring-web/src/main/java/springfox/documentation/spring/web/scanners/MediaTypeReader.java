@@ -38,74 +38,74 @@ import springfox.documentation.spring.web.readers.operation.HandlerMethodResolve
 import java.util.List;
 import java.util.Set;
 
-import static com.google.common.collect.Lists.*;
-import static com.google.common.collect.Sets.*;
-import static org.springframework.core.annotation.AnnotationUtils.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newHashSet;
+import static org.springframework.core.annotation.AnnotationUtils.findAnnotation;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class MediaTypeReader implements OperationBuilderPlugin, ApiListingBuilderPlugin {
 
-  private final TypeResolver typeResolver;
+    private final TypeResolver typeResolver;
 
-  @Autowired
-  public MediaTypeReader(TypeResolver typeResolver) {
-    this.typeResolver = typeResolver;
-  }
-
-  @Override
-  public void apply(OperationContext context) {
-
-    Set<String> consumesList = toSet(context.consumes());
-    Set<String> producesList = toSet(context.produces());
-
-    if (handlerMethodHasFileParameter(context)) {
-      consumesList = newHashSet(MediaType.MULTIPART_FORM_DATA_VALUE);
+    @Autowired
+    public MediaTypeReader(TypeResolver typeResolver) {
+        this.typeResolver = typeResolver;
     }
 
-    if (producesList.isEmpty()) {
-      producesList.add(MediaType.ALL_VALUE);
+    @Override
+    public void apply(OperationContext context) {
+
+        Set<String> consumesList = toSet(context.consumes());
+        Set<String> producesList = toSet(context.produces());
+
+        if (handlerMethodHasFileParameter(context)) {
+            consumesList = newHashSet(MediaType.MULTIPART_FORM_DATA_VALUE);
+        }
+
+        if (producesList.isEmpty()) {
+            producesList.add(MediaType.ALL_VALUE);
+        }
+        if (consumesList.isEmpty()) {
+            consumesList.add(MediaType.APPLICATION_JSON_VALUE);
+        }
+        context.operationBuilder().consumes(consumesList);
+        context.operationBuilder().produces(producesList);
     }
-    if (consumesList.isEmpty()) {
-      consumesList.add(MediaType.APPLICATION_JSON_VALUE);
+
+    @Override
+    public void apply(ApiListingContext context) {
+        RequestMapping annotation = findAnnotation(context.getResourceGroup().getControllerClass(), RequestMapping.class);
+        if (annotation != null) {
+            context.apiListingBuilder()
+                    .appendProduces(newArrayList(annotation.produces()))
+                    .appendConsumes(newArrayList(annotation.consumes()));
+        }
     }
-    context.operationBuilder().consumes(consumesList);
-    context.operationBuilder().produces(producesList);
-  }
 
-  @Override
-  public void apply(ApiListingContext context) {
-    RequestMapping annotation = findAnnotation(context.getResourceGroup().getControllerClass(), RequestMapping.class);
-    if (annotation != null) {
-      context.apiListingBuilder()
-              .appendProduces(newArrayList(annotation.produces()))
-              .appendConsumes(newArrayList(annotation.consumes()));
-    }
-  }
-
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return true;
-  }
-
-  private boolean handlerMethodHasFileParameter(OperationContext context) {
-
-    HandlerMethodResolver handlerMethodResolver = new HandlerMethodResolver(typeResolver);
-    List<ResolvedMethodParameter> methodParameters = handlerMethodResolver.methodParameters(context.getHandlerMethod());
-
-    for (ResolvedMethodParameter resolvedMethodParameter : methodParameters) {
-      if (MultipartFile.class.isAssignableFrom(resolvedMethodParameter.getResolvedParameterType().getErasedType())) {
+    @Override
+    public boolean supports(DocumentationType delimiter) {
         return true;
-      }
     }
-    return false;
-  }
 
-  private Set<String> toSet(Set<MediaType> mediaTypeSet) {
-    Set<String> mediaTypes = newHashSet();
-    for (MediaType mediaType : mediaTypeSet) {
-      mediaTypes.add(mediaType.toString());
+    private boolean handlerMethodHasFileParameter(OperationContext context) {
+
+        HandlerMethodResolver handlerMethodResolver = new HandlerMethodResolver(typeResolver);
+        List<ResolvedMethodParameter> methodParameters = handlerMethodResolver.methodParameters(context.getHandlerMethod());
+
+        for (ResolvedMethodParameter resolvedMethodParameter : methodParameters) {
+            if (MultipartFile.class.isAssignableFrom(resolvedMethodParameter.getResolvedParameterType().getErasedType())) {
+                return true;
+            }
+        }
+        return false;
     }
-    return mediaTypes;
-  }
+
+    private Set<String> toSet(Set<MediaType> mediaTypeSet) {
+        Set<String> mediaTypes = newHashSet();
+        for (MediaType mediaType : mediaTypeSet) {
+            mediaTypes.add(mediaType.toString());
+        }
+        return mediaTypes;
+    }
 }

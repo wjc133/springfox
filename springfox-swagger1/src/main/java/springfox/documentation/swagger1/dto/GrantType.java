@@ -20,20 +20,20 @@
 package springfox.documentation.swagger1.dto;
 
 public class GrantType {
-  private String type;
+    private String type;
 
-  public GrantType() {
-  }
+    public GrantType() {
+    }
 
-  public GrantType(String type) {
-    this.type = type;
-  }
+    public GrantType(String type) {
+        this.type = type;
+    }
 
-  public String getType() {
-    return type;
-  }
+    public String getType() {
+        return type;
+    }
 
-  public void setType(String type) {
-    this.type = type;
-  }
+    public void setType(String type) {
+        this.type = type;
+    }
 }

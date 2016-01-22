@@ -22,35 +22,35 @@ package springfox.documentation.builders;
 import springfox.documentation.service.ImplicitGrant;
 import springfox.documentation.service.LoginEndpoint;
 
-import static springfox.documentation.builders.BuilderDefaults.*;
+import static springfox.documentation.builders.BuilderDefaults.defaultIfAbsent;
 
 public class ImplicitGrantBuilder {
-  private LoginEndpoint loginEndpoint;
-  private String tokenName;
+    private LoginEndpoint loginEndpoint;
+    private String tokenName;
 
-  /**
-   * Updates the login endpoint
-   *
-   * @param loginEndpoint - Contains the login endpoint url
-   * @return this
-   */
-  public ImplicitGrantBuilder loginEndpoint(LoginEndpoint loginEndpoint) {
-    this.loginEndpoint = defaultIfAbsent(loginEndpoint, this.loginEndpoint);
-    return this;
-  }
+    /**
+     * Updates the login endpoint
+     *
+     * @param loginEndpoint - Contains the login endpoint url
+     * @return this
+     */
+    public ImplicitGrantBuilder loginEndpoint(LoginEndpoint loginEndpoint) {
+        this.loginEndpoint = defaultIfAbsent(loginEndpoint, this.loginEndpoint);
+        return this;
+    }
 
-  /**
-   * Updates the token name
-   *
-   * @param tokenName - token name
-   * @return this
-   */
-  public ImplicitGrantBuilder tokenName(String tokenName) {
-    this.tokenName = defaultIfAbsent(tokenName, this.tokenName);
-    return this;
-  }
+    /**
+     * Updates the token name
+     *
+     * @param tokenName - token name
+     * @return this
+     */
+    public ImplicitGrantBuilder tokenName(String tokenName) {
+        this.tokenName = defaultIfAbsent(tokenName, this.tokenName);
+        return this;
+    }
 
-  public ImplicitGrant build() {
-    return new ImplicitGrant(loginEndpoint, tokenName);
-  }
+    public ImplicitGrant build() {
+        return new ImplicitGrant(loginEndpoint, tokenName);
+    }
 }

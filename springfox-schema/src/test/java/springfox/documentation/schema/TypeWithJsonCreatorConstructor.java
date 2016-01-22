@@ -22,20 +22,20 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TypeWithJsonCreatorConstructor {
-  private String foo;
-  private Integer bar;
+    private String foo;
+    private Integer bar;
 
-  @JsonCreator
-  public TypeWithJsonCreatorConstructor(@JsonProperty("foo") String foo, @JsonProperty("bar") Integer bar) {
-    this.foo = foo;
-    this.bar = bar;
-  }
+    @JsonCreator
+    public TypeWithJsonCreatorConstructor(@JsonProperty("foo") String foo, @JsonProperty("bar") Integer bar) {
+        this.foo = foo;
+        this.bar = bar;
+    }
 
-  public String getFoo() {
-    return foo;
-  }
+    public String getFoo() {
+        return foo;
+    }
 
-  public Integer getBar() {
-    return bar;
-  }
+    public Integer getBar() {
+        return bar;
+    }
 }

@@ -23,12 +23,12 @@ import spock.lang.Specification
 import springfox.documentation.service.ResourceOwnerPasswordCredentialsGrant
 
 class ResourceOwnerPasswordCredentialsGrantSpec extends Specification {
-  def "Bean properties are set as expected via constructor" () {
-    when:
-      def grant = new ResourceOwnerPasswordCredentialsGrant("myUrl")
-    then:
-      grant.type == "password"
-    and:
-      grant.tokenUrl == "myUrl"
-  }
+    def "Bean properties are set as expected via constructor"() {
+        when:
+        def grant = new ResourceOwnerPasswordCredentialsGrant("myUrl")
+        then:
+        grant.type == "password"
+        and:
+        grant.tokenUrl == "myUrl"
+    }
 }

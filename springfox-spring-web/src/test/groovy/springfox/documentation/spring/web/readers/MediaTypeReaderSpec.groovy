@@ -32,45 +32,47 @@ import springfox.documentation.spring.web.plugins.DocumentationContextSpec
 import springfox.documentation.spring.web.readers.operation.CachingOperationNameGenerator
 import springfox.documentation.spring.web.scanners.MediaTypeReader
 
-import static com.google.common.collect.Sets.*
+import static com.google.common.collect.Sets.newHashSet
 
 @Mixin([RequestMappingSupport])
 class MediaTypeReaderSpec extends DocumentationContextSpec {
-  MediaTypeReader sut
-  @Shared Set<String> emptySet = newHashSet()
-  def setup() {
-    sut = new MediaTypeReader(new TypeResolver())
-  }
+    MediaTypeReader sut
+    @Shared
+    Set<String> emptySet = newHashSet()
 
-  @Unroll
-  def "should read media types"() {
+    def setup() {
+        sut = new MediaTypeReader(new TypeResolver())
+    }
 
-    given:
-      RequestMappingInfo requestMappingInfo =
-            requestMappingInfo('/somePath',
-                  [
-                        'consumesRequestCondition': consumesRequestCondition(consumes),
-                        'producesRequestCondition': producesRequestCondition(produces)
-                  ]
-            )
-      OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
-              RequestMethod.GET, handlerMethod, 0, requestMappingInfo,
-              context(), "")
-    when:
-      sut.apply(operationContext)
-      def operation = operationContext.operationBuilder().build()
+    @Unroll
+    def "should read media types"() {
 
-    then:
-      operation.consumes == newHashSet(consumes)
-      operation.produces == newHashSet(produces)
+        given:
+        RequestMappingInfo requestMappingInfo =
+                requestMappingInfo('/somePath',
+                        [
+                                'consumesRequestCondition': consumesRequestCondition(consumes),
+                                'producesRequestCondition': producesRequestCondition(produces)
+                        ]
+                )
+        OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
+                RequestMethod.GET, handlerMethod, 0, requestMappingInfo,
+                context(), "")
+        when:
+        sut.apply(operationContext)
+        def operation = operationContext.operationBuilder().build()
 
-    where:
-      consumes                                            | produces                         | handlerMethod
-      ['application/json'] as String[]                    | ['application/json'] as String[] | dummyHandlerMethod()
-      ['application/json'] as String[]                    | ['application/xml'] as String[]  | dummyHandlerMethod()
-      ['multipart/form-data'] as String[]                 | ['application/json'] as String[] | dummyHandlerMethod('methodWithMediaTypeAndFile', MultipartFile)
-      ['application/json', 'application/xml'] as String[] | ['application/xml'] as String[]  | dummyHandlerMethod()
-  }
+        then:
+        operation.consumes == newHashSet(consumes)
+        operation.produces == newHashSet(produces)
+
+        where:
+        consumes                                            | produces                         | handlerMethod
+        ['application/json'] as String[]                    | ['application/json'] as String[] | dummyHandlerMethod()
+        ['application/json'] as String[]                    | ['application/xml'] as String[]  | dummyHandlerMethod()
+        ['multipart/form-data'] as String[]                 | ['application/json'] as String[] | dummyHandlerMethod('methodWithMediaTypeAndFile', MultipartFile)
+        ['application/json', 'application/xml'] as String[] | ['application/xml'] as String[]  | dummyHandlerMethod()
+    }
 
 
 }

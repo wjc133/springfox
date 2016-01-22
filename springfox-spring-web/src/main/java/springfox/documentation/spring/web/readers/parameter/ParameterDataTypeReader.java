@@ -31,35 +31,35 @@ import springfox.documentation.spi.schema.contexts.ModelContext;
 import springfox.documentation.spi.service.ParameterBuilderPlugin;
 import springfox.documentation.spi.service.contexts.ParameterContext;
 
-import static springfox.documentation.schema.ResolvedTypes.*;
-import static springfox.documentation.spi.schema.contexts.ModelContext.*;
+import static springfox.documentation.schema.ResolvedTypes.modelRefFactory;
+import static springfox.documentation.spi.schema.contexts.ModelContext.inputParam;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ParameterDataTypeReader implements ParameterBuilderPlugin {
-  private final TypeNameExtractor nameExtractor;
+    private final TypeNameExtractor nameExtractor;
 
-  @Autowired
-  public ParameterDataTypeReader(TypeNameExtractor nameExtractor) {
-    this.nameExtractor = nameExtractor;
-  }
+    @Autowired
+    public ParameterDataTypeReader(TypeNameExtractor nameExtractor) {
+        this.nameExtractor = nameExtractor;
+    }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return true;
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return true;
+    }
 
-  @Override
-  public void apply(ParameterContext context) {
-    ResolvedMethodParameter methodParameter = context.resolvedMethodParameter();
-    ResolvedType parameterType = methodParameter.getResolvedParameterType();
-    parameterType = context.alternateFor(parameterType);
-    ModelContext modelContext = inputParam(parameterType,
-        context.getDocumentationType(),
-        context.getAlternateTypeProvider(),
-        context.getGenericNamingStrategy());
-    context.parameterBuilder()
-            .type(parameterType)
-            .modelRef(modelRefFactory(modelContext, nameExtractor).apply(parameterType));
-  }
+    @Override
+    public void apply(ParameterContext context) {
+        ResolvedMethodParameter methodParameter = context.resolvedMethodParameter();
+        ResolvedType parameterType = methodParameter.getResolvedParameterType();
+        parameterType = context.alternateFor(parameterType);
+        ModelContext modelContext = inputParam(parameterType,
+                context.getDocumentationType(),
+                context.getAlternateTypeProvider(),
+                context.getGenericNamingStrategy());
+        context.parameterBuilder()
+                .type(parameterType)
+                .modelRef(modelRefFactory(modelContext, nameExtractor).apply(parameterType));
+    }
 }

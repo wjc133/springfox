@@ -24,14 +24,14 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Map;
 
-import static com.google.common.collect.Maps.*;
+import static com.google.common.collect.Maps.newHashMap;
 
 @ApiModel(description = "Describes model with map property")
 public class ModelWithMapProperty {
-  @ApiModelProperty(value = "Map of params to be sent")
-  private final Map<String, String> params = newHashMap();
+    @ApiModelProperty(value = "Map of params to be sent")
+    private final Map<String, String> params = newHashMap();
 
-  public Map<String, String> getParams() {
-    return params;
-  }
+    public Map<String, String> getParams() {
+        return params;
+    }
 }

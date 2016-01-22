@@ -18,104 +18,118 @@
  */
 
 package springfox.documentation.spring.web.scanners
+
+import springfox.documentation.RequestHandler
 import springfox.documentation.RequestHandler
 import springfox.documentation.annotations.ApiIgnore
+import springfox.documentation.annotations.ApiIgnore
+import springfox.documentation.service.ResourceGroup
 import springfox.documentation.service.ResourceGroup
 import springfox.documentation.spring.web.SpringGroupingStrategy
+import springfox.documentation.spring.web.SpringGroupingStrategy
+import springfox.documentation.spring.web.dummy.DummyClass
 import springfox.documentation.spring.web.dummy.DummyClass
 import springfox.documentation.spring.web.dummy.DummyController
+import springfox.documentation.spring.web.dummy.DummyController
+import springfox.documentation.spring.web.mixins.AccessorAssertions
 import springfox.documentation.spring.web.mixins.AccessorAssertions
 import springfox.documentation.spring.web.mixins.RequestMappingSupport
+import springfox.documentation.spring.web.mixins.RequestMappingSupport
 import springfox.documentation.spring.web.paths.RelativePathProvider
+import springfox.documentation.spring.web.paths.RelativePathProvider
+import springfox.documentation.spring.web.plugins.DocumentationContextSpec
 import springfox.documentation.spring.web.plugins.DocumentationContextSpec
 
 import static com.google.common.base.Predicates.*
+import static com.google.common.base.Predicates.not
 import static springfox.documentation.builders.PathSelectors.*
+import static springfox.documentation.builders.PathSelectors.regex
 import static springfox.documentation.builders.RequestHandlerSelectors.*
+import static springfox.documentation.builders.RequestHandlerSelectors.withClassAnnotation
 
 @Mixin([AccessorAssertions, RequestMappingSupport])
 class ApiListingReferenceScannerSpec extends DocumentationContextSpec {
 
-  ApiListingReferenceScanner sut = new ApiListingReferenceScanner()
-  List<RequestHandler> requestHandlers
+    ApiListingReferenceScanner sut = new ApiListingReferenceScanner()
+    List<RequestHandler> requestHandlers
 
-  def setup() {
-    requestHandlers = [Mock(RequestHandler)]
-    contextBuilder.requestHandlers(requestHandlers)
-            .withResourceGroupingStrategy(new SpringGroupingStrategy())
-    plugin
-            .pathProvider(new RelativePathProvider(servletContext()))
-            .select()
-              .apis((not(withClassAnnotation(ApiIgnore))))
-              .paths(regex(".*?"))
-              .build()
-  }
+    def setup() {
+        requestHandlers = [Mock(RequestHandler)]
+        contextBuilder.requestHandlers(requestHandlers)
+                .withResourceGroupingStrategy(new SpringGroupingStrategy())
+        plugin
+                .pathProvider(new RelativePathProvider(servletContext()))
+                .select()
+                .apis((not(withClassAnnotation(ApiIgnore))))
+                .paths(regex(".*?"))
+                .build()
+    }
 
-  def "should not get expected exceptions with invalid constructor params"() {
-    given:
-      contextBuilder.requestHandlers(requestHandlers)
+    def "should not get expected exceptions with invalid constructor params"() {
+        given:
+        contextBuilder.requestHandlers(requestHandlers)
 
-    when:
-      plugin
-              .groupName(groupName)
-              .configure(contextBuilder)
+        when:
+        plugin
+                .groupName(groupName)
+                .configure(contextBuilder)
 
-    then:
-      context().groupName == "default"
-    where:
-      handlerMappings              | resourceGroupingStrategy     | groupName | message
-      [requestMappingInfo("path")] | null                         | null      | "resourceGroupingStrategy is required"
-      [requestMappingInfo("path")] | new SpringGroupingStrategy() | null      | "groupName is required"
-  }
+        then:
+        context().groupName == "default"
+        where:
+        handlerMappings              | resourceGroupingStrategy     | groupName | message
+        [requestMappingInfo("path")] | null                         | null      | "resourceGroupingStrategy is required"
+        [requestMappingInfo("path")] | new SpringGroupingStrategy() | null      | "groupName is required"
+    }
 
 
-  def "grouping of listing references using Spring grouping strategy"() {
-    given:
+    def "grouping of listing references using Spring grouping strategy"() {
+        given:
 
-      requestHandlers = [
-          new RequestHandler(requestMappingInfo("/public/{businessId}"), dummyControllerHandlerMethod()),
-          new RequestHandler(requestMappingInfo("/public/inventoryTypes"), dummyHandlerMethod()),
-          new RequestHandler(requestMappingInfo("/public/{businessId}/accounts"), dummyHandlerMethod()),
-          new RequestHandler(requestMappingInfo("/public/{businessId}/employees"), dummyHandlerMethod()),
-          new RequestHandler(requestMappingInfo("/public/{businessId}/inventory"), dummyHandlerMethod()),
-          new RequestHandler(requestMappingInfo("/public/{businessId}/inventory/products"), dummyHandlerMethod())
-      ]
+        requestHandlers = [
+                new RequestHandler(requestMappingInfo("/public/{businessId}"), dummyControllerHandlerMethod()),
+                new RequestHandler(requestMappingInfo("/public/inventoryTypes"), dummyHandlerMethod()),
+                new RequestHandler(requestMappingInfo("/public/{businessId}/accounts"), dummyHandlerMethod()),
+                new RequestHandler(requestMappingInfo("/public/{businessId}/employees"), dummyHandlerMethod()),
+                new RequestHandler(requestMappingInfo("/public/{businessId}/inventory"), dummyHandlerMethod()),
+                new RequestHandler(requestMappingInfo("/public/{businessId}/inventory/products"), dummyHandlerMethod())
+        ]
 
-    when:
-      contextBuilder.requestHandlers(requestHandlers)
-      contextBuilder.withResourceGroupingStrategy(new SpringGroupingStrategy())
-      plugin.configure(contextBuilder)
-    and:
-      ApiListingReferenceScanResult result = sut.scan(context())
+        when:
+        contextBuilder.requestHandlers(requestHandlers)
+        contextBuilder.withResourceGroupingStrategy(new SpringGroupingStrategy())
+        plugin.configure(contextBuilder)
+        and:
+        ApiListingReferenceScanResult result = sut.scan(context())
 
-    then:
-      result.resourceGroupRequestMappings.size() == 2
-      result.resourceGroupRequestMappings[new ResourceGroup("dummy-controller", DummyController)].size() == 1
-      result.resourceGroupRequestMappings[new ResourceGroup("dummy-class", DummyClass)].size() == 5
-  }
+        then:
+        result.resourceGroupRequestMappings.size() == 2
+        result.resourceGroupRequestMappings[new ResourceGroup("dummy-controller", DummyController)].size() == 1
+        result.resourceGroupRequestMappings[new ResourceGroup("dummy-class", DummyClass)].size() == 5
+    }
 
-  def "grouping of listing references using Class or Api Grouping Strategy"() {
-    given:
+    def "grouping of listing references using Class or Api Grouping Strategy"() {
+        given:
 
-      requestHandlers = [
-        new RequestHandler(requestMappingInfo("/public/{businessId}"), dummyControllerHandlerMethod()),
-        new RequestHandler(requestMappingInfo("/public/inventoryTypes"), dummyHandlerMethod()),
-        new RequestHandler(requestMappingInfo("/public/{businessId}/accounts"), dummyHandlerMethod()),
-        new RequestHandler(requestMappingInfo("/public/{businessId}/employees"), dummyHandlerMethod()),
-        new RequestHandler(requestMappingInfo("/public/{businessId}/inventory"), dummyHandlerMethod()),
-        new RequestHandler(requestMappingInfo("/public/{businessId}/inventory/products"), dummyHandlerMethod())
-      ]
+        requestHandlers = [
+                new RequestHandler(requestMappingInfo("/public/{businessId}"), dummyControllerHandlerMethod()),
+                new RequestHandler(requestMappingInfo("/public/inventoryTypes"), dummyHandlerMethod()),
+                new RequestHandler(requestMappingInfo("/public/{businessId}/accounts"), dummyHandlerMethod()),
+                new RequestHandler(requestMappingInfo("/public/{businessId}/employees"), dummyHandlerMethod()),
+                new RequestHandler(requestMappingInfo("/public/{businessId}/inventory"), dummyHandlerMethod()),
+                new RequestHandler(requestMappingInfo("/public/{businessId}/inventory/products"), dummyHandlerMethod())
+        ]
 
-    when:
-      contextBuilder.requestHandlers(requestHandlers)
-      plugin.configure(contextBuilder)
-    and:
-      ApiListingReferenceScanResult result = sut.scan(context())
+        when:
+        contextBuilder.requestHandlers(requestHandlers)
+        plugin.configure(contextBuilder)
+        and:
+        ApiListingReferenceScanResult result = sut.scan(context())
 
-    then:
-      result.resourceGroupRequestMappings.size() == 2
-      result.resourceGroupRequestMappings[new ResourceGroup("dummy-controller", DummyController)].size() == 1
-      result.resourceGroupRequestMappings[new ResourceGroup("dummy-class", DummyClass)].size() == 5
-  }
+        then:
+        result.resourceGroupRequestMappings.size() == 2
+        result.resourceGroupRequestMappings[new ResourceGroup("dummy-controller", DummyController)].size() == 1
+        result.resourceGroupRequestMappings[new ResourceGroup("dummy-class", DummyClass)].size() == 5
+    }
 
 }

@@ -26,16 +26,16 @@ import springfox.documentation.spi.schema.AlternateTypeProvider;
 
 public class FieldModelProperty extends BaseModelProperty {
 
-  private final ResolvedField childField;
+    private final ResolvedField childField;
 
-  public FieldModelProperty(String fieldName, ResolvedField childField, AlternateTypeProvider alternateTypeProvider) {
+    public FieldModelProperty(String fieldName, ResolvedField childField, AlternateTypeProvider alternateTypeProvider) {
 
-    super(fieldName, alternateTypeProvider);
-    this.childField = childField;
-  }
+        super(fieldName, alternateTypeProvider);
+        this.childField = childField;
+    }
 
-  @Override
-  protected ResolvedType realType() {
-    return childField.getType();
-  }
+    @Override
+    protected ResolvedType realType() {
+        return childField.getType();
+    }
 }

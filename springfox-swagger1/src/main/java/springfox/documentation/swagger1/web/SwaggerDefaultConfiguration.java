@@ -34,34 +34,35 @@ import javax.servlet.ServletContext;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.collect.Lists.*;
-import static springfox.documentation.schema.AlternateTypeRules.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static springfox.documentation.schema.AlternateTypeRules.newMapRule;
+import static springfox.documentation.schema.AlternateTypeRules.newRule;
 
 @Component
 public class SwaggerDefaultConfiguration implements DefaultsProviderPlugin {
 
-  private final DefaultConfiguration defaultConfiguration;
-  private TypeResolver typeResolver;
+    private final DefaultConfiguration defaultConfiguration;
+    private TypeResolver typeResolver;
 
-  @Autowired
-  public SwaggerDefaultConfiguration(Defaults defaults, TypeResolver typeResolver, ServletContext servletContext) {
-    this.typeResolver = typeResolver;
-    defaultConfiguration = new DefaultConfiguration(defaults, typeResolver, servletContext);
-  }
+    @Autowired
+    public SwaggerDefaultConfiguration(Defaults defaults, TypeResolver typeResolver, ServletContext servletContext) {
+        this.typeResolver = typeResolver;
+        defaultConfiguration = new DefaultConfiguration(defaults, typeResolver, servletContext);
+    }
 
-  @Override
-  public DocumentationContextBuilder create(DocumentationType documentationType) {
-    List<AlternateTypeRule> rules = newArrayList();
-    rules.add(newRule(typeResolver.resolve(Map.class, String.class, String.class),
-        typeResolver.resolve(Object.class)));
-    rules.add(newMapRule(WildcardType.class, WildcardType.class));
-    return defaultConfiguration
-        .create(documentationType)
-        .rules(rules);
-  }
+    @Override
+    public DocumentationContextBuilder create(DocumentationType documentationType) {
+        List<AlternateTypeRule> rules = newArrayList();
+        rules.add(newRule(typeResolver.resolve(Map.class, String.class, String.class),
+                typeResolver.resolve(Object.class)));
+        rules.add(newMapRule(WildcardType.class, WildcardType.class));
+        return defaultConfiguration
+                .create(documentationType)
+                .rules(rules);
+    }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return DocumentationType.SWAGGER_12.equals(delimiter);
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return DocumentationType.SWAGGER_12.equals(delimiter);
+    }
 }

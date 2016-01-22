@@ -36,62 +36,62 @@ import javax.servlet.ServletContext
 
 class DocumentationPluginsBootstrapperSpec extends Specification {
 
-  ApplicationContext applicationContext = Mock(ApplicationContext)
-  DocumentationPluginsManager pluginManager = Mock(DocumentationPluginsManager)
-  Documentation group = Mock(Documentation)
-  ApiDocumentationScanner apiGroup = Mock(ApiDocumentationScanner)
-  RequestHandlerProvider handlerProvider = Mock(RequestHandlerProvider)
+    ApplicationContext applicationContext = Mock(ApplicationContext)
+    DocumentationPluginsManager pluginManager = Mock(DocumentationPluginsManager)
+    Documentation group = Mock(Documentation)
+    ApiDocumentationScanner apiGroup = Mock(ApiDocumentationScanner)
+    RequestHandlerProvider handlerProvider = Mock(RequestHandlerProvider)
 
-  ContextRefreshedEvent contextRefreshedEvent = new ContextRefreshedEvent(applicationContext)
-  DocumentationPluginsBootstrapper bootstrapper =
-          new DocumentationPluginsBootstrapper(pluginManager,
-          handlerProvider,
-          new DocumentationCache(),
-          apiGroup,
-          new TypeResolver(),
-          new Defaults(), Mock(ServletContext))
+    ContextRefreshedEvent contextRefreshedEvent = new ContextRefreshedEvent(applicationContext)
+    DocumentationPluginsBootstrapper bootstrapper =
+            new DocumentationPluginsBootstrapper(pluginManager,
+                    handlerProvider,
+                    new DocumentationCache(),
+                    apiGroup,
+                    new TypeResolver(),
+                    new Defaults(), Mock(ServletContext))
 
-  def setup() {
-    pluginManager.createContextBuilder(_, _) >> new DocumentationContextBuilder(DocumentationType.SWAGGER_12)
-    handlerProvider.requestHandlers() >> []
-    apiGroup.scan(_) >> group
-    group.getGroupName() >> "default"
-  }
+    def setup() {
+        pluginManager.createContextBuilder(_, _) >> new DocumentationContextBuilder(DocumentationType.SWAGGER_12)
+        handlerProvider.requestHandlers() >> []
+        apiGroup.scan(_) >> group
+        group.getGroupName() >> "default"
+    }
 
-  def "Custom plugins are sensitive to being enabled or disabled"() {
-    given:
-      Docket enabledPlugin = Mock(Docket)
-      Docket disabledPlugin = Mock(Docket)
-    and:
-      enabledPlugin.groupName >> "enabled"
-      disabledPlugin.groupName >> "disabled"
-      enabledPlugin.documentationType >> DocumentationType.SWAGGER_12
-      disabledPlugin.documentationType >> DocumentationType.SWAGGER_12
-    when:
-      enabledPlugin.isEnabled() >> true
-      disabledPlugin.isEnabled() >> false
-      pluginManager.documentationPlugins() >>  [enabledPlugin, disabledPlugin]
+    def "Custom plugins are sensitive to being enabled or disabled"() {
+        given:
+        Docket enabledPlugin = Mock(Docket)
+        Docket disabledPlugin = Mock(Docket)
+        and:
+        enabledPlugin.groupName >> "enabled"
+        disabledPlugin.groupName >> "disabled"
+        enabledPlugin.documentationType >> DocumentationType.SWAGGER_12
+        disabledPlugin.documentationType >> DocumentationType.SWAGGER_12
+        when:
+        enabledPlugin.isEnabled() >> true
+        disabledPlugin.isEnabled() >> false
+        pluginManager.documentationPlugins() >> [enabledPlugin, disabledPlugin]
 
-    and:
-      bootstrapper.onApplicationEvent(contextRefreshedEvent)
+        and:
+        bootstrapper.onApplicationEvent(contextRefreshedEvent)
 
-    then:
-      1 * enabledPlugin.configure(_)
-      0 * disabledPlugin.configure(_)
-  }
+        then:
+        1 * enabledPlugin.configure(_)
+        0 * disabledPlugin.configure(_)
+    }
 
-  def "Custom plugins are configured"() {
-    given:
-      DocumentationPlugin plugin = Mock(DocumentationPlugin)
-      plugin.documentationType >> DocumentationType.SWAGGER_12
-    when:
-      pluginManager.documentationPlugins() >>  [plugin]
-      plugin.isEnabled() >> true
+    def "Custom plugins are configured"() {
+        given:
+        DocumentationPlugin plugin = Mock(DocumentationPlugin)
+        plugin.documentationType >> DocumentationType.SWAGGER_12
+        when:
+        pluginManager.documentationPlugins() >> [plugin]
+        plugin.isEnabled() >> true
 
-    and:
-      bootstrapper.onApplicationEvent(contextRefreshedEvent)
+        and:
+        bootstrapper.onApplicationEvent(contextRefreshedEvent)
 
-    then:
-      1 * plugin.configure(_)
-  }
+        then:
+        1 * plugin.configure(_)
+    }
 }

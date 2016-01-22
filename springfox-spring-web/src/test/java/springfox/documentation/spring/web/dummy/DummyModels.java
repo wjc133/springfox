@@ -32,116 +32,116 @@ import java.lang.annotation.Target;
 
 public class DummyModels {
 
-  public class BusinessModel {
-    private String name;
-    private String numEmployees;
+    public class BusinessModel {
+        private String name;
+        private String numEmployees;
 
-    public BusinessModel() {
+        public BusinessModel() {
+        }
+
+        public String getNumEmployees() {
+            return numEmployees;
+        }
+
+        public void setNumEmployees(String numEmployees) {
+            this.numEmployees = numEmployees;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 
-    public String getNumEmployees() {
-      return numEmployees;
+    public class AnnotatedBusinessModel {
+        //    @ApiModelProperty(value = "The name of this business", required = true)
+        private String name;
+        //        @ApiModelProperty(value = "Total number of current employees")
+        private String numEmployees;
+
+        @ApiModelProperty(value = "The name of this business", required = true)
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        @ApiModelProperty(value = "Total number of current employees")
+        public String getNumEmployees() {
+            return numEmployees;
+        }
+
+        public void setNumEmployees(String numEmployees) {
+            this.numEmployees = numEmployees;
+        }
     }
 
-    public void setNumEmployees(String numEmployees) {
-      this.numEmployees = numEmployees;
+    @ApiModel(value = "AlternateBusinessModelName", description = "Swagger annotated model")
+    public class NamedBusinessModel extends BusinessModel {
     }
 
-    public String getName() {
-      return name;
+    public class CorporationModel extends BusinessModel {
     }
 
-    public void setName(String name) {
-      this.name = name;
-    }
-  }
+    public class Paginated<T> {
 
-  public class AnnotatedBusinessModel {
-//    @ApiModelProperty(value = "The name of this business", required = true)
-    private String name;
-    //        @ApiModelProperty(value = "Total number of current employees")
-    private String numEmployees;
-
-    @ApiModelProperty(value = "The name of this business", required = true)
-    public String getName() {
-      return name;
     }
 
-    public void setName(String name) {
-      this.name = name;
+    public class FunkyBusiness {
+        private String id;
+        private String name;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 
-    @ApiModelProperty(value = "Total number of current employees")
-    public String getNumEmployees() {
-      return numEmployees;
+    public class ModelWithSerializeOnlyProperty {
+        private String alwaysVisible;
+        @JsonIgnore
+        private Long visibleForSerialize;
+
+        public String getAlwaysVisible() {
+            return alwaysVisible;
+        }
+
+
+        public void setAlwaysVisible(String alwaysVisible) {
+            this.alwaysVisible = alwaysVisible;
+        }
+
+        @JsonProperty
+        @JsonInclude
+        public Long getVisibleForSerialize() {
+            return visibleForSerialize;
+        }
+
+        @JsonIgnore
+        public void setVisibleForSerialize(Long visibleForSerialize) {
+            this.visibleForSerialize = visibleForSerialize;
+        }
     }
 
-    public void setNumEmployees(String numEmployees) {
-      this.numEmployees = numEmployees;
+    @Target(ElementType.PARAMETER)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Ignorable {
     }
-  }
-
-  @ApiModel(value = "AlternateBusinessModelName", description = "Swagger annotated model")
-  public class NamedBusinessModel extends BusinessModel {
-  }
-
-  public class CorporationModel extends BusinessModel {
-  }
-
-  public class Paginated<T> {
-
-  }
-
-  public class FunkyBusiness {
-    private String id;
-    private String name;
-
-    public String getId() {
-      return id;
-    }
-
-    public void setId(String id) {
-      this.id = id;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public void setName(String name) {
-      this.name = name;
-    }
-  }
-
-  public class ModelWithSerializeOnlyProperty {
-    private String alwaysVisible;
-    @JsonIgnore
-    private Long visibleForSerialize;
-
-    public String getAlwaysVisible() {
-      return alwaysVisible;
-    }
-
-
-    public void setAlwaysVisible(String alwaysVisible) {
-      this.alwaysVisible = alwaysVisible;
-    }
-
-    @JsonProperty
-    @JsonInclude
-    public Long getVisibleForSerialize() {
-      return visibleForSerialize;
-    }
-
-    @JsonIgnore
-    public void setVisibleForSerialize(Long visibleForSerialize) {
-      this.visibleForSerialize = visibleForSerialize;
-    }
-  }
-
-  @Target(ElementType.PARAMETER)
-  @Retention(RetentionPolicy.RUNTIME)
-  public @interface Ignorable {
-  }
 
 }

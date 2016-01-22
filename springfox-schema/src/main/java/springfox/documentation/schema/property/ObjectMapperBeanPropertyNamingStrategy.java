@@ -40,46 +40,46 @@ import springfox.documentation.schema.configuration.ObjectMapperConfigured;
 public class ObjectMapperBeanPropertyNamingStrategy implements BeanPropertyNamingStrategy,
         ApplicationListener<ObjectMapperConfigured> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ObjectMapperBeanPropertyNamingStrategy.class);
-  private ObjectMapper objectMapper;
+    private static final Logger LOG = LoggerFactory.getLogger(ObjectMapperBeanPropertyNamingStrategy.class);
+    private ObjectMapper objectMapper;
 
-  public ObjectMapperBeanPropertyNamingStrategy() {
-  }
+    public ObjectMapperBeanPropertyNamingStrategy() {
+    }
 
-  @Override
-  public String nameForSerialization(final BeanPropertyDefinition beanProperty) {
+    @Override
+    public String nameForSerialization(final BeanPropertyDefinition beanProperty) {
 
-    SerializationConfig serializationConfig = objectMapper.getSerializationConfig();
+        SerializationConfig serializationConfig = objectMapper.getSerializationConfig();
 
-    Optional<PropertyNamingStrategy> namingStrategy
-            = Optional.fromNullable(serializationConfig.getPropertyNamingStrategy());
-    String newName = namingStrategy
-            .transform(BeanPropertyDefinitions.overTheWireName(beanProperty, serializationConfig))
-            .or(beanProperty.getName());
+        Optional<PropertyNamingStrategy> namingStrategy
+                = Optional.fromNullable(serializationConfig.getPropertyNamingStrategy());
+        String newName = namingStrategy
+                .transform(BeanPropertyDefinitions.overTheWireName(beanProperty, serializationConfig))
+                .or(beanProperty.getName());
 
-    LOG.debug("Name '{}' renamed to '{}'", beanProperty.getName(), newName);
+        LOG.debug("Name '{}' renamed to '{}'", beanProperty.getName(), newName);
 
-    return newName;
-  }
+        return newName;
+    }
 
-  @Override
-  public String nameForDeserialization(final BeanPropertyDefinition beanProperty) {
+    @Override
+    public String nameForDeserialization(final BeanPropertyDefinition beanProperty) {
 
-    DeserializationConfig deserializationConfig = objectMapper.getDeserializationConfig();
+        DeserializationConfig deserializationConfig = objectMapper.getDeserializationConfig();
 
-    Optional<PropertyNamingStrategy> namingStrategy
-            = Optional.fromNullable(deserializationConfig.getPropertyNamingStrategy());
-    String newName = namingStrategy
-            .transform(BeanPropertyDefinitions.overTheWireName(beanProperty, deserializationConfig))
-            .or(beanProperty.getName());
+        Optional<PropertyNamingStrategy> namingStrategy
+                = Optional.fromNullable(deserializationConfig.getPropertyNamingStrategy());
+        String newName = namingStrategy
+                .transform(BeanPropertyDefinitions.overTheWireName(beanProperty, deserializationConfig))
+                .or(beanProperty.getName());
 
-    LOG.debug("Name '{}' renamed to '{}'", beanProperty.getName(), newName);
+        LOG.debug("Name '{}' renamed to '{}'", beanProperty.getName(), newName);
 
-    return newName;
-  }
+        return newName;
+    }
 
-  @Override
-  public void onApplicationEvent(ObjectMapperConfigured event) {
-    this.objectMapper = event.getObjectMapper();
-  }
+    @Override
+    public void onApplicationEvent(ObjectMapperConfigured event) {
+        this.objectMapper = event.getObjectMapper();
+    }
 }

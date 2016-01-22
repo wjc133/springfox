@@ -19,13 +19,13 @@
 package springfox.documentation.spring.web.dummy.models;
 
 public class ModelWithArrayOfArrays {
-  private int[][] arrayOfArrayOfInts;
+    private int[][] arrayOfArrayOfInts;
 
-  public int[][] getArrayOfArrayOfInts() {
-    return arrayOfArrayOfInts;
-  }
+    public int[][] getArrayOfArrayOfInts() {
+        return arrayOfArrayOfInts;
+    }
 
-  public void setArrayOfArrayOfInts(int[][] arrayOfArrayOfInts) {
-    this.arrayOfArrayOfInts = arrayOfArrayOfInts;
-  }
+    public void setArrayOfArrayOfInts(int[][] arrayOfArrayOfInts) {
+        this.arrayOfArrayOfInts = arrayOfArrayOfInts;
+    }
 }

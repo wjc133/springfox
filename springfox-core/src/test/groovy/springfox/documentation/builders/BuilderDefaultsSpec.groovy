@@ -23,42 +23,42 @@ import com.fasterxml.classmate.TypeResolver
 import org.joda.time.LocalDate
 import spock.lang.Specification
 
-import static BuilderDefaults.*
+import static springfox.documentation.builders.BuilderDefaults.*
 
 class BuilderDefaultsSpec extends Specification {
-  def "BuilderDefaults is a static class" () {
-    when:
-      new BuilderDefaults()
-    then:
-      thrown(UnsupportedOperationException)
-  }
+    def "BuilderDefaults is a static class"() {
+        when:
+        new BuilderDefaults()
+        then:
+        thrown(UnsupportedOperationException)
+    }
 
-  def "defaultIfAbsent returns default value if newValue is null" () {
-    expect:
-      defaultIfAbsent('newValue', 'oldValue') == 'newValue'
-      defaultIfAbsent('newValue', null) == 'newValue'
-      defaultIfAbsent(null, 'oldValue') == 'oldValue'
-      defaultIfAbsent(null, null) == null
-  }
+    def "defaultIfAbsent returns default value if newValue is null"() {
+        expect:
+        defaultIfAbsent('newValue', 'oldValue') == 'newValue'
+        defaultIfAbsent('newValue', null) == 'newValue'
+        defaultIfAbsent(null, 'oldValue') == 'oldValue'
+        defaultIfAbsent(null, null) == null
+    }
 
-  def "replaceIfMoreSpecific returns default value if newValue is null or resolves to Object" () {
-    given:
-      def resolver = new TypeResolver()
-    expect:
-      replaceIfMoreSpecific(resolver.resolve(String), resolver.resolve(LocalDate)).erasedType == String
-      replaceIfMoreSpecific(resolver.resolve(Object), resolver.resolve(LocalDate)).erasedType == LocalDate
-      replaceIfMoreSpecific(resolver.resolve(String), null).erasedType == String
-      replaceIfMoreSpecific(resolver.resolve(Object), null).erasedType == Object
-      replaceIfMoreSpecific(resolver.resolve(LocalDate), resolver.resolve(Object)).erasedType == LocalDate
-      replaceIfMoreSpecific(null, resolver.resolve(Object)).erasedType == Object
-      replaceIfMoreSpecific(null, null) == null
-  }
+    def "replaceIfMoreSpecific returns default value if newValue is null or resolves to Object"() {
+        given:
+        def resolver = new TypeResolver()
+        expect:
+        replaceIfMoreSpecific(resolver.resolve(String), resolver.resolve(LocalDate)).erasedType == String
+        replaceIfMoreSpecific(resolver.resolve(Object), resolver.resolve(LocalDate)).erasedType == LocalDate
+        replaceIfMoreSpecific(resolver.resolve(String), null).erasedType == String
+        replaceIfMoreSpecific(resolver.resolve(Object), null).erasedType == Object
+        replaceIfMoreSpecific(resolver.resolve(LocalDate), resolver.resolve(Object)).erasedType == LocalDate
+        replaceIfMoreSpecific(null, resolver.resolve(Object)).erasedType == Object
+        replaceIfMoreSpecific(null, null) == null
+    }
 
-  def "nullToEmptyList transforms null values to empty list" () {
-    expect:
-      nullToEmptyList([]).size() == 0
-      nullToEmptyList(['string']).size() == 1
-      List nullList = null
-      nullToEmptyList(nullList).size() == 0
-  }
+    def "nullToEmptyList transforms null values to empty list"() {
+        expect:
+        nullToEmptyList([]).size() == 0
+        nullToEmptyList(['string']).size() == 1
+        List nullList = null
+        nullToEmptyList(nullList).size() == 0
+    }
 }

@@ -27,53 +27,53 @@ import springfox.documentation.service.VendorExtension;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.base.Strings.*;
-import static com.google.common.collect.FluentIterable.*;
-import static com.google.common.collect.Maps.*;
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.FluentIterable.from;
+import static com.google.common.collect.Maps.newHashMap;
 
 @Mapper
 public class VendorExtensionsMapper {
 
-  public Map<String, Object> mapExtensions(List<VendorExtension> from) {
-    Map<String, Object> extensions = newHashMap();
-    Iterable<Map<String, Object>> objectExtensions = from(from)
-        .filter(ObjectVendorExtension.class)
-        .transform(toExtensionMap());
-    for (Map<String, Object> each : objectExtensions) {
-      extensions.putAll(each);
-    }
-    Iterable<StringVendorExtension> propertyExtensions = from(from)
-        .filter(StringVendorExtension.class);
-    for (StringVendorExtension each : propertyExtensions) {
-      extensions.put(each.getName(), each.getValue());
-    }
-    return extensions;
-  }
-
-  private Function<ObjectVendorExtension, Map<String, Object>> toExtensionMap() {
-    return new Function<ObjectVendorExtension, Map<String, Object>>() {
-      @Override
-      public Map<String, Object> apply(ObjectVendorExtension input) {
-        if (!isNullOrEmpty(input.getName())) {
-          Map<String, Object> map = newHashMap();
-          map.put(input.getName(), mapExtensions(input.getValue()));
-          return map;
+    public Map<String, Object> mapExtensions(List<VendorExtension> from) {
+        Map<String, Object> extensions = newHashMap();
+        Iterable<Map<String, Object>> objectExtensions = from(from)
+                .filter(ObjectVendorExtension.class)
+                .transform(toExtensionMap());
+        for (Map<String, Object> each : objectExtensions) {
+            extensions.putAll(each);
         }
-        return propertiesAsMap(input);
-      }
-    };
-  }
+        Iterable<StringVendorExtension> propertyExtensions = from(from)
+                .filter(StringVendorExtension.class);
+        for (StringVendorExtension each : propertyExtensions) {
+            extensions.put(each.getName(), each.getValue());
+        }
+        return extensions;
+    }
 
-  private Map<String, Object> propertiesAsMap(ObjectVendorExtension input) {
-    Map<String, Object> properties = newHashMap();
-    Iterable<StringVendorExtension> stringExtensions = from(input.getValue()).filter(StringVendorExtension.class);
-    for (StringVendorExtension property : stringExtensions) {
-      properties.put(property.getName(), property.getValue());
+    private Function<ObjectVendorExtension, Map<String, Object>> toExtensionMap() {
+        return new Function<ObjectVendorExtension, Map<String, Object>>() {
+            @Override
+            public Map<String, Object> apply(ObjectVendorExtension input) {
+                if (!isNullOrEmpty(input.getName())) {
+                    Map<String, Object> map = newHashMap();
+                    map.put(input.getName(), mapExtensions(input.getValue()));
+                    return map;
+                }
+                return propertiesAsMap(input);
+            }
+        };
     }
-    Iterable<ObjectVendorExtension> objectExtensions = from(input.getValue()).filter(ObjectVendorExtension.class);
-    for (ObjectVendorExtension property : objectExtensions) {
-      properties.put(property.getName(), mapExtensions(property.getValue()));
+
+    private Map<String, Object> propertiesAsMap(ObjectVendorExtension input) {
+        Map<String, Object> properties = newHashMap();
+        Iterable<StringVendorExtension> stringExtensions = from(input.getValue()).filter(StringVendorExtension.class);
+        for (StringVendorExtension property : stringExtensions) {
+            properties.put(property.getName(), property.getValue());
+        }
+        Iterable<ObjectVendorExtension> objectExtensions = from(input.getValue()).filter(ObjectVendorExtension.class);
+        for (ObjectVendorExtension property : objectExtensions) {
+            properties.put(property.getName(), mapExtensions(property.getValue()));
+        }
+        return properties;
     }
-    return properties;
-  }
 }

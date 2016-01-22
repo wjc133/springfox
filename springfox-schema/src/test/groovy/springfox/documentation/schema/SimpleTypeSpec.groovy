@@ -20,122 +20,129 @@
 package springfox.documentation.schema
 
 import spock.lang.Ignore
+import spock.lang.Ignore
 import spock.lang.Unroll
+import spock.lang.Unroll
+import springfox.documentation.schema.mixins.TypesForTestingSupport
 import springfox.documentation.schema.mixins.TypesForTestingSupport
 
 import static springfox.documentation.spi.DocumentationType.*
+import static springfox.documentation.spi.DocumentationType.SWAGGER_12
 import static springfox.documentation.spi.schema.contexts.ModelContext.*
+import static springfox.documentation.spi.schema.contexts.ModelContext.inputParam
+import static springfox.documentation.spi.schema.contexts.ModelContext.returnValue
 
 @Mixin([TypesForTestingSupport, AlternateTypesSupport])
 class SimpleTypeSpec extends SchemaSpecification {
-  def namingStrategy = new CodeGenGenericTypeNamingStrategy()
-  @Unroll
-  def "simple type [#qualifiedType] is rendered as [#type]"() {
-    given:
-      Model asInput = modelProvider.modelFor(inputParam(simpleType(), SWAGGER_12, alternateTypeProvider(), namingStrategy)).get()
-      Model asReturn = modelProvider.modelFor(returnValue(simpleType(), SWAGGER_12, alternateTypeProvider(), namingStrategy)).get()
+    def namingStrategy = new CodeGenGenericTypeNamingStrategy()
 
-    expect:
-      asInput.getName() == "SimpleType"
-      asInput.getProperties().containsKey(property)
-      def modelProperty = asInput.getProperties().get(property)
-      modelProperty.type.erasedType == type
-      modelProperty.getQualifiedType() == qualifiedType
-      def item = modelProperty.modelRef
-      item.type == Types.typeNameFor(type)
-      !item.collection
-      item.itemType == null
+    @Unroll
+    def "simple type [#qualifiedType] is rendered as [#type]"() {
+        given:
+        Model asInput = modelProvider.modelFor(inputParam(simpleType(), SWAGGER_12, alternateTypeProvider(), namingStrategy)).get()
+        Model asReturn = modelProvider.modelFor(returnValue(simpleType(), SWAGGER_12, alternateTypeProvider(), namingStrategy)).get()
 
-      asReturn.getName() == "SimpleType"
-      asReturn.getProperties().containsKey(property)
-      def retModelProperty = asReturn.getProperties().get(property)
-      retModelProperty.type.erasedType == type
-      retModelProperty.getQualifiedType() == qualifiedType
-      def retItem = retModelProperty.modelRef
-      retItem.type == Types.typeNameFor(type)
-      !retItem.collection
-      retItem.itemType == null
+        expect:
+        asInput.getName() == "SimpleType"
+        asInput.getProperties().containsKey(property)
+        def modelProperty = asInput.getProperties().get(property)
+        modelProperty.type.erasedType == type
+        modelProperty.getQualifiedType() == qualifiedType
+        def item = modelProperty.modelRef
+        item.type == Types.typeNameFor(type)
+        !item.collection
+        item.itemType == null
 
-    where:
-      property          | type    | qualifiedType
-      "aString"         | String  | "java.lang.String"
-      "aByte"           | byte    | "byte"
-      "aBoolean"        | boolean | "boolean"
-      "aShort"          | short   | "int"
-      "anInt"           | int     | "int"
-      "aLong"           | long    | "long"
-      "aFloat"          | float   | "float"
-      "aDouble"         | double  | "double"
-      "anObjectByte"    | Byte    | "java.lang.Byte"
-      "anObjectBoolean" | Boolean | "java.lang.Boolean"
-      "anObjectShort"   | Short   | "java.lang.Short"
-      "anObjectInt"     | Integer | "java.lang.Integer"
-      "anObjectLong"    | Long    | "java.lang.Long"
-      "anObjectFloat"   | Float   | "java.lang.Float"
-      "anObjectDouble"  | Double  | "java.lang.Double"
-      "currency"        | Currency| "java.util.Currency"
-      "uuid"            | UUID    | "java.util.UUID"
-  }
+        asReturn.getName() == "SimpleType"
+        asReturn.getProperties().containsKey(property)
+        def retModelProperty = asReturn.getProperties().get(property)
+        retModelProperty.type.erasedType == type
+        retModelProperty.getQualifiedType() == qualifiedType
+        def retItem = retModelProperty.modelRef
+        retItem.type == Types.typeNameFor(type)
+        !retItem.collection
+        retItem.itemType == null
 
-  @Ignore
-  def "type with constructor all properties are inferred"() {
-    given:
-      Model asInput = modelProvider.modelFor(inputParam(typeWithConstructor(), documentationType,
-              alternateTypeProvider(), namingStrategy)).get()
-      Model asReturn = modelProvider.modelFor(returnValue(typeWithConstructor(), documentationType,
-              alternateTypeProvider(), namingStrategy)).get()
+        where:
+        property          | type     | qualifiedType
+        "aString"         | String   | "java.lang.String"
+        "aByte"           | byte     | "byte"
+        "aBoolean"        | boolean  | "boolean"
+        "aShort"          | short    | "int"
+        "anInt"           | int      | "int"
+        "aLong"           | long     | "long"
+        "aFloat"          | float    | "float"
+        "aDouble"         | double   | "double"
+        "anObjectByte"    | Byte     | "java.lang.Byte"
+        "anObjectBoolean" | Boolean  | "java.lang.Boolean"
+        "anObjectShort"   | Short    | "java.lang.Short"
+        "anObjectInt"     | Integer  | "java.lang.Integer"
+        "anObjectLong"    | Long     | "java.lang.Long"
+        "anObjectFloat"   | Float    | "java.lang.Float"
+        "anObjectDouble"  | Double   | "java.lang.Double"
+        "currency"        | Currency | "java.util.Currency"
+        "uuid"            | UUID     | "java.util.UUID"
+    }
 
-    expect:
-      asInput.getName() == "TypeWithConstructor"
-      asInput.getProperties().containsKey(property)
-      def modelProperty = asInput.getProperties().get(property)
-      modelProperty.getType().erasedType == type
-      modelProperty.getQualifiedType() == qualifiedType
-      def item = modelProperty.getModelRef()
-      item.type == Types.typeNameFor(type)
-      !item.collection
-      item.itemType == null
+    @Ignore
+    def "type with constructor all properties are inferred"() {
+        given:
+        Model asInput = modelProvider.modelFor(inputParam(typeWithConstructor(), documentationType,
+                alternateTypeProvider(), namingStrategy)).get()
+        Model asReturn = modelProvider.modelFor(returnValue(typeWithConstructor(), documentationType,
+                alternateTypeProvider(), namingStrategy)).get()
 
-      asReturn.getName() == "TypeWithConstructor"
-      !asReturn.getProperties().containsKey(property)
+        expect:
+        asInput.getName() == "TypeWithConstructor"
+        asInput.getProperties().containsKey(property)
+        def modelProperty = asInput.getProperties().get(property)
+        modelProperty.getType().erasedType == type
+        modelProperty.getQualifiedType() == qualifiedType
+        def item = modelProperty.getModelRef()
+        item.type == Types.typeNameFor(type)
+        !item.collection
+        item.itemType == null
 
-    where:
-      property      | type     | qualifiedType
-      "stringValue" | String   | "java.lang.String"
-  }
+        asReturn.getName() == "TypeWithConstructor"
+        !asReturn.getProperties().containsKey(property)
 
-  def "Types with properties aliased using JsonProperty annotation"() {
-    given:
-      Model asInput = modelProvider.modelFor(inputParam(typeWithJsonPropertyAnnotation(), documentationType,
-              alternateTypeProvider(), namingStrategy)).get()
-      Model asReturn = modelProvider.modelFor(returnValue(typeWithJsonPropertyAnnotation(), documentationType,
-              alternateTypeProvider(), namingStrategy)).get()
+        where:
+        property      | type   | qualifiedType
+        "stringValue" | String | "java.lang.String"
+    }
 
-    expect:
-      asInput.getName() == "TypeWithJsonProperty"
-      asInput.getProperties().containsKey(property)
-      def modelProperty = asInput.getProperties().get(property)
-      modelProperty.type.erasedType == type
-      modelProperty.getQualifiedType() == qualifiedType
-      def item = modelProperty.getModelRef()
-      item.type == Types.typeNameFor(type)
-      !item.collection
-      item.itemType == null
+    def "Types with properties aliased using JsonProperty annotation"() {
+        given:
+        Model asInput = modelProvider.modelFor(inputParam(typeWithJsonPropertyAnnotation(), documentationType,
+                alternateTypeProvider(), namingStrategy)).get()
+        Model asReturn = modelProvider.modelFor(returnValue(typeWithJsonPropertyAnnotation(), documentationType,
+                alternateTypeProvider(), namingStrategy)).get()
 
-      asReturn.getName() == "TypeWithJsonProperty"
-      asReturn.getProperties().containsKey(property)
-      def retModelProperty = asReturn.getProperties().get(property)
-      retModelProperty.type.erasedType == type
-      retModelProperty.getQualifiedType() == qualifiedType
-      def retItem = retModelProperty.getModelRef()
-      retItem.type == Types.typeNameFor(type)
-      !retItem.collection
-      retItem.itemType == null
+        expect:
+        asInput.getName() == "TypeWithJsonProperty"
+        asInput.getProperties().containsKey(property)
+        def modelProperty = asInput.getProperties().get(property)
+        modelProperty.type.erasedType == type
+        modelProperty.getQualifiedType() == qualifiedType
+        def item = modelProperty.getModelRef()
+        item.type == Types.typeNameFor(type)
+        !item.collection
+        item.itemType == null
 
-    where:
-      property             | type     | qualifiedType
-      "some_odd_ball_name" | String   | "java.lang.String"
-  }
+        asReturn.getName() == "TypeWithJsonProperty"
+        asReturn.getProperties().containsKey(property)
+        def retModelProperty = asReturn.getProperties().get(property)
+        retModelProperty.type.erasedType == type
+        retModelProperty.getQualifiedType() == qualifiedType
+        def retItem = retModelProperty.getModelRef()
+        retItem.type == Types.typeNameFor(type)
+        !retItem.collection
+        retItem.itemType == null
+
+        where:
+        property             | type   | qualifiedType
+        "some_odd_ball_name" | String | "java.lang.String"
+    }
 
 
 }

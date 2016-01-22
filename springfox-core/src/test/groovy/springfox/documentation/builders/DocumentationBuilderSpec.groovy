@@ -18,6 +18,7 @@
  */
 
 package springfox.documentation.builders
+
 import com.google.common.collect.LinkedListMultimap
 import com.google.common.collect.Multimap
 import spock.lang.Specification
@@ -25,68 +26,68 @@ import springfox.documentation.service.ApiListing
 import springfox.documentation.service.ResourceListing
 
 class DocumentationBuilderSpec extends Specification {
-  def "Setting properties on the builder with non-null values"() {
-    given:
-      def sut = new DocumentationBuilder()
-    when:
-      sut."$builderMethod"(value)
-    and:
-      def built = sut.build()
-    then:
-      if (value instanceof Set) {
-        assert built."$property".containsAll(value)
-      } else if (value instanceof Multimap) {
-        assert built."$property".keySet().containsAll(value.keySet())
-      } else {
-        assert built."$property" == value
-      }
+    def "Setting properties on the builder with non-null values"() {
+        given:
+        def sut = new DocumentationBuilder()
+        when:
+        sut."$builderMethod"(value)
+        and:
+        def built = sut.build()
+        then:
+        if (value instanceof Set) {
+            assert built."$property".containsAll(value)
+        } else if (value instanceof Multimap) {
+            assert built."$property".keySet().containsAll(value.keySet())
+        } else {
+            assert built."$property" == value
+        }
 
-    where:
-      builderMethod                     | value                          | property
-      'name'                            | 'group1'                       | 'groupName'
-      'apiListingsByResourceGroupName'  | multiMap()                     | 'apiListings'
-      'resourceListing'                 | Mock(ResourceListing)          | 'resourceListing'
-      'basePath'                        | 'urn:some-path'                | 'basePath'
-      'produces'                        | ['application/json'] as Set    | 'produces'
-      'consumes'                        | ['application/json'] as Set    | 'consumes'
-      'host'                            | 'host1'                        | 'host'
-      'schemes'                         | ['http']  as Set               | 'schemes'
-      'tags'                            | ['pet'] as Set                 | 'tags'
-  }
+        where:
+        builderMethod                    | value                       | property
+        'name'                           | 'group1'                    | 'groupName'
+        'apiListingsByResourceGroupName' | multiMap()                  | 'apiListings'
+        'resourceListing'                | Mock(ResourceListing)       | 'resourceListing'
+        'basePath'                       | 'urn:some-path'             | 'basePath'
+        'produces'                       | ['application/json'] as Set | 'produces'
+        'consumes'                       | ['application/json'] as Set | 'consumes'
+        'host'                           | 'host1'                     | 'host'
+        'schemes'                        | ['http'] as Set             | 'schemes'
+        'tags'                           | ['pet'] as Set              | 'tags'
+    }
 
-  Multimap<String, ApiListing> multiMap() {
-    Multimap<String, ApiListing> multiMap = LinkedListMultimap.create()
-    multiMap.put("group1", Mock(ApiListing))
-    return multiMap
-  }
+    Multimap<String, ApiListing> multiMap() {
+        Multimap<String, ApiListing> multiMap = LinkedListMultimap.create()
+        multiMap.put("group1", Mock(ApiListing))
+        return multiMap
+    }
 
-  def "Setting builder properties to null values preserves existing values"() {
-    given:
-      def sut = new DocumentationBuilder()
-    when:
-      sut."$builderMethod"(value)
-      sut."$builderMethod"(null)
-    and:
-      def built = sut.build()
-    then:
-      if (value instanceof Set) {
-        assert built."$property".containsAll(value)
-      } else if (value instanceof Multimap) {
-        assert built."$property".keySet().containsAll(value.keySet())
-      } else {
-        assert built."$property" == value
-      }
+    def "Setting builder properties to null values preserves existing values"() {
+        given:
+        def sut = new DocumentationBuilder()
+        when:
+        sut."$builderMethod"(value)
+        sut."$builderMethod"(null)
+        and:
+        def built = sut.build()
+        then:
+        if (value instanceof Set) {
+            assert built."$property".containsAll(value)
+        } else if (value instanceof Multimap) {
+            assert built."$property".keySet().containsAll(value.keySet())
+        } else {
+            assert built."$property" == value
+        }
 
-    where:
-      builderMethod                     | value                           | property
-      'name'                            | 'group1'                        | 'groupName'
-      'apiListingsByResourceGroupName'  | multiMap()                      | 'apiListings'
-      'resourceListing'                 | Mock(ResourceListing)           | 'resourceListing'
-      'basePath'                        | 'urn:some-path'                 | 'basePath'
-      'produces'                        | ['application/json'] as Set     | 'produces'
-      'consumes'                        | ['application/json'] as Set     | 'consumes'
-      'host'                            | 'host1'                         | 'host'
-      'schemes'                         | ['http']  as Set                | 'schemes'
-      'tags'                            | ['pet'] as Set                  | 'tags'
-  }
+        where:
+        builderMethod                    | value                       | property
+        'name'                           | 'group1'                    | 'groupName'
+        'apiListingsByResourceGroupName' | multiMap()                  | 'apiListings'
+        'resourceListing'                | Mock(ResourceListing)       | 'resourceListing'
+        'basePath'                       | 'urn:some-path'             | 'basePath'
+        'produces'                       | ['application/json'] as Set | 'produces'
+        'consumes'                       | ['application/json'] as Set | 'consumes'
+        'host'                           | 'host1'                     | 'host'
+        'schemes'                        | ['http'] as Set             | 'schemes'
+        'tags'                           | ['pet'] as Set              | 'tags'
+    }
 }

@@ -19,13 +19,13 @@
 package springfox.documentation.schema;
 
 public class ToSubstitute {
-  private String stringValue;
+    private String stringValue;
 
-  public String getStringValue() {
-    return stringValue;
-  }
+    public String getStringValue() {
+        return stringValue;
+    }
 
-  public void setStringValue(String stringValue) {
-    this.stringValue = stringValue;
-  }
+    public void setStringValue(String stringValue) {
+        this.stringValue = stringValue;
+    }
 }

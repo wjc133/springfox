@@ -18,62 +18,63 @@
  */
 
 package springfox.documentation.spring.web.mixins
+
 import springfox.documentation.service.*
 
-import static com.google.common.collect.Lists.*
+import static com.google.common.collect.Lists.newArrayList
 
 class AuthSupport {
-  def defaultAuth() {
-    AuthorizationScope authorizationScope =
-            new AuthorizationScope("global", "accessEverything")
-    AuthorizationScope[] authorizationScopes = [authorizationScope] as AuthorizationScope[];
-    newArrayList(new SecurityReference("oauth2", authorizationScopes))
-  }
+    def defaultAuth() {
+        AuthorizationScope authorizationScope =
+                new AuthorizationScope("global", "accessEverything")
+        AuthorizationScope[] authorizationScopes = [authorizationScope] as AuthorizationScope[];
+        newArrayList(new SecurityReference("oauth2", authorizationScopes))
+    }
 
-  def authorizationTypes() {
+    def authorizationTypes() {
 
-    List<AuthorizationScope> authorizationScopeList = newArrayList();
-    authorizationScopeList.add(new AuthorizationScope("global", "access all"));
-
-
-    List<GrantType> grantTypes = newArrayList();
-
-    LoginEndpoint loginEndpoint = new LoginEndpoint("http://petstore.swagger.io/oauth/dialog");
-    grantTypes.add(new ImplicitGrant(loginEndpoint, "access_token"));
+        List<AuthorizationScope> authorizationScopeList = newArrayList();
+        authorizationScopeList.add(new AuthorizationScope("global", "access all"));
 
 
-    TokenRequestEndpoint tokenRequestEndpoint =
-            new TokenRequestEndpoint("http://petstore.swagger.io/oauth/requestToken", "client_id", "client_secret")
-    TokenEndpoint tokenEndpoint =
-            new TokenEndpoint("http://petstore.swagger.io/oauth/token", "auth_code")
+        List<GrantType> grantTypes = newArrayList();
 
-    AuthorizationCodeGrant authorizationCodeGrant = new AuthorizationCodeGrant(tokenRequestEndpoint, tokenEndpoint)
+        LoginEndpoint loginEndpoint = new LoginEndpoint("http://petstore.swagger.io/oauth/dialog");
+        grantTypes.add(new ImplicitGrant(loginEndpoint, "access_token"));
 
-    grantTypes.add(authorizationCodeGrant)
 
-    OAuth oAuth = new OAuth("oauth", authorizationScopeList, grantTypes)
-    return oAuth
-  }
+        TokenRequestEndpoint tokenRequestEndpoint =
+                new TokenRequestEndpoint("http://petstore.swagger.io/oauth/requestToken", "client_id", "client_secret")
+        TokenEndpoint tokenEndpoint =
+                new TokenEndpoint("http://petstore.swagger.io/oauth/token", "auth_code")
 
-  def assertDefaultAuth(json) {
-    def oauth2 = json.authorizations.get('oauth2')
+        AuthorizationCodeGrant authorizationCodeGrant = new AuthorizationCodeGrant(tokenRequestEndpoint, tokenEndpoint)
 
-    assert oauth2.type == "oauth2"
-    assert oauth2.scopes[0].scope == "global"
-    assert oauth2.scopes[0].description == "access all"
+        grantTypes.add(authorizationCodeGrant)
 
-    def implicit = oauth2.grantTypes.implicit
-    assert implicit.loginEndpoint.url == "http://petstore.swagger.io/oauth/dialog"
-    assert implicit.tokenName == "access_token"
+        OAuth oAuth = new OAuth("oauth", authorizationScopeList, grantTypes)
+        return oAuth
+    }
 
-    def tokenRequestEndpoint = oauth2.grantTypes.authorization_code.tokenRequestEndpoint
-    assert tokenRequestEndpoint.url == 'http://petstore.swagger.io/oauth/requestToken'
-    assert tokenRequestEndpoint.clientIdName == 'client_id'
-    assert tokenRequestEndpoint.clientSecretName == 'client_secret'
+    def assertDefaultAuth(json) {
+        def oauth2 = json.authorizations.get('oauth2')
 
-    def tokenEndpoint = oauth2.grantTypes.authorization_code.tokenEndpoint
-    assert tokenEndpoint.url == 'http://petstore.swagger.io/oauth/token'
-    assert tokenEndpoint.tokenName == 'auth_code'
-    true
-  }
+        assert oauth2.type == "oauth2"
+        assert oauth2.scopes[0].scope == "global"
+        assert oauth2.scopes[0].description == "access all"
+
+        def implicit = oauth2.grantTypes.implicit
+        assert implicit.loginEndpoint.url == "http://petstore.swagger.io/oauth/dialog"
+        assert implicit.tokenName == "access_token"
+
+        def tokenRequestEndpoint = oauth2.grantTypes.authorization_code.tokenRequestEndpoint
+        assert tokenRequestEndpoint.url == 'http://petstore.swagger.io/oauth/requestToken'
+        assert tokenRequestEndpoint.clientIdName == 'client_id'
+        assert tokenRequestEndpoint.clientSecretName == 'client_secret'
+
+        def tokenEndpoint = oauth2.grantTypes.authorization_code.tokenEndpoint
+        assert tokenEndpoint.url == 'http://petstore.swagger.io/oauth/token'
+        assert tokenEndpoint.tokenName == 'auth_code'
+        true
+    }
 }

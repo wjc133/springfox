@@ -21,8 +21,8 @@ package springfox.documentation.service;
 
 public class ClientCredentialsGrant extends CredentialsGrant {
 
-  public ClientCredentialsGrant(String tokenUrl) {
-    super("application", tokenUrl);
-  }
+    public ClientCredentialsGrant(String tokenUrl) {
+        super("application", tokenUrl);
+    }
 
 }

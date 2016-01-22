@@ -31,10 +31,10 @@ import java.util.List;
 @Controller
 @Api(value = "/", position = 0)
 public class RootController {
-  @RequestMapping(value = "/", method = RequestMethod.GET)
-  public
-  @ResponseBody
-  List<String> getAll() {
-    return Arrays.asList(new String[]{"1", "2"});
-  }
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<String> getAll() {
+        return Arrays.asList(new String[]{"1", "2"});
+    }
 }

@@ -35,39 +35,39 @@ import springfox.documentation.swagger.readers.operation.SwaggerOperationModelsP
 import springfox.documentation.swagger.readers.parameter.SwaggerExpandedParameterBuilder
 import springfox.documentation.swagger.schema.ApiModelBuilder
 import springfox.documentation.swagger.schema.ApiModelPropertyPropertyBuilder
-import springfox.documentation.swagger.web.SwaggerApiListingReader
 import springfox.documentation.swagger.web.ClassOrApiAnnotationResourceGrouping
+import springfox.documentation.swagger.web.SwaggerApiListingReader
 
-import static com.google.common.collect.Lists.*
-import static org.springframework.plugin.core.OrderAwarePluginRegistry.*
+import static com.google.common.collect.Lists.newArrayList
+import static org.springframework.plugin.core.OrderAwarePluginRegistry.create
 
 @SuppressWarnings("GrMethodMayBeStatic")
 class SwaggerPluginsSupport {
-  SchemaPluginsManager swaggerSchemaPlugins() {
-    PluginRegistry<ModelPropertyBuilderPlugin, DocumentationType> propRegistry =
-        create(newArrayList(new ApiModelPropertyPropertyBuilder()))
+    SchemaPluginsManager swaggerSchemaPlugins() {
+        PluginRegistry<ModelPropertyBuilderPlugin, DocumentationType> propRegistry =
+                create(newArrayList(new ApiModelPropertyPropertyBuilder()))
 
-    PluginRegistry<ModelBuilderPlugin, DocumentationType> modelRegistry =
-        create(newArrayList(new ApiModelBuilder(new TypeResolver())))
+        PluginRegistry<ModelBuilderPlugin, DocumentationType> modelRegistry =
+                create(newArrayList(new ApiModelBuilder(new TypeResolver())))
 
-    new SchemaPluginsManager(propRegistry, modelRegistry)
-  }
+        new SchemaPluginsManager(propRegistry, modelRegistry)
+    }
 
-  DocumentationPluginsManager swaggerServicePlugins(List<DefaultsProviderPlugin> swaggerDefaultsPlugins) {
-    def resolver = new TypeResolver()
-    def plugins = new DocumentationPluginsManager()
-    plugins.apiListingPlugins = create(newArrayList(new MediaTypeReader(resolver), new SwaggerApiListingReader()))
-    plugins.documentationPlugins = create([])
-    plugins.parameterExpanderPlugins =
-        create([new ExpandedParameterBuilder(resolver), new SwaggerExpandedParameterBuilder()])
-    plugins.parameterPlugins = create([new ParameterNameReader(),
-                                       new ParameterNameReader()])
-    plugins.operationBuilderPlugins = create([])
-    plugins.resourceGroupingStrategies = create([new ClassOrApiAnnotationResourceGrouping()])
-    plugins.operationModelsProviders = create([
-        new OperationModelsProvider(resolver),
-        new SwaggerOperationModelsProvider(resolver)])
-    plugins.defaultsProviders = create(swaggerDefaultsPlugins)
-    return plugins
-  }
+    DocumentationPluginsManager swaggerServicePlugins(List<DefaultsProviderPlugin> swaggerDefaultsPlugins) {
+        def resolver = new TypeResolver()
+        def plugins = new DocumentationPluginsManager()
+        plugins.apiListingPlugins = create(newArrayList(new MediaTypeReader(resolver), new SwaggerApiListingReader()))
+        plugins.documentationPlugins = create([])
+        plugins.parameterExpanderPlugins =
+                create([new ExpandedParameterBuilder(resolver), new SwaggerExpandedParameterBuilder()])
+        plugins.parameterPlugins = create([new ParameterNameReader(),
+                                           new ParameterNameReader()])
+        plugins.operationBuilderPlugins = create([])
+        plugins.resourceGroupingStrategies = create([new ClassOrApiAnnotationResourceGrouping()])
+        plugins.operationModelsProviders = create([
+                new OperationModelsProvider(resolver),
+                new SwaggerOperationModelsProvider(resolver)])
+        plugins.defaultsProviders = create(swaggerDefaultsPlugins)
+        return plugins
+    }
 }

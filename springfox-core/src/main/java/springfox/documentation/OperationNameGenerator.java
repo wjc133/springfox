@@ -19,5 +19,5 @@
 package springfox.documentation;
 
 public interface OperationNameGenerator {
-  String startingWith(String prefix);
+    String startingWith(String prefix);
 }

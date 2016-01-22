@@ -36,71 +36,72 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
 import java.util.Set;
 
 import static com.google.common.base.Optional.fromNullable;
-import static com.google.common.collect.FluentIterable.*;
-import static com.google.common.collect.Lists.*;
-import static com.google.common.collect.Sets.*;
-import static org.springframework.core.annotation.AnnotationUtils.*;
-import static springfox.documentation.service.Tags.*;
-import static springfox.documentation.swagger.annotations.Annotations.*;
+import static com.google.common.collect.FluentIterable.from;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.SetView;
+import static com.google.common.collect.Sets.newTreeSet;
+import static org.springframework.core.annotation.AnnotationUtils.findAnnotation;
+import static springfox.documentation.service.Tags.emptyTags;
+import static springfox.documentation.swagger.annotations.Annotations.findApiOperationAnnotation;
 
 @Component
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class SwaggerOperationTagsReader implements OperationBuilderPlugin {
 
-  private final DefaultTagsProvider tagsProvider;
+    private final DefaultTagsProvider tagsProvider;
 
-  @Autowired
-  public SwaggerOperationTagsReader(DefaultTagsProvider tagsProvider) {
-    this.tagsProvider = tagsProvider;
-  }
-
-  @Override
-  public void apply(OperationContext context) {
-    Set<String> defaultTags = tagsProvider.tags(context);
-    HandlerMethod handlerMethod = context.getHandlerMethod();
-    SetView<String> tags = Sets.union(operationTags(handlerMethod), controllerTags(handlerMethod));
-    if (tags.isEmpty()) {
-      context.operationBuilder().tags(defaultTags);
-    } else {
-      context.operationBuilder().tags(tags);
+    @Autowired
+    public SwaggerOperationTagsReader(DefaultTagsProvider tagsProvider) {
+        this.tagsProvider = tagsProvider;
     }
-  }
 
-  private Set<String> controllerTags(HandlerMethod handlerMethod) {
-    Class<?> controller = handlerMethod.getBeanType();
-    Optional<Api> controllerAnnotation = fromNullable(findAnnotation(controller, Api.class));
-    return controllerAnnotation.transform(tagsFromController()).or(Sets.<String>newHashSet());
-  }
+    @Override
+    public void apply(OperationContext context) {
+        Set<String> defaultTags = tagsProvider.tags(context);
+        HandlerMethod handlerMethod = context.getHandlerMethod();
+        SetView<String> tags = Sets.union(operationTags(handlerMethod), controllerTags(handlerMethod));
+        if (tags.isEmpty()) {
+            context.operationBuilder().tags(defaultTags);
+        } else {
+            context.operationBuilder().tags(tags);
+        }
+    }
 
-  private Set<String> operationTags(HandlerMethod handlerMethod) {
-    Optional<ApiOperation> annotation = findApiOperationAnnotation(handlerMethod.getMethod());
-    return annotation.transform(tagsFromOperation()).or(Sets.<String>newHashSet());
-  }
+    private Set<String> controllerTags(HandlerMethod handlerMethod) {
+        Class<?> controller = handlerMethod.getBeanType();
+        Optional<Api> controllerAnnotation = fromNullable(findAnnotation(controller, Api.class));
+        return controllerAnnotation.transform(tagsFromController()).or(Sets.<String>newHashSet());
+    }
 
-  private Function<ApiOperation, Set<String>> tagsFromOperation() {
-    return new Function<ApiOperation, Set<String>>() {
-      @Override
-      public Set<String> apply(ApiOperation input) {
-        Set<String> tags = newTreeSet();
-        tags.addAll(from(newArrayList(input.tags())).filter(emptyTags()).toSet());
-        return tags;
-      }
-    };
-  }
+    private Set<String> operationTags(HandlerMethod handlerMethod) {
+        Optional<ApiOperation> annotation = findApiOperationAnnotation(handlerMethod.getMethod());
+        return annotation.transform(tagsFromOperation()).or(Sets.<String>newHashSet());
+    }
 
-  private Function<Api, Set<String>> tagsFromController() {
-    return new Function<Api, Set<String>>() {
-      @Override
-      public Set<String> apply(Api input) {
-        Set<String> tags = newTreeSet();
-        tags.addAll(from(newArrayList(input.tags())).filter(emptyTags()).toSet());
-        return tags;
-      }
-    };
-  }
+    private Function<ApiOperation, Set<String>> tagsFromOperation() {
+        return new Function<ApiOperation, Set<String>>() {
+            @Override
+            public Set<String> apply(ApiOperation input) {
+                Set<String> tags = newTreeSet();
+                tags.addAll(from(newArrayList(input.tags())).filter(emptyTags()).toSet());
+                return tags;
+            }
+        };
+    }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return true;
-  }
+    private Function<Api, Set<String>> tagsFromController() {
+        return new Function<Api, Set<String>>() {
+            @Override
+            public Set<String> apply(Api input) {
+                Set<String> tags = newTreeSet();
+                tags.addAll(from(newArrayList(input.tags())).filter(emptyTags()).toSet());
+                return tags;
+            }
+        };
+    }
+
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return true;
+    }
 }

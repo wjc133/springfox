@@ -23,18 +23,18 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 class CheckCleanWorkspaceTask extends DefaultTask {
-  public static final String TASK_NAME = "checkCleanWorkspace"
-  String description = "Checks workspace is clean"
-  String group = "release"
+    public static final String TASK_NAME = "checkCleanWorkspace"
+    String description = "Checks workspace is clean"
+    String group = "release"
 
-  @TaskAction
-  void check() {
-    def sout = new ByteArrayOutputStream()
-    project.exec {
-      commandLine "git", "status", "--porcelain"
-      standardOutput = sout
+    @TaskAction
+    void check() {
+        def sout = new ByteArrayOutputStream()
+        project.exec {
+            commandLine "git", "status", "--porcelain"
+            standardOutput = sout
+        }
+        def gitStatus = sout.toString()
+        assert gitStatus == "": "Workspace is not clean ${gitStatus}"
     }
-    def gitStatus = sout.toString()
-    assert gitStatus == "": "Workspace is not clean ${gitStatus}"
-  }
 }

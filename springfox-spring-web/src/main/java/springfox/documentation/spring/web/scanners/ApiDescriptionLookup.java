@@ -25,7 +25,7 @@ import springfox.documentation.service.ApiDescription;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import static com.google.common.collect.Maps.*;
+import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * Given a handler method this class serves to lookup the api description. The overall goal of this abstraction is to
@@ -34,13 +34,13 @@ import static com.google.common.collect.Maps.*;
 @Component
 @Incubating("2.2.0")
 public class ApiDescriptionLookup {
-  private Map<Method, ApiDescription> cache = newHashMap();
+    private Map<Method, ApiDescription> cache = newHashMap();
 
-  public void add(Method key, ApiDescription value) {
-    cache.put(key, value);
-  }
+    public void add(Method key, ApiDescription value) {
+        cache.put(key, value);
+    }
 
-  public ApiDescription description(Method key) {
-    return cache.get(key);
-  }
+    public ApiDescription description(Method key) {
+        return cache.get(key);
+    }
 }

@@ -18,86 +18,99 @@
  */
 
 package springfox.documentation.swagger.readers.operation
+
+import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestMethod
 import springfox.documentation.builders.OperationBuilder
+import springfox.documentation.builders.OperationBuilder
+import springfox.documentation.builders.PathSelectors
 import springfox.documentation.builders.PathSelectors
 import springfox.documentation.service.AuthorizationScope
+import springfox.documentation.service.AuthorizationScope
+import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spi.service.contexts.OperationContext
+import springfox.documentation.spi.service.contexts.OperationContext
+import springfox.documentation.spi.service.contexts.SecurityContext
 import springfox.documentation.spi.service.contexts.SecurityContext
 import springfox.documentation.spring.web.mixins.AuthSupport
+import springfox.documentation.spring.web.mixins.AuthSupport
+import springfox.documentation.spring.web.mixins.RequestMappingSupport
 import springfox.documentation.spring.web.mixins.RequestMappingSupport
 import springfox.documentation.spring.web.plugins.DocumentationContextSpec
+import springfox.documentation.spring.web.plugins.DocumentationContextSpec
+import springfox.documentation.spring.web.readers.operation.CachingOperationNameGenerator
 import springfox.documentation.spring.web.readers.operation.CachingOperationNameGenerator
 
 import static com.google.common.collect.Lists.*
+import static com.google.common.collect.Lists.newArrayList
 
 @Mixin([RequestMappingSupport, AuthSupport])
 class OperationAuthReaderSpec extends DocumentationContextSpec {
 
-  OperationAuthReader sut = new OperationAuthReader()
+    OperationAuthReader sut = new OperationAuthReader()
 
-  def "should read from annotations"() {
-    given:
-      OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
-              RequestMethod.GET, dummyHandlerMethod('methodWithAuth'), 0, requestMappingInfo("somePath"),
-              context(), "/anyPath")
+    def "should read from annotations"() {
+        given:
+        OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
+                RequestMethod.GET, dummyHandlerMethod('methodWithAuth'), 0, requestMappingInfo("somePath"),
+                context(), "/anyPath")
 
-    when:
-      sut.apply(operationContext)
-      def operation = operationContext.operationBuilder().build()
-    and:
-      !sut.supports(DocumentationType.SPRING_WEB)
-      sut.supports(DocumentationType.SWAGGER_12)
-      sut.supports(DocumentationType.SWAGGER_2)
+        when:
+        sut.apply(operationContext)
+        def operation = operationContext.operationBuilder().build()
+        and:
+        !sut.supports(DocumentationType.SPRING_WEB)
+        sut.supports(DocumentationType.SWAGGER_12)
+        sut.supports(DocumentationType.SWAGGER_2)
 
-    then:
-      operation.securityReferences.containsKey("oauth2")
-      AuthorizationScope authorizationScope = operation.securityReferences.get("oauth2")[0]
-      authorizationScope.getDescription() == "scope description"
-      authorizationScope.getScope() == "scope"
-  }
+        then:
+        operation.securityReferences.containsKey("oauth2")
+        AuthorizationScope authorizationScope = operation.securityReferences.get("oauth2")[0]
+        authorizationScope.getDescription() == "scope description"
+        authorizationScope.getScope() == "scope"
+    }
 
-  def "should apply global auth"() {
-    given:
-      SecurityContext securityContext = SecurityContext.builder()
-              .securityReferences(defaultAuth())
-              .forPaths(PathSelectors.any())
-              .build()
-      plugin.securityContexts(newArrayList(securityContext))
-      OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
-              RequestMethod.GET, dummyHandlerMethod(), 0, requestMappingInfo("somePath"),
-              context(), "/anyPath")
+    def "should apply global auth"() {
+        given:
+        SecurityContext securityContext = SecurityContext.builder()
+                .securityReferences(defaultAuth())
+                .forPaths(PathSelectors.any())
+                .build()
+        plugin.securityContexts(newArrayList(securityContext))
+        OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
+                RequestMethod.GET, dummyHandlerMethod(), 0, requestMappingInfo("somePath"),
+                context(), "/anyPath")
 
-    when:
-      sut.apply(operationContext)
-      def authorizations = operationContext.operationBuilder().build().securityReferences
+        when:
+        sut.apply(operationContext)
+        def authorizations = operationContext.operationBuilder().build().securityReferences
 
-    then:
-      def scopes = authorizations.get('oauth2')
-      AuthorizationScope authorizationScope = scopes[0]
-      authorizationScope.getDescription() == "accessEverything"
-      authorizationScope.getScope() == "global"
-  }
+        then:
+        def scopes = authorizations.get('oauth2')
+        AuthorizationScope authorizationScope = scopes[0]
+        authorizationScope.getDescription() == "accessEverything"
+        authorizationScope.getScope() == "global"
+    }
 
-  def "should apply global auth when ApiOperationAnnotation exists without auth values"() {
-    given:
-      SecurityContext securityContext = SecurityContext.builder()
-              .securityReferences(defaultAuth())
-              .forPaths(PathSelectors.any())
-              .build()
-      plugin.securityContexts(newArrayList(securityContext))
-      OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
-              RequestMethod.GET, dummyHandlerMethod('methodWithHttpGETMethod'), 0, requestMappingInfo("somePath"),
-              context(), "/anyPath")
-    when:
-      sut.apply(operationContext)
-      def authorizations = operationContext.operationBuilder().build().securityReferences
+    def "should apply global auth when ApiOperationAnnotation exists without auth values"() {
+        given:
+        SecurityContext securityContext = SecurityContext.builder()
+                .securityReferences(defaultAuth())
+                .forPaths(PathSelectors.any())
+                .build()
+        plugin.securityContexts(newArrayList(securityContext))
+        OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
+                RequestMethod.GET, dummyHandlerMethod('methodWithHttpGETMethod'), 0, requestMappingInfo("somePath"),
+                context(), "/anyPath")
+        when:
+        sut.apply(operationContext)
+        def authorizations = operationContext.operationBuilder().build().securityReferences
 
-    then:
-      def scopes = authorizations.get("oauth2")
-      AuthorizationScope authorizationScope = scopes[0]
-      authorizationScope.getDescription() == "accessEverything"
-      authorizationScope.getScope() == "global"
-  }
+        then:
+        def scopes = authorizations.get("oauth2")
+        AuthorizationScope authorizationScope = scopes[0]
+        authorizationScope.getDescription() == "accessEverything"
+        authorizationScope.getScope() == "global"
+    }
 }

@@ -30,5 +30,5 @@ import springfox.documentation.spi.service.contexts.PathContext;
  */
 @Incubating("2.1.0")
 public interface PathDecorator extends Plugin<DocumentationContext> {
-  Function<String, String> decorator(PathContext context);
+    Function<String, String> decorator(PathContext context);
 }

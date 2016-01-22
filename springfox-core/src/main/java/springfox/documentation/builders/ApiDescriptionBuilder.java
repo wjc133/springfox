@@ -27,72 +27,72 @@ import springfox.documentation.service.Operation;
 
 import java.util.List;
 
-import static springfox.documentation.builders.BuilderDefaults.*;
+import static springfox.documentation.builders.BuilderDefaults.defaultIfAbsent;
 
 public class ApiDescriptionBuilder {
-  private String path;
-  private String description;
-  private List<Operation> operations;
-  private Ordering<Operation> operationOrdering;
-  private Boolean hidden;
-  private Function<String, String> pathDecorator = Functions.identity();
+    private String path;
+    private String description;
+    private List<Operation> operations;
+    private Ordering<Operation> operationOrdering;
+    private Boolean hidden;
+    private Function<String, String> pathDecorator = Functions.identity();
 
-  public ApiDescriptionBuilder(Ordering<Operation> operationOrdering) {
-    this.operationOrdering = operationOrdering;
-  }
-
-  /**
-   * Updates the path to the api operation
-   *
-   * @param path - operation path
-   * @return @see springfox.documentation.builders.ApiDescriptionBuilder
-   */
-  public ApiDescriptionBuilder path(String path) {
-    this.path = defaultIfAbsent(path, this.path);
-    return this;
-  }
-
-  /**
-   * Updates the descriptions to the api operation
-   *
-   * @param description - operation description
-   * @return @see springfox.documentation.builders.ApiDescriptionBuilder
-   */
-  public ApiDescriptionBuilder description(String description) {
-    this.description = defaultIfAbsent(description, this.description);
-    return this;
-  }
-
-  /**
-   * Updates the operations to the api operation
-   *
-   * @param operations - operations for each of the http methods for that path
-   * @return @see springfox.documentation.builders.ApiDescriptionBuilder
-   */
-  public ApiDescriptionBuilder operations(List<Operation> operations) {
-    if (operations != null) {
-      this.operations = operationOrdering.sortedCopy(operations);
+    public ApiDescriptionBuilder(Ordering<Operation> operationOrdering) {
+        this.operationOrdering = operationOrdering;
     }
-    return this;
-  }
 
-  /**
-   * Marks the operation as hidden
-   *
-   * @param hidden - operation path
-   * @return @see springfox.documentation.builders.ApiDescriptionBuilder
-   */
-  public ApiDescriptionBuilder hidden(boolean hidden) {
-    this.hidden = hidden;
-    return this;
-  }
+    /**
+     * Updates the path to the api operation
+     *
+     * @param path - operation path
+     * @return @see springfox.documentation.builders.ApiDescriptionBuilder
+     */
+    public ApiDescriptionBuilder path(String path) {
+        this.path = defaultIfAbsent(path, this.path);
+        return this;
+    }
 
-  public ApiDescriptionBuilder pathDecorator(Function<String, String> pathDecorator) {
-    this.pathDecorator = defaultIfAbsent(pathDecorator, this.pathDecorator);
-    return this;
-  }
+    /**
+     * Updates the descriptions to the api operation
+     *
+     * @param description - operation description
+     * @return @see springfox.documentation.builders.ApiDescriptionBuilder
+     */
+    public ApiDescriptionBuilder description(String description) {
+        this.description = defaultIfAbsent(description, this.description);
+        return this;
+    }
 
-  public ApiDescription build() {
-    return new ApiDescription(pathDecorator.apply(path), description, operations, hidden);
-  }
+    /**
+     * Updates the operations to the api operation
+     *
+     * @param operations - operations for each of the http methods for that path
+     * @return @see springfox.documentation.builders.ApiDescriptionBuilder
+     */
+    public ApiDescriptionBuilder operations(List<Operation> operations) {
+        if (operations != null) {
+            this.operations = operationOrdering.sortedCopy(operations);
+        }
+        return this;
+    }
+
+    /**
+     * Marks the operation as hidden
+     *
+     * @param hidden - operation path
+     * @return @see springfox.documentation.builders.ApiDescriptionBuilder
+     */
+    public ApiDescriptionBuilder hidden(boolean hidden) {
+        this.hidden = hidden;
+        return this;
+    }
+
+    public ApiDescriptionBuilder pathDecorator(Function<String, String> pathDecorator) {
+        this.pathDecorator = defaultIfAbsent(pathDecorator, this.pathDecorator);
+        return this;
+    }
+
+    public ApiDescription build() {
+        return new ApiDescription(pathDecorator.apply(path), description, operations, hidden);
+    }
 }

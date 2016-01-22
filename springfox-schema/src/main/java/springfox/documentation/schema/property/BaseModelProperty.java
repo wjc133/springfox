@@ -30,61 +30,61 @@ import static springfox.documentation.schema.ResolvedTypes.simpleQualifiedTypeNa
 
 public abstract class BaseModelProperty implements ModelProperty {
 
-  private final String name;
-  protected final AlternateTypeProvider alternateTypeProvider;
+    private final String name;
+    protected final AlternateTypeProvider alternateTypeProvider;
 
-  public BaseModelProperty(String name, AlternateTypeProvider alternateTypeProvider) {
-    this.name = name;
-    this.alternateTypeProvider = alternateTypeProvider;
-  }
-
-  protected abstract ResolvedType realType();
-
-  @Override
-  public ResolvedType getType() {
-    return alternateTypeProvider.alternateFor(realType());
-  }
-
-  @Override
-  public String getName() {
-    return name;
-  }
-
-  @Override
-  public String qualifiedTypeName() {
-    if (getType().getTypeParameters().size() > 0) {
-      return getType().toString();
+    public BaseModelProperty(String name, AlternateTypeProvider alternateTypeProvider) {
+        this.name = name;
+        this.alternateTypeProvider = alternateTypeProvider;
     }
-    return simpleQualifiedTypeName(getType());
-  }
 
-  @Override
-  public AllowableValues allowableValues() {
-    Optional<AllowableValues> allowableValues = fromNullable(ResolvedTypes.allowableValues(getType()));
-    //Preference to inferred allowable values over list values via ApiModelProperty
-    if (allowableValues.isPresent()) {
-      return allowableValues.get();
+    protected abstract ResolvedType realType();
+
+    @Override
+    public ResolvedType getType() {
+        return alternateTypeProvider.alternateFor(realType());
     }
-    return null;
-  }
 
-  @Override
-  public boolean isRequired() {
-    return false;
-  }
+    @Override
+    public String getName() {
+        return name;
+    }
 
-  @Override
-  public boolean isReadOnly() {
-    return false;
-  }
+    @Override
+    public String qualifiedTypeName() {
+        if (getType().getTypeParameters().size() > 0) {
+            return getType().toString();
+        }
+        return simpleQualifiedTypeName(getType());
+    }
 
-  @Override
-  public String propertyDescription() {
-    return null;
-  }
+    @Override
+    public AllowableValues allowableValues() {
+        Optional<AllowableValues> allowableValues = fromNullable(ResolvedTypes.allowableValues(getType()));
+        //Preference to inferred allowable values over list values via ApiModelProperty
+        if (allowableValues.isPresent()) {
+            return allowableValues.get();
+        }
+        return null;
+    }
 
-  @Override
-  public int position() {
-    return 0;
-  }
+    @Override
+    public boolean isRequired() {
+        return false;
+    }
+
+    @Override
+    public boolean isReadOnly() {
+        return false;
+    }
+
+    @Override
+    public String propertyDescription() {
+        return null;
+    }
+
+    @Override
+    public int position() {
+        return 0;
+    }
 }

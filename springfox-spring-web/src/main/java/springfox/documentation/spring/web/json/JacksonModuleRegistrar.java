@@ -22,5 +22,5 @@ package springfox.documentation.spring.web.json;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public interface JacksonModuleRegistrar {
-  void maybeRegisterModule(ObjectMapper objectMapper);
+    void maybeRegisterModule(ObjectMapper objectMapper);
 }

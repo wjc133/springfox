@@ -21,61 +21,61 @@ package springfox.documentation.swagger.web;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UiConfiguration {
-  public static final UiConfiguration DEFAULT = new UiConfiguration(null);
-  private final String validatorUrl;
-  private final String docExpansion;
-  private final String apiSorter;
-  private final String defaultModelRendering;
+    public static final UiConfiguration DEFAULT = new UiConfiguration(null);
+    private final String validatorUrl;
+    private final String docExpansion;
+    private final String apiSorter;
+    private final String defaultModelRendering;
 
-  private final boolean enableJsonEditor;
-  private final boolean showRequestHeaders;
+    private final boolean enableJsonEditor;
+    private final boolean showRequestHeaders;
 
-  public UiConfiguration(String validatorUrl) {
-    this(validatorUrl, "none", "alpha", "schema", false, true);
-  }
+    public UiConfiguration(String validatorUrl) {
+        this(validatorUrl, "none", "alpha", "schema", false, true);
+    }
 
-  public UiConfiguration(
-          String validatorUrl,
-          String docExpansion,
-          String apiSorter,
-          String defaultModelRendering,
-          boolean enableJsonEditor,
-          boolean showRequestHeaders) {
-    this.validatorUrl = validatorUrl;
-    this.docExpansion = docExpansion;
-    this.apiSorter = apiSorter;
-    this.defaultModelRendering = defaultModelRendering;
-    this.enableJsonEditor = enableJsonEditor;
-    this.showRequestHeaders = showRequestHeaders;
-  }
+    public UiConfiguration(
+            String validatorUrl,
+            String docExpansion,
+            String apiSorter,
+            String defaultModelRendering,
+            boolean enableJsonEditor,
+            boolean showRequestHeaders) {
+        this.validatorUrl = validatorUrl;
+        this.docExpansion = docExpansion;
+        this.apiSorter = apiSorter;
+        this.defaultModelRendering = defaultModelRendering;
+        this.enableJsonEditor = enableJsonEditor;
+        this.showRequestHeaders = showRequestHeaders;
+    }
 
-  @JsonProperty("validatorUrl")
-  public String getValidatorUrl() {
-    return validatorUrl;
-  }
+    @JsonProperty("validatorUrl")
+    public String getValidatorUrl() {
+        return validatorUrl;
+    }
 
-  @JsonProperty("docExpansion")
-  public String getDocExpansion() {
-    return docExpansion;
-  }
+    @JsonProperty("docExpansion")
+    public String getDocExpansion() {
+        return docExpansion;
+    }
 
-  @JsonProperty("apisSorter")
-  public String getApiSorter() {
-    return apiSorter;
-  }
+    @JsonProperty("apisSorter")
+    public String getApiSorter() {
+        return apiSorter;
+    }
 
-  @JsonProperty("defaultModelRendering")
-  public String getDefaultModelRendering() {
-    return defaultModelRendering;
-  }
+    @JsonProperty("defaultModelRendering")
+    public String getDefaultModelRendering() {
+        return defaultModelRendering;
+    }
 
-  @JsonProperty("jsonEditor")
-  public boolean isEnableJsonEditor() {
-    return enableJsonEditor;
-  }
+    @JsonProperty("jsonEditor")
+    public boolean isEnableJsonEditor() {
+        return enableJsonEditor;
+    }
 
-  @JsonProperty("showRequestHeaders")
-  public boolean isShowRequestHeaders() {
-    return showRequestHeaders;
-  }
+    @JsonProperty("showRequestHeaders")
+    public boolean isShowRequestHeaders() {
+        return showRequestHeaders;
+    }
 }

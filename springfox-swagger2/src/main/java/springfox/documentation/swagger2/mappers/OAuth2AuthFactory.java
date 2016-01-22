@@ -21,40 +21,33 @@ package springfox.documentation.swagger2.mappers;
 
 import io.swagger.models.auth.OAuth2Definition;
 import io.swagger.models.auth.SecuritySchemeDefinition;
-import springfox.documentation.service.AuthorizationCodeGrant;
-import springfox.documentation.service.AuthorizationScope;
-import springfox.documentation.service.ClientCredentialsGrant;
-import springfox.documentation.service.SecurityScheme;
-import springfox.documentation.service.GrantType;
-import springfox.documentation.service.ImplicitGrant;
-import springfox.documentation.service.OAuth;
-import springfox.documentation.service.ResourceOwnerPasswordCredentialsGrant;
+import springfox.documentation.service.*;
 
 class OAuth2AuthFactory implements SecuritySchemeFactory {
-  @Override
-  public SecuritySchemeDefinition create(SecurityScheme input) {
-    OAuth oAuth = (OAuth) input;
-    OAuth2Definition definition = new OAuth2Definition();
-    for (GrantType each : oAuth.getGrantTypes()) {
-      if ("authorization_code".equals(each.getType())) {
-        definition.accessCode(((AuthorizationCodeGrant) each).getTokenRequestEndpoint().getUrl(),
-                ((AuthorizationCodeGrant) each).getTokenEndpoint().getUrl());
-      } else if ("implicit".equals(each.getType())) {
-        definition.implicit(((ImplicitGrant) each).getLoginEndpoint().getUrl());
-      } else if ("application".equals(each.getType())) {
+    @Override
+    public SecuritySchemeDefinition create(SecurityScheme input) {
+        OAuth oAuth = (OAuth) input;
+        OAuth2Definition definition = new OAuth2Definition();
+        for (GrantType each : oAuth.getGrantTypes()) {
+            if ("authorization_code".equals(each.getType())) {
+                definition.accessCode(((AuthorizationCodeGrant) each).getTokenRequestEndpoint().getUrl(),
+                        ((AuthorizationCodeGrant) each).getTokenEndpoint().getUrl());
+            } else if ("implicit".equals(each.getType())) {
+                definition.implicit(((ImplicitGrant) each).getLoginEndpoint().getUrl());
+            } else if ("application".equals(each.getType())) {
 //          NOTE: swagger 1 doesn't support this
-        definition.application(((ClientCredentialsGrant) each).getTokenUrl());
-      } else if ("password".equals(each.getType())) {
+                definition.application(((ClientCredentialsGrant) each).getTokenUrl());
+            } else if ("password".equals(each.getType())) {
 //          NOTE: swagger 1 doesn't support this
-        definition.password(((ResourceOwnerPasswordCredentialsGrant) each).getTokenUrl());
-      } else {
-        throw new IllegalArgumentException(String.format("Security scheme of type %s not supported",
-            input.getClass().getSimpleName()));
-      }
+                definition.password(((ResourceOwnerPasswordCredentialsGrant) each).getTokenUrl());
+            } else {
+                throw new IllegalArgumentException(String.format("Security scheme of type %s not supported",
+                        input.getClass().getSimpleName()));
+            }
+        }
+        for (AuthorizationScope each : oAuth.getScopes()) {
+            definition.addScope(each.getScope(), each.getDescription());
+        }
+        return definition;
     }
-    for (AuthorizationScope each : oAuth.getScopes()) {
-      definition.addScope(each.getScope(), each.getDescription());
-    }
-    return definition;
-  }
 }

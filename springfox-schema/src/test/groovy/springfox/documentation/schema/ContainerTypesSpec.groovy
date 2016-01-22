@@ -20,199 +20,206 @@
 package springfox.documentation.schema
 
 import spock.lang.Unroll
+import spock.lang.Unroll
+import springfox.documentation.schema.mixins.TypesForTestingSupport
 import springfox.documentation.schema.mixins.TypesForTestingSupport
 
 import static springfox.documentation.schema.Collections.*
+import static springfox.documentation.schema.Collections.containerType
 import static springfox.documentation.spi.DocumentationType.*
+import static springfox.documentation.spi.DocumentationType.SWAGGER_12
 import static springfox.documentation.spi.schema.contexts.ModelContext.*
+import static springfox.documentation.spi.schema.contexts.ModelContext.inputParam
+import static springfox.documentation.spi.schema.contexts.ModelContext.returnValue
 
 @Mixin([TypesForTestingSupport, AlternateTypesSupport])
 class ContainerTypesSpec extends SchemaSpecification {
-  def namingStrategy = new DefaultGenericTypeNamingStrategy()
-  def "Model properties of type List, are inferred correctly"() {
-    given:
-      def sut = typeWithLists()
-      Model asInput = modelProvider.modelFor(inputParam(sut, SWAGGER_12, alternateTypeProvider(), namingStrategy)).get()
-      Model asReturn = modelProvider.modelFor(returnValue(sut, SWAGGER_12, alternateTypeProvider(), namingStrategy)).get()
+    def namingStrategy = new DefaultGenericTypeNamingStrategy()
 
-    expect:
-      asInput.getName() == "ListsContainer"
-      asInput.getProperties().containsKey(property)
-      def modelProperty = asInput.getProperties().get(property)
-      modelProperty.type.erasedType == name
-      modelProperty.getModelRef()
-      ModelRef item = modelProperty.getModelRef()
-      item.type == "List"
-      item.itemType == itemType
-      item.collection
+    def "Model properties of type List, are inferred correctly"() {
+        given:
+        def sut = typeWithLists()
+        Model asInput = modelProvider.modelFor(inputParam(sut, SWAGGER_12, alternateTypeProvider(), namingStrategy)).get()
+        Model asReturn = modelProvider.modelFor(returnValue(sut, SWAGGER_12, alternateTypeProvider(), namingStrategy)).get()
 
-      asReturn.getName() == "ListsContainer"
-      asReturn.getProperties().containsKey(property)
-      def retModelProperty = asReturn.getProperties().get(property)
-      retModelProperty.type.erasedType == name
-      retModelProperty.getModelRef()
-      def retItem = retModelProperty.getModelRef()
-      retItem.type == "List"
-      retItem.itemType == itemType
-      retItem.collection
+        expect:
+        asInput.getName() == "ListsContainer"
+        asInput.getProperties().containsKey(property)
+        def modelProperty = asInput.getProperties().get(property)
+        modelProperty.type.erasedType == name
+        modelProperty.getModelRef()
+        ModelRef item = modelProperty.getModelRef()
+        item.type == "List"
+        item.itemType == itemType
+        item.collection
 
-    where:
-      property          | name      | itemType      | itemQualifiedType
-      "complexTypes"    | List      | 'ComplexType' | "springfox.documentation.schema.ComplexType"
-      "enums"           | List      | "string"      | "springfox.documentation.schema.ExampleEnum"
-      "aliasOfIntegers" | List      | "int"         | "java.lang.Integer"
-      "strings"         | ArrayList | "string"      | "java.lang.String"
-      "objects"         | List      | "object"      | "java.lang.Object"
-      "substituted"     | List      | "Substituted" | "springfox.documentation.schema.Substituted"
-  }
+        asReturn.getName() == "ListsContainer"
+        asReturn.getProperties().containsKey(property)
+        def retModelProperty = asReturn.getProperties().get(property)
+        retModelProperty.type.erasedType == name
+        retModelProperty.getModelRef()
+        def retItem = retModelProperty.getModelRef()
+        retItem.type == "List"
+        retItem.itemType == itemType
+        retItem.collection
 
-  def "Model properties are inferred correctly"() {
-    given:
-      def sut = typeWithSets()
-      Model asInput = modelProvider.modelFor(inputParam(sut, SWAGGER_12, alternateTypeProvider(), namingStrategy)).get()
-      Model asReturn = modelProvider.modelFor(returnValue(sut, SWAGGER_12, alternateTypeProvider(), namingStrategy)).get()
+        where:
+        property          | name      | itemType      | itemQualifiedType
+        "complexTypes"    | List      | 'ComplexType' | "springfox.documentation.schema.ComplexType"
+        "enums"           | List      | "string"      | "springfox.documentation.schema.ExampleEnum"
+        "aliasOfIntegers" | List      | "int"         | "java.lang.Integer"
+        "strings"         | ArrayList | "string"      | "java.lang.String"
+        "objects"         | List      | "object"      | "java.lang.Object"
+        "substituted"     | List      | "Substituted" | "springfox.documentation.schema.Substituted"
+    }
 
-    expect:
-      asInput.getName() == "SetsContainer"
-      asInput.getProperties().containsKey(property)
-      def modelProperty = asInput.getProperties().get(property)
-      containerType(modelProperty.getType()) == type
-      modelProperty.getModelRef()
-      ModelRef item = modelProperty.getModelRef()
-      item.type == type
-      item.itemType == itemType
-      item.collection
+    def "Model properties are inferred correctly"() {
+        given:
+        def sut = typeWithSets()
+        Model asInput = modelProvider.modelFor(inputParam(sut, SWAGGER_12, alternateTypeProvider(), namingStrategy)).get()
+        Model asReturn = modelProvider.modelFor(returnValue(sut, SWAGGER_12, alternateTypeProvider(), namingStrategy)).get()
 
-      asReturn.getName() == "SetsContainer"
-      asReturn.getProperties().containsKey(property)
-      def retModelProperty = asReturn.getProperties().get(property)
-      containerType(retModelProperty.type) == type
-      retModelProperty.getModelRef()
-      def retItem = retModelProperty.getModelRef()
-      retItem.type == type
-      retItem.itemType == itemType
-      retItem.collection
+        expect:
+        asInput.getName() == "SetsContainer"
+        asInput.getProperties().containsKey(property)
+        def modelProperty = asInput.getProperties().get(property)
+        containerType(modelProperty.getType()) == type
+        modelProperty.getModelRef()
+        ModelRef item = modelProperty.getModelRef()
+        item.type == type
+        item.itemType == itemType
+        item.collection
 
-    where:
-      property          | type  | itemType      | itemQualifiedType
-      "complexTypes"    | "Set" | 'ComplexType' | "springfox.documentation.schema.ComplexType"
-      "enums"           | "Set" | "string"      | "springfox.documentation.schema.ExampleEnum"
-      "aliasOfIntegers" | "Set" | "int"         | "java.lang.Integer"
-      "strings"         | "Set" | "string"      | "java.lang.String"
-      "objects"         | "Set" | "object"      | "java.lang.Object"
-  }
+        asReturn.getName() == "SetsContainer"
+        asReturn.getProperties().containsKey(property)
+        def retModelProperty = asReturn.getProperties().get(property)
+        containerType(retModelProperty.type) == type
+        retModelProperty.getModelRef()
+        def retItem = retModelProperty.getModelRef()
+        retItem.type == type
+        retItem.itemType == itemType
+        retItem.collection
 
-  @Unroll
-  def "Model properties of type Arrays are inferred correctly for #property"() {
-    given:
-      def sut = typeWithArrays()
-      Model asInput = modelProvider.modelFor(inputParam(sut, SWAGGER_12, alternateTypeProvider(), namingStrategy)).get()
-      Model asReturn = modelProvider.modelFor(returnValue(sut, SWAGGER_12, alternateTypeProvider(), namingStrategy)).get()
+        where:
+        property          | type  | itemType      | itemQualifiedType
+        "complexTypes"    | "Set" | 'ComplexType' | "springfox.documentation.schema.ComplexType"
+        "enums"           | "Set" | "string"      | "springfox.documentation.schema.ExampleEnum"
+        "aliasOfIntegers" | "Set" | "int"         | "java.lang.Integer"
+        "strings"         | "Set" | "string"      | "java.lang.String"
+        "objects"         | "Set" | "object"      | "java.lang.Object"
+    }
 
-    expect:
-      asInput.getName() == "ArraysContainer"
-      asInput.getProperties().containsKey(property)
-      def modelProperty = asInput.getProperties().get(property)
-      modelProperty.type.erasedType == type
-      modelProperty.getModelRef()
-      ModelRef item = modelProperty.getModelRef()
-      item.type == "Array"
-      item.itemType == itemType
-      item.collection
+    @Unroll
+    def "Model properties of type Arrays are inferred correctly for #property"() {
+        given:
+        def sut = typeWithArrays()
+        Model asInput = modelProvider.modelFor(inputParam(sut, SWAGGER_12, alternateTypeProvider(), namingStrategy)).get()
+        Model asReturn = modelProvider.modelFor(returnValue(sut, SWAGGER_12, alternateTypeProvider(), namingStrategy)).get()
 
-      asReturn.getName() == "ArraysContainer"
-      asReturn.getProperties().containsKey(property)
-      def retModelProperty = asReturn.getProperties().get(property)
-      retModelProperty.type.erasedType == type
-      retModelProperty.getModelRef()
-      def retItem = retModelProperty.getModelRef()
-      retItem.type == "Array"
-      retItem.itemType == itemType
-      retItem.collection
+        expect:
+        asInput.getName() == "ArraysContainer"
+        asInput.getProperties().containsKey(property)
+        def modelProperty = asInput.getProperties().get(property)
+        modelProperty.type.erasedType == type
+        modelProperty.getModelRef()
+        ModelRef item = modelProperty.getModelRef()
+        item.type == "Array"
+        item.itemType == itemType
+        item.collection
 
-    where:
-      property          | type          | itemType      | itemQualifiedType
-      "complexTypes"    | ComplexType[] | 'ComplexType' | "springfox.documentation.schema.ComplexType"
-      "enums"           | ExampleEnum[] | "string"      | "springfox.documentation.schema.ExampleEnum"
-      "aliasOfIntegers" | Integer[]     | "int"         | "java.lang.Integer"
-      "strings"         | String[]      | "string"      | "java.lang.String"
-      "objects"         | Object[]      | "object"      | "java.lang.Object"
-      "bytes"           | byte[]        | "byte"        | "byte"
-      "substituted"     | Substituted[] | "Substituted" | "springfox.documentation.schema.Substituted"
-      "arrayOfArrayOfInts"| int[][]     | "Array"       | "Array"
-      "arrayOfListOfStrings"| List[]    | "List"        | "Array"
-  }
+        asReturn.getName() == "ArraysContainer"
+        asReturn.getProperties().containsKey(property)
+        def retModelProperty = asReturn.getProperties().get(property)
+        retModelProperty.type.erasedType == type
+        retModelProperty.getModelRef()
+        def retItem = retModelProperty.getModelRef()
+        retItem.type == "Array"
+        retItem.itemType == itemType
+        retItem.collection
 
-  def "Model properties of type Map are inferred correctly"() {
-    given:
-      def sut = mapsContainer()
-      Model asInput = modelProvider.modelFor(inputParam(sut, SWAGGER_12, alternateRulesWithWildcardMap(), namingStrategy)).get()
-      Model asReturn = modelProvider.modelFor(returnValue(sut, SWAGGER_12, alternateRulesWithWildcardMap(), namingStrategy)).get()
+        where:
+        property               | type          | itemType      | itemQualifiedType
+        "complexTypes"         | ComplexType[] | 'ComplexType' | "springfox.documentation.schema.ComplexType"
+        "enums"                | ExampleEnum[] | "string"      | "springfox.documentation.schema.ExampleEnum"
+        "aliasOfIntegers"      | Integer[]     | "int"         | "java.lang.Integer"
+        "strings"              | String[]      | "string"      | "java.lang.String"
+        "objects"              | Object[]      | "object"      | "java.lang.Object"
+        "bytes"                | byte[]        | "byte"        | "byte"
+        "substituted"          | Substituted[] | "Substituted" | "springfox.documentation.schema.Substituted"
+        "arrayOfArrayOfInts"   | int[][]       | "Array"       | "Array"
+        "arrayOfListOfStrings" | List[]        | "List"        | "Array"
+    }
 
-    expect:
-      asInput.getName() == "MapsContainer"
-      asInput.getProperties().containsKey(property)
-      def modelProperty = asInput.getProperties().get(property)
-      modelProperty.type.erasedType == type
-      modelProperty.getModelRef()
-      ModelRef item = modelProperty.getModelRef()
-      item.type == "List"
-      item.itemType == itemRef
-      item.collection
+    def "Model properties of type Map are inferred correctly"() {
+        given:
+        def sut = mapsContainer()
+        Model asInput = modelProvider.modelFor(inputParam(sut, SWAGGER_12, alternateRulesWithWildcardMap(), namingStrategy)).get()
+        Model asReturn = modelProvider.modelFor(returnValue(sut, SWAGGER_12, alternateRulesWithWildcardMap(), namingStrategy)).get()
 
-      asReturn.getName() == "MapsContainer"
-      asReturn.getProperties().containsKey(property)
-      def retModelProperty = asReturn.getProperties().get(property)
-      retModelProperty.type.erasedType == type
-      retModelProperty.getModelRef()
-      def retItem = retModelProperty.getModelRef()
-      retItem.type == "List"
-      retItem.itemType == itemRef
-      retItem.collection
+        expect:
+        asInput.getName() == "MapsContainer"
+        asInput.getProperties().containsKey(property)
+        def modelProperty = asInput.getProperties().get(property)
+        modelProperty.type.erasedType == type
+        modelProperty.getModelRef()
+        ModelRef item = modelProperty.getModelRef()
+        item.type == "List"
+        item.itemType == itemRef
+        item.collection
 
-    where:
-      property              | type  | itemRef                      | itemQualifiedType
-      "enumToSimpleType"    | List | "Entry«string,SimpleType»"   | "springfox.documentation.schema.Entry"
-      "stringToSimpleType"  | List | "Entry«string,SimpleType»"   | "springfox.documentation.schema.Entry"
-      "complexToSimpleType" | List | "Entry«Category,SimpleType»" | "springfox.documentation.schema.Entry"
-  }
+        asReturn.getName() == "MapsContainer"
+        asReturn.getProperties().containsKey(property)
+        def retModelProperty = asReturn.getProperties().get(property)
+        retModelProperty.type.erasedType == type
+        retModelProperty.getModelRef()
+        def retItem = retModelProperty.getModelRef()
+        retItem.type == "List"
+        retItem.itemType == itemRef
+        retItem.collection
 
-  def "Model properties of type Map are inferred correctly on generic host"() {
-    given:
-      def sut = genericTypeOfMapsContainer()
+        where:
+        property              | type | itemRef                      | itemQualifiedType
+        "enumToSimpleType"    | List | "Entry«string,SimpleType»"   | "springfox.documentation.schema.Entry"
+        "stringToSimpleType"  | List | "Entry«string,SimpleType»"   | "springfox.documentation.schema.Entry"
+        "complexToSimpleType" | List | "Entry«Category,SimpleType»" | "springfox.documentation.schema.Entry"
+    }
 
-      def modelContext = inputParam(sut, SWAGGER_12, alternateRulesWithWildcardMap(), namingStrategy)
-      Model asInput = modelProvider.dependencies(modelContext).get("MapsContainer")
+    def "Model properties of type Map are inferred correctly on generic host"() {
+        given:
+        def sut = genericTypeOfMapsContainer()
 
-      def returnContext = returnValue(sut, SWAGGER_12, alternateRulesWithWildcardMap(), namingStrategy)
-      Model asReturn = modelProvider.dependencies(returnContext).get("MapsContainer")
+        def modelContext = inputParam(sut, SWAGGER_12, alternateRulesWithWildcardMap(), namingStrategy)
+        Model asInput = modelProvider.dependencies(modelContext).get("MapsContainer")
 
-    expect:
-      asInput.getName() == "MapsContainer"
-      asInput.getProperties().containsKey(property)
-      def modelProperty = asInput.getProperties().get(property)
-      modelProperty.type.erasedType == type
-      modelProperty.getModelRef()
-      ModelRef item = modelProperty.getModelRef()
-      item.type == "List"
-      item.itemType == itemRef
-      item.collection
+        def returnContext = returnValue(sut, SWAGGER_12, alternateRulesWithWildcardMap(), namingStrategy)
+        Model asReturn = modelProvider.dependencies(returnContext).get("MapsContainer")
 
-      asReturn.getName() == "MapsContainer"
-      asReturn.getProperties().containsKey(property)
-      def retModelProperty = asReturn.getProperties().get(property)
-      retModelProperty.type.erasedType == type
-      retModelProperty.getModelRef()
-      def retItem = retModelProperty.getModelRef()
-      retItem.type == "List"
-      retItem.itemType == itemRef
-      retItem.collection
+        expect:
+        asInput.getName() == "MapsContainer"
+        asInput.getProperties().containsKey(property)
+        def modelProperty = asInput.getProperties().get(property)
+        modelProperty.type.erasedType == type
+        modelProperty.getModelRef()
+        ModelRef item = modelProperty.getModelRef()
+        item.type == "List"
+        item.itemType == itemRef
+        item.collection
 
-    where:
-      property              | type   | itemRef                      | itemQualifiedType
-      "enumToSimpleType"    | List | "Entry«string,SimpleType»"   | "springfox.documentation.schema.Entry"
-      "stringToSimpleType"  | List | "Entry«string,SimpleType»"   | "springfox.documentation.schema.Entry"
-      "complexToSimpleType" | List | "Entry«Category,SimpleType»" | "springfox.documentation.schema.Entry"
-      "mapOfmapOfStringToSimpleType" | List | "Entry«string,Map«string,SimpleType»»" | "springfox.documentation.schema.Entry"
-  }
+        asReturn.getName() == "MapsContainer"
+        asReturn.getProperties().containsKey(property)
+        def retModelProperty = asReturn.getProperties().get(property)
+        retModelProperty.type.erasedType == type
+        retModelProperty.getModelRef()
+        def retItem = retModelProperty.getModelRef()
+        retItem.type == "List"
+        retItem.itemType == itemRef
+        retItem.collection
+
+        where:
+        property                       | type | itemRef                                | itemQualifiedType
+        "enumToSimpleType"             | List | "Entry«string,SimpleType»"             | "springfox.documentation.schema.Entry"
+        "stringToSimpleType"           | List | "Entry«string,SimpleType»"             | "springfox.documentation.schema.Entry"
+        "complexToSimpleType"          | List | "Entry«Category,SimpleType»"           | "springfox.documentation.schema.Entry"
+        "mapOfmapOfStringToSimpleType" | List | "Entry«string,Map«string,SimpleType»»" | "springfox.documentation.schema.Entry"
+    }
 }

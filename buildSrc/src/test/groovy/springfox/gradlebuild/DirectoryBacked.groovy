@@ -20,9 +20,9 @@
 package springfox.gradlebuild
 
 trait DirectoryBacked {
-  File directory(spec) {
-    File tempDir = new File("buildSrc/build/${spec.class.name}")
-    tempDir.mkdirs()
-    tempDir
-  }
+    File directory(spec) {
+        File tempDir = new File("buildSrc/build/${spec.class.name}")
+        tempDir.mkdirs()
+        tempDir
+    }
 }

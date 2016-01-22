@@ -20,7 +20,7 @@
 package springfox.test.contract.swaggertests
 
 trait FileAccess {
-  String fileContents(String fileName) {
-    this.getClass().getResource("$fileName").text
-  }
+    String fileContents(String fileName) {
+        this.getClass().getResource("$fileName").text
+    }
 }

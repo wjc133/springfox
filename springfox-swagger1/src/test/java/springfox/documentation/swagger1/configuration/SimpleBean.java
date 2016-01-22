@@ -20,25 +20,25 @@
 package springfox.documentation.swagger1.configuration;
 
 public class SimpleBean {
-  private String aValue;
-  private String anotherValue;
+    private String aValue;
+    private String anotherValue;
 
-  public SimpleBean() {
-  }
+    public SimpleBean() {
+    }
 
-  public String getaValue() {
-    return aValue;
-  }
+    public String getaValue() {
+        return aValue;
+    }
 
-  public void setaValue(String aValue) {
-    this.aValue = aValue;
-  }
+    public void setaValue(String aValue) {
+        this.aValue = aValue;
+    }
 
-  public String getAnotherValue() {
-    return anotherValue;
-  }
+    public String getAnotherValue() {
+        return anotherValue;
+    }
 
-  public void setAnotherValue(String anotherValue) {
-    this.anotherValue = anotherValue;
-  }
+    public void setAnotherValue(String anotherValue) {
+        this.anotherValue = anotherValue;
+    }
 }

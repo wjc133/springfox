@@ -38,104 +38,104 @@ import springfox.documentation.spi.schema.AlternateTypeProvider;
 import java.util.List;
 import java.util.Set;
 
-import static com.google.common.collect.Lists.*;
-import static springfox.documentation.builders.BuilderDefaults.*;
-import static springfox.documentation.service.MediaTypes.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static springfox.documentation.builders.BuilderDefaults.nullToEmptyList;
+import static springfox.documentation.service.MediaTypes.toMediaTypes;
 
 public class OperationContext {
-  private final OperationBuilder operationBuilder;
-  private final RequestMethod requestMethod;
-  private final HandlerMethod handlerMethod;
-  private final int operationIndex;
-  private final RequestMappingInfo requestMappingInfo;
-  private final DocumentationContext documentationContext;
-  private final String requestMappingPattern;
+    private final OperationBuilder operationBuilder;
+    private final RequestMethod requestMethod;
+    private final HandlerMethod handlerMethod;
+    private final int operationIndex;
+    private final RequestMappingInfo requestMappingInfo;
+    private final DocumentationContext documentationContext;
+    private final String requestMappingPattern;
 
-  public OperationContext(OperationBuilder operationBuilder, RequestMethod requestMethod, HandlerMethod
-      handlerMethod, int operationIndex, RequestMappingInfo requestMappingInfo,
-                          DocumentationContext documentationContext, String requestMappingPattern) {
-    this.operationBuilder = operationBuilder;
-    this.requestMethod = requestMethod;
-    this.handlerMethod = handlerMethod;
-    this.operationIndex = operationIndex;
-    this.requestMappingInfo = requestMappingInfo;
-    this.documentationContext = documentationContext;
-    this.requestMappingPattern = requestMappingPattern;
-  }
-
-  public OperationBuilder operationBuilder() {
-    return operationBuilder;
-  }
-
-  public HttpMethod httpMethod() {
-    return HttpMethod.valueOf(requestMethod.toString());
-  }
-
-  public HandlerMethod getHandlerMethod() {
-    return handlerMethod;
-  }
-
-  public int operationIndex() {
-    return operationIndex;
-  }
-
-
-  public List<ResponseMessage> getGlobalResponseMessages(String forHttpMethod) {
-    if (documentationContext.getGlobalResponseMessages().containsKey(RequestMethod.valueOf(forHttpMethod))) {
-      return documentationContext.getGlobalResponseMessages().get(RequestMethod.valueOf(forHttpMethod));
+    public OperationContext(OperationBuilder operationBuilder, RequestMethod requestMethod, HandlerMethod
+            handlerMethod, int operationIndex, RequestMappingInfo requestMappingInfo,
+                            DocumentationContext documentationContext, String requestMappingPattern) {
+        this.operationBuilder = operationBuilder;
+        this.requestMethod = requestMethod;
+        this.handlerMethod = handlerMethod;
+        this.operationIndex = operationIndex;
+        this.requestMappingInfo = requestMappingInfo;
+        this.documentationContext = documentationContext;
+        this.requestMappingPattern = requestMappingPattern;
     }
-    return newArrayList();
-  }
 
-  public List<Parameter> getGlobalOperationParameters() {
-    return nullToEmptyList(documentationContext.getGlobalRequestParameters());
-  }
+    public OperationBuilder operationBuilder() {
+        return operationBuilder;
+    }
 
-  public Optional<SecurityContext> securityContext() {
-    return Iterables.tryFind(documentationContext.getSecurityContexts(), pathMatches());
-  }
+    public HttpMethod httpMethod() {
+        return HttpMethod.valueOf(requestMethod.toString());
+    }
 
-  private Predicate<SecurityContext> pathMatches() {
-    return new Predicate<SecurityContext>() {
-      @Override
-      public boolean apply(SecurityContext input) {
-        return input.securityForPath(requestMappingPattern) != null;
-      }
-    };
-  }
+    public HandlerMethod getHandlerMethod() {
+        return handlerMethod;
+    }
 
-  public String requestMappingPattern() {
-    return requestMappingPattern;
-  }
+    public int operationIndex() {
+        return operationIndex;
+    }
 
-  public RequestMappingInfo getRequestMappingInfo() {
-    return requestMappingInfo;
-  }
 
-  public DocumentationContext getDocumentationContext() {
-    return documentationContext;
-  }
+    public List<ResponseMessage> getGlobalResponseMessages(String forHttpMethod) {
+        if (documentationContext.getGlobalResponseMessages().containsKey(RequestMethod.valueOf(forHttpMethod))) {
+            return documentationContext.getGlobalResponseMessages().get(RequestMethod.valueOf(forHttpMethod));
+        }
+        return newArrayList();
+    }
 
-  public DocumentationType getDocumentationType() {
-    return documentationContext.getDocumentationType();
-  }
+    public List<Parameter> getGlobalOperationParameters() {
+        return nullToEmptyList(documentationContext.getGlobalRequestParameters());
+    }
 
-  public AlternateTypeProvider getAlternateTypeProvider() {
-    return documentationContext.getAlternateTypeProvider();
-  }
+    public Optional<SecurityContext> securityContext() {
+        return Iterables.tryFind(documentationContext.getSecurityContexts(), pathMatches());
+    }
 
-  public ResolvedType alternateFor(ResolvedType resolved) {
-    return getAlternateTypeProvider().alternateFor(resolved);
-  }
+    private Predicate<SecurityContext> pathMatches() {
+        return new Predicate<SecurityContext>() {
+            @Override
+            public boolean apply(SecurityContext input) {
+                return input.securityForPath(requestMappingPattern) != null;
+            }
+        };
+    }
 
-  public Set<MediaType> produces() {
-    return Sets.union(requestMappingInfo.getProducesCondition().getProducibleMediaTypes(),
-        toMediaTypes(documentationContext.getProduces()));
-  }
+    public String requestMappingPattern() {
+        return requestMappingPattern;
+    }
 
-  public Set<MediaType> consumes() {
-    return Sets.union(requestMappingInfo.getConsumesCondition().getConsumableMediaTypes(),
-        toMediaTypes(documentationContext.getConsumes()));
-  }
+    public RequestMappingInfo getRequestMappingInfo() {
+        return requestMappingInfo;
+    }
+
+    public DocumentationContext getDocumentationContext() {
+        return documentationContext;
+    }
+
+    public DocumentationType getDocumentationType() {
+        return documentationContext.getDocumentationType();
+    }
+
+    public AlternateTypeProvider getAlternateTypeProvider() {
+        return documentationContext.getAlternateTypeProvider();
+    }
+
+    public ResolvedType alternateFor(ResolvedType resolved) {
+        return getAlternateTypeProvider().alternateFor(resolved);
+    }
+
+    public Set<MediaType> produces() {
+        return Sets.union(requestMappingInfo.getProducesCondition().getProducibleMediaTypes(),
+                toMediaTypes(documentationContext.getProduces()));
+    }
+
+    public Set<MediaType> consumes() {
+        return Sets.union(requestMappingInfo.getConsumesCondition().getConsumableMediaTypes(),
+                toMediaTypes(documentationContext.getConsumes()));
+    }
 
 }

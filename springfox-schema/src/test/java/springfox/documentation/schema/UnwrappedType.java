@@ -22,44 +22,44 @@ package springfox.documentation.schema;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 public class UnwrappedType {
-  @JsonUnwrapped
-  private Category category;
+    @JsonUnwrapped
+    private Category category;
 
-  @JsonUnwrapped
-  public Category getCategory() {
-    return category;
-  }
+    @JsonUnwrapped
+    public Category getCategory() {
+        return category;
+    }
 
-  @JsonUnwrapped
-  public void setCategory(Category category) {
-    this.category = category;
-  }
+    @JsonUnwrapped
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 }
 
 class UnwrappedTypeForField {
-  @JsonUnwrapped
-  private Category category;
+    @JsonUnwrapped
+    private Category category;
 }
 
 class UnwrappedTypeForGetter {
-  private Category category;
+    private Category category;
 
-  @JsonUnwrapped
-  public Category getCategory() {
-    return category;
-  }
+    @JsonUnwrapped
+    public Category getCategory() {
+        return category;
+    }
 
 }
 
 class UnwrappedTypeForSetter {
-  private Category category;
+    private Category category;
 
-  public Category getCategory() {
-    return category;
-  }
+    public Category getCategory() {
+        return category;
+    }
 
-  @JsonUnwrapped
-  public void setCategory(Category category) {
-    this.category = category;
-  }
+    @JsonUnwrapped
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 }

@@ -41,60 +41,60 @@ import springfox.documentation.swagger2.mappers.ServiceModelToSwagger2Mapper;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static com.google.common.base.Strings.*;
-import static org.springframework.http.MediaType.*;
-import static springfox.documentation.swagger2.web.HostNameProvider.*;
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static springfox.documentation.swagger2.web.HostNameProvider.componentsFrom;
 
 @Controller
 @ApiIgnore
 public class Swagger2Controller {
 
-  public static final String DEFAULT_URL = "/v2/api-docs";
-  private static final String HAL_MEDIA_TYPE = "application/hal+json";
+    public static final String DEFAULT_URL = "/v2/api-docs";
+    private static final String HAL_MEDIA_TYPE = "application/hal+json";
 
-  @Value("${springfox.documentation.swagger.v2.host:DEFAULT}")
-  private String hostNameOverride;
+    @Value("${springfox.documentation.swagger.v2.host:DEFAULT}")
+    private String hostNameOverride;
 
-  @Autowired
-  private DocumentationCache documentationCache;
+    @Autowired
+    private DocumentationCache documentationCache;
 
-  @Autowired
-  private ServiceModelToSwagger2Mapper mapper;
+    @Autowired
+    private ServiceModelToSwagger2Mapper mapper;
 
-  @Autowired
-  private JsonSerializer jsonSerializer;
+    @Autowired
+    private JsonSerializer jsonSerializer;
 
-  @ApiIgnore
-  @RequestMapping(value = "${springfox.documentation.swagger.v2.path:" + DEFAULT_URL + "}",
-      method = RequestMethod.GET, produces = { APPLICATION_JSON_VALUE, HAL_MEDIA_TYPE })
-  public
-  @ResponseBody
-  ResponseEntity<Json> getDocumentation(
-      @RequestParam(value = "group", required = false) String swaggerGroup,
-      HttpServletRequest servletRequest) {
+    @ApiIgnore
+    @RequestMapping(value = "${springfox.documentation.swagger.v2.path:" + DEFAULT_URL + "}",
+            method = RequestMethod.GET, produces = {APPLICATION_JSON_VALUE, HAL_MEDIA_TYPE})
+    public
+    @ResponseBody
+    ResponseEntity<Json> getDocumentation(
+            @RequestParam(value = "group", required = false) String swaggerGroup,
+            HttpServletRequest servletRequest) {
 
-    String groupName = Optional.fromNullable(swaggerGroup).or(Docket.DEFAULT_GROUP_NAME);
-    Documentation documentation = documentationCache.documentationByGroup(groupName);
-    if (documentation == null) {
-      return new ResponseEntity<Json>(HttpStatus.NOT_FOUND);
+        String groupName = Optional.fromNullable(swaggerGroup).or(Docket.DEFAULT_GROUP_NAME);
+        Documentation documentation = documentationCache.documentationByGroup(groupName);
+        if (documentation == null) {
+            return new ResponseEntity<Json>(HttpStatus.NOT_FOUND);
+        }
+        Swagger swagger = mapper.mapDocumentation(documentation);
+        if (isNullOrEmpty(swagger.getHost())) {
+            swagger.host(hostName(servletRequest));
+        }
+        return new ResponseEntity<Json>(jsonSerializer.toJson(swagger), HttpStatus.OK);
     }
-    Swagger swagger = mapper.mapDocumentation(documentation);
-    if (isNullOrEmpty(swagger.getHost())) {
-      swagger.host(hostName(servletRequest));
-    }
-    return new ResponseEntity<Json>(jsonSerializer.toJson(swagger), HttpStatus.OK);
-  }
 
-  private String hostName(HttpServletRequest servletRequest) {
-    if ("DEFAULT".equals(hostNameOverride)) {
-      UriComponents uri = componentsFrom(servletRequest);
-      String host = uri.getHost();
-      int port = uri.getPort();
-      if (port > -1) {
-        return String.format("%s:%d", host, port);
-      }
-      return host;
+    private String hostName(HttpServletRequest servletRequest) {
+        if ("DEFAULT".equals(hostNameOverride)) {
+            UriComponents uri = componentsFrom(servletRequest);
+            String host = uri.getHost();
+            int port = uri.getPort();
+            if (port > -1) {
+                return String.format("%s:%d", host, port);
+            }
+            return host;
+        }
+        return hostNameOverride;
     }
-    return hostNameOverride;
-  }
 }

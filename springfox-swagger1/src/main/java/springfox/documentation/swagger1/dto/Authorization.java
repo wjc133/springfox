@@ -21,33 +21,33 @@ package springfox.documentation.swagger1.dto;
 
 import java.util.List;
 
-import static com.google.common.collect.Lists.*;
+import static com.google.common.collect.Lists.newArrayList;
 
 public class Authorization {
-  private String type;
-  private List<AuthorizationScope> scopes;
+    private String type;
+    private List<AuthorizationScope> scopes;
 
-  public Authorization() {
-  }
+    public Authorization() {
+    }
 
-  public Authorization(String type, AuthorizationScope[] scopes) {
-    this.scopes = newArrayList(scopes);
-    this.type = type;
-  }
+    public Authorization(String type, AuthorizationScope[] scopes) {
+        this.scopes = newArrayList(scopes);
+        this.type = type;
+    }
 
-  public String getType() {
-    return type;
-  }
+    public String getType() {
+        return type;
+    }
 
-  public void setType(String type) {
-    this.type = type;
-  }
+    public void setType(String type) {
+        this.type = type;
+    }
 
-  public List<AuthorizationScope> getScopes() {
-    return scopes;
-  }
+    public List<AuthorizationScope> getScopes() {
+        return scopes;
+    }
 
-  public void setScopes(List<AuthorizationScope> scopes) {
-    this.scopes = newArrayList(scopes);
-  }
+    public void setScopes(List<AuthorizationScope> scopes) {
+        this.scopes = newArrayList(scopes);
+    }
 }

@@ -29,18 +29,18 @@ import springfox.documentation.spi.service.contexts.OperationContext;
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class DefaultOperationReader implements OperationBuilderPlugin {
-  @Override
-  public void apply(OperationContext context) {
-    String operationName = context.getHandlerMethod().getMethod().getName();
-    context.operationBuilder()
-            .uniqueId(operationName)
-            .method(context.httpMethod())
-            .position(context.operationIndex())
-            .summary(operationName);
-  }
+    @Override
+    public void apply(OperationContext context) {
+        String operationName = context.getHandlerMethod().getMethod().getName();
+        context.operationBuilder()
+                .uniqueId(operationName)
+                .method(context.httpMethod())
+                .position(context.operationIndex())
+                .summary(operationName);
+    }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return true;
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return true;
+    }
 }

@@ -26,38 +26,38 @@ import springfox.documentation.spi.schema.AlternateTypeProvider;
 
 public class ParameterModelProperty extends BaseModelProperty {
 
-  private final AnnotatedParameter parameter;
-  private final ResolvedParameterizedMember constructor;
+    private final AnnotatedParameter parameter;
+    private final ResolvedParameterizedMember constructor;
 
-  public ParameterModelProperty(String name, AnnotatedParameter parameter, ResolvedParameterizedMember constructor,
-                                AlternateTypeProvider alternateTypeProvider) {
-    super(name, alternateTypeProvider);
-    this.parameter = parameter;
-    this.constructor = constructor;
-  }
+    public ParameterModelProperty(String name, AnnotatedParameter parameter, ResolvedParameterizedMember constructor,
+                                  AlternateTypeProvider alternateTypeProvider) {
+        super(name, alternateTypeProvider);
+        this.parameter = parameter;
+        this.constructor = constructor;
+    }
 
-  @Override
-  public String qualifiedTypeName() {
-      return getType().toString();
-  }
+    @Override
+    public String qualifiedTypeName() {
+        return getType().toString();
+    }
 
-  @Override
-  public boolean isRequired() {
-    return true;
-  }
+    @Override
+    public boolean isRequired() {
+        return true;
+    }
 
-  @Override
-  public boolean isReadOnly() {
-    return false;
-  }
+    @Override
+    public boolean isReadOnly() {
+        return false;
+    }
 
-  @Override
-  public int position() {
-    return parameter.getIndex();
-  }
+    @Override
+    public int position() {
+        return parameter.getIndex();
+    }
 
-  @Override
-  protected ResolvedType realType() {
-    return constructor.getArgumentType(parameter.getIndex());
-  }
+    @Override
+    protected ResolvedType realType() {
+        return constructor.getArgumentType(parameter.getIndex());
+    }
 }

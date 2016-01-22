@@ -41,28 +41,28 @@ import static springfox.documentation.swagger.common.SwaggerPluginSupport.plugin
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class OperationImplicitParametersReader implements OperationBuilderPlugin {
 
-  @Override
-  public void apply(OperationContext context) {
-    context.operationBuilder().parameters(readParameters(context));
-  }
-
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return pluginDoesApply(delimiter);
-  }
-
-  protected List<Parameter> readParameters(OperationContext context) {
-    HandlerMethod handlerMethod = context.getHandlerMethod();
-    Method method = handlerMethod.getMethod();
-    ApiImplicitParams annotation = AnnotationUtils.findAnnotation(method, ApiImplicitParams.class);
-
-    List<Parameter> parameters = Lists.newArrayList();
-    if (null != annotation) {
-      for (ApiImplicitParam param : annotation.value()) {
-        parameters.add(OperationImplicitParameterReader.getImplicitParameter(param));
-      }
+    @Override
+    public void apply(OperationContext context) {
+        context.operationBuilder().parameters(readParameters(context));
     }
 
-    return parameters;
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return pluginDoesApply(delimiter);
+    }
+
+    protected List<Parameter> readParameters(OperationContext context) {
+        HandlerMethod handlerMethod = context.getHandlerMethod();
+        Method method = handlerMethod.getMethod();
+        ApiImplicitParams annotation = AnnotationUtils.findAnnotation(method, ApiImplicitParams.class);
+
+        List<Parameter> parameters = Lists.newArrayList();
+        if (null != annotation) {
+            for (ApiImplicitParam param : annotation.value()) {
+                parameters.add(OperationImplicitParameterReader.getImplicitParameter(param));
+            }
+        }
+
+        return parameters;
+    }
 }

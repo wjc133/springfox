@@ -40,87 +40,87 @@ import java.util.Map;
 @ApiIgnore
 public class ApiResourceController {
 
-  @Value("${springfox.documentation.swagger.v1.path:/api-docs}")
-  private String swagger1Url;
+    @Value("${springfox.documentation.swagger.v1.path:/api-docs}")
+    private String swagger1Url;
 
-  @Value("${springfox.documentation.swagger.v2.path:/v2/api-docs}")
-  private String swagger2Url;
+    @Value("${springfox.documentation.swagger.v2.path:/v2/api-docs}")
+    private String swagger2Url;
 
-  @Autowired
-  private DocumentationCache documentationCache;
+    @Autowired
+    private DocumentationCache documentationCache;
 
-  @Autowired(required = false)
-  private SecurityConfiguration securityConfiguration;
-  @Autowired(required = false)
-  private UiConfiguration uiConfiguration;
+    @Autowired(required = false)
+    private SecurityConfiguration securityConfiguration;
+    @Autowired(required = false)
+    private UiConfiguration uiConfiguration;
 
-  private boolean swagger1Available;
-  private boolean swagger2Available;
+    private boolean swagger1Available;
+    private boolean swagger2Available;
 
-  public ApiResourceController() {
-    swagger1Available = classByName("springfox.documentation.swagger1.web.Swagger1Controller").isPresent();
-    swagger2Available = classByName("springfox.documentation.swagger2.web.Swagger2Controller").isPresent();
-  }
-
-  @RequestMapping(value = "/configuration/security")
-  @ResponseBody
-  ResponseEntity<SecurityConfiguration> securityConfiguration() {
-    return new ResponseEntity<SecurityConfiguration>(
-        Optional.fromNullable(securityConfiguration).or(SecurityConfiguration.DEFAULT), HttpStatus.OK);
-  }
-
-  @RequestMapping(value = "/configuration/ui")
-  @ResponseBody
-  ResponseEntity<UiConfiguration> uiConfiguration() {
-    return new ResponseEntity<UiConfiguration>(
-        Optional.fromNullable(uiConfiguration).or(UiConfiguration.DEFAULT), HttpStatus.OK);
-  }
-
-  @RequestMapping(value = "/swagger-resources")
-  @ResponseBody
-  ResponseEntity<List<SwaggerResource>> swaggerResources() {
-
-
-    List<SwaggerResource> resources = new ArrayList<SwaggerResource>();
-
-    for (Map.Entry<String, Documentation> entry : documentationCache.all().entrySet()) {
-      String swaggerGroup = entry.getKey();
-      if (swagger1Available) {
-        SwaggerResource swaggerResource = resource(swaggerGroup, swagger1Url);
-        swaggerResource.setSwaggerVersion("1.2");
-        resources.add(swaggerResource);
-      }
-
-      if (swagger2Available) {
-        SwaggerResource swaggerResource = resource(swaggerGroup, swagger2Url);
-        swaggerResource.setSwaggerVersion("2.0");
-        resources.add(swaggerResource);
-      }
+    public ApiResourceController() {
+        swagger1Available = classByName("springfox.documentation.swagger1.web.Swagger1Controller").isPresent();
+        swagger2Available = classByName("springfox.documentation.swagger2.web.Swagger2Controller").isPresent();
     }
-    Collections.sort(resources);
-    return new ResponseEntity<List<SwaggerResource>>(resources, HttpStatus.OK);
-  }
 
-  private SwaggerResource resource(String swaggerGroup, String baseUrl) {
-    SwaggerResource swaggerResource = new SwaggerResource();
-    swaggerResource.setName(swaggerGroup);
-    swaggerResource.setLocation(swaggerLocation(baseUrl, swaggerGroup));
-    return swaggerResource;
-  }
-
-  private String swaggerLocation(String swaggerUrl, String swaggerGroup) {
-    String base = Optional.of(swaggerUrl).get();
-    if (Docket.DEFAULT_GROUP_NAME.equals(swaggerGroup)) {
-      return base;
+    @RequestMapping(value = "/configuration/security")
+    @ResponseBody
+    ResponseEntity<SecurityConfiguration> securityConfiguration() {
+        return new ResponseEntity<SecurityConfiguration>(
+                Optional.fromNullable(securityConfiguration).or(SecurityConfiguration.DEFAULT), HttpStatus.OK);
     }
-    return base + "?group=" + swaggerGroup;
-  }
 
-  private Optional<? extends Class> classByName(String className) {
-    try {
-      return Optional.of(Class.forName(className));
-    } catch (ClassNotFoundException e) {
-      return Optional.absent();
+    @RequestMapping(value = "/configuration/ui")
+    @ResponseBody
+    ResponseEntity<UiConfiguration> uiConfiguration() {
+        return new ResponseEntity<UiConfiguration>(
+                Optional.fromNullable(uiConfiguration).or(UiConfiguration.DEFAULT), HttpStatus.OK);
     }
-  }
+
+    @RequestMapping(value = "/swagger-resources")
+    @ResponseBody
+    ResponseEntity<List<SwaggerResource>> swaggerResources() {
+
+
+        List<SwaggerResource> resources = new ArrayList<SwaggerResource>();
+
+        for (Map.Entry<String, Documentation> entry : documentationCache.all().entrySet()) {
+            String swaggerGroup = entry.getKey();
+            if (swagger1Available) {
+                SwaggerResource swaggerResource = resource(swaggerGroup, swagger1Url);
+                swaggerResource.setSwaggerVersion("1.2");
+                resources.add(swaggerResource);
+            }
+
+            if (swagger2Available) {
+                SwaggerResource swaggerResource = resource(swaggerGroup, swagger2Url);
+                swaggerResource.setSwaggerVersion("2.0");
+                resources.add(swaggerResource);
+            }
+        }
+        Collections.sort(resources);
+        return new ResponseEntity<List<SwaggerResource>>(resources, HttpStatus.OK);
+    }
+
+    private SwaggerResource resource(String swaggerGroup, String baseUrl) {
+        SwaggerResource swaggerResource = new SwaggerResource();
+        swaggerResource.setName(swaggerGroup);
+        swaggerResource.setLocation(swaggerLocation(baseUrl, swaggerGroup));
+        return swaggerResource;
+    }
+
+    private String swaggerLocation(String swaggerUrl, String swaggerGroup) {
+        String base = Optional.of(swaggerUrl).get();
+        if (Docket.DEFAULT_GROUP_NAME.equals(swaggerGroup)) {
+            return base;
+        }
+        return base + "?group=" + swaggerGroup;
+    }
+
+    private Optional<? extends Class> classByName(String className) {
+        try {
+            return Optional.of(Class.forName(className));
+        } catch (ClassNotFoundException e) {
+            return Optional.absent();
+        }
+    }
 }

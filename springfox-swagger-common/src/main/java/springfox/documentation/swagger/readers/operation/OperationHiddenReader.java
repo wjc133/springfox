@@ -32,18 +32,18 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class OperationHiddenReader implements OperationBuilderPlugin {
 
-  @Override
-  public void apply(OperationContext context) {
+    @Override
+    public void apply(OperationContext context) {
 
-    HandlerMethod handlerMethod = context.getHandlerMethod();
-    ApiOperation methodAnnotation = handlerMethod.getMethodAnnotation(ApiOperation.class);
-    if (null != methodAnnotation) {
-      context.operationBuilder().hidden(methodAnnotation.hidden());
+        HandlerMethod handlerMethod = context.getHandlerMethod();
+        ApiOperation methodAnnotation = handlerMethod.getMethodAnnotation(ApiOperation.class);
+        if (null != methodAnnotation) {
+            context.operationBuilder().hidden(methodAnnotation.hidden());
+        }
     }
-  }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return SwaggerPluginSupport.pluginDoesApply(delimiter);
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return SwaggerPluginSupport.pluginDoesApply(delimiter);
+    }
 }

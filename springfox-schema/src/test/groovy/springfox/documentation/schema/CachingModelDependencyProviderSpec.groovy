@@ -24,28 +24,28 @@ import springfox.documentation.schema.mixins.TypesForTestingSupport
 import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spi.schema.AlternateTypeProvider
 
-import static com.google.common.collect.Sets.*
-import static springfox.documentation.spi.schema.contexts.ModelContext.*
+import static com.google.common.collect.Sets.newHashSet
+import static springfox.documentation.spi.schema.contexts.ModelContext.inputParam
 
 @Mixin(TypesForTestingSupport)
 class CachingModelDependencyProviderSpec extends Specification {
-  def "Implementation caches the invocations" () {
-    given:
-      def context = inputParam(
-            complexType(),
-            DocumentationType.SWAGGER_2,
-            new AlternateTypeProvider([]),
-            new CodeGenGenericTypeNamingStrategy())
-      def mock = Mock(ModelDependencyProvider) {
-        dependentModels(context) >> newHashSet(aResolvedType())
-      }
-    when:
-      def sut = new CachingModelDependencyProvider(mock)
-    then:
-      sut.dependentModels(context) == sut.dependentModels(context)
-  }
+    def "Implementation caches the invocations"() {
+        given:
+        def context = inputParam(
+                complexType(),
+                DocumentationType.SWAGGER_2,
+                new AlternateTypeProvider([]),
+                new CodeGenGenericTypeNamingStrategy())
+        def mock = Mock(ModelDependencyProvider) {
+            dependentModels(context) >> newHashSet(aResolvedType())
+        }
+        when:
+        def sut = new CachingModelDependencyProvider(mock)
+        then:
+        sut.dependentModels(context) == sut.dependentModels(context)
+    }
 
-  def aResolvedType() {
-    new TypeResolver().resolve(complexType())
-  }
+    def aResolvedType() {
+        new TypeResolver().resolve(complexType())
+    }
 }

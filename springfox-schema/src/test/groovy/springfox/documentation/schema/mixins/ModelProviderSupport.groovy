@@ -18,6 +18,7 @@
  */
 
 package springfox.documentation.schema.mixins
+
 import com.fasterxml.classmate.TypeResolver
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.plugin.core.OrderAwarePluginRegistry
@@ -37,51 +38,51 @@ import springfox.documentation.spi.schema.TypeNameProviderPlugin
 @Mixin([SchemaPluginsSupport])
 class ModelProviderSupport {
 
-  ModelProvider defaultModelProvider(ObjectMapper objectMapper = new ObjectMapper(),
-                                     TypeResolver typeResolver = new TypeResolver()) {
+    ModelProvider defaultModelProvider(ObjectMapper objectMapper = new ObjectMapper(),
+                                       TypeResolver typeResolver = new TypeResolver()) {
 
-    def pluginsManager = defaultSchemaPlugins()
-    PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
-            OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
-    TypeNameExtractor typeNameExtractor = new TypeNameExtractor(typeResolver, modelNameRegistry)
-    def namingStrategy = new ObjectMapperBeanPropertyNamingStrategy()
+        def pluginsManager = defaultSchemaPlugins()
+        PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
+                OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
+        TypeNameExtractor typeNameExtractor = new TypeNameExtractor(typeResolver, modelNameRegistry)
+        def namingStrategy = new ObjectMapperBeanPropertyNamingStrategy()
 
-    def event = new ObjectMapperConfigured(this, objectMapper)
-    namingStrategy.onApplicationEvent(event)
+        def event = new ObjectMapperConfigured(this, objectMapper)
+        namingStrategy.onApplicationEvent(event)
 
-    def modelPropertiesProvider = new OptimizedModelPropertiesProvider(new AccessorsProvider(typeResolver),
-        new FieldProvider(typeResolver), new FactoryMethodProvider(typeResolver), typeResolver, namingStrategy,
-        pluginsManager, typeNameExtractor)
-    modelPropertiesProvider.onApplicationEvent(event)
-    def modelDependenciesProvider = modelDependencyProvider(typeResolver, modelPropertiesProvider, typeNameExtractor)
-    new DefaultModelProvider(typeResolver, modelPropertiesProvider, modelDependenciesProvider,
-            pluginsManager, typeNameExtractor)
-  }
+        def modelPropertiesProvider = new OptimizedModelPropertiesProvider(new AccessorsProvider(typeResolver),
+                new FieldProvider(typeResolver), new FactoryMethodProvider(typeResolver), typeResolver, namingStrategy,
+                pluginsManager, typeNameExtractor)
+        modelPropertiesProvider.onApplicationEvent(event)
+        def modelDependenciesProvider = modelDependencyProvider(typeResolver, modelPropertiesProvider, typeNameExtractor)
+        new DefaultModelProvider(typeResolver, modelPropertiesProvider, modelDependenciesProvider,
+                pluginsManager, typeNameExtractor)
+    }
 
-  DefaultModelDependencyProvider modelDependencyProvider(TypeResolver resolver,
-      ModelPropertiesProvider modelPropertiesProvider,
-      TypeNameExtractor typeNameExtractor) {
-    new DefaultModelDependencyProvider(resolver, modelPropertiesProvider, typeNameExtractor)
-  }
+    DefaultModelDependencyProvider modelDependencyProvider(TypeResolver resolver,
+                                                           ModelPropertiesProvider modelPropertiesProvider,
+                                                           TypeNameExtractor typeNameExtractor) {
+        new DefaultModelDependencyProvider(resolver, modelPropertiesProvider, typeNameExtractor)
+    }
 
-  DefaultModelDependencyProvider defaultModelDependencyProvider() {
-    def typeResolver = new TypeResolver()
+    DefaultModelDependencyProvider defaultModelDependencyProvider() {
+        def typeResolver = new TypeResolver()
 
-    def pluginsManager = defaultSchemaPlugins()
-    PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
-        OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
-    TypeNameExtractor typeNameExtractor = new TypeNameExtractor(typeResolver,  modelNameRegistry)
-    def objectMapper = new ObjectMapper()
-    def namingStrategy = new ObjectMapperBeanPropertyNamingStrategy()
+        def pluginsManager = defaultSchemaPlugins()
+        PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
+                OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
+        TypeNameExtractor typeNameExtractor = new TypeNameExtractor(typeResolver, modelNameRegistry)
+        def objectMapper = new ObjectMapper()
+        def namingStrategy = new ObjectMapperBeanPropertyNamingStrategy()
 
-    def event = new ObjectMapperConfigured(this, objectMapper)
-    namingStrategy.onApplicationEvent(event)
+        def event = new ObjectMapperConfigured(this, objectMapper)
+        namingStrategy.onApplicationEvent(event)
 
-    def modelPropertiesProvider = new OptimizedModelPropertiesProvider(new AccessorsProvider(typeResolver),
-        new FieldProvider(typeResolver), new FactoryMethodProvider(typeResolver), typeResolver, namingStrategy,
-        pluginsManager, typeNameExtractor)
-    modelPropertiesProvider.onApplicationEvent(event)
-    modelDependencyProvider(typeResolver, modelPropertiesProvider, typeNameExtractor)
-  }
+        def modelPropertiesProvider = new OptimizedModelPropertiesProvider(new AccessorsProvider(typeResolver),
+                new FieldProvider(typeResolver), new FactoryMethodProvider(typeResolver), typeResolver, namingStrategy,
+                pluginsManager, typeNameExtractor)
+        modelPropertiesProvider.onApplicationEvent(event)
+        modelDependencyProvider(typeResolver, modelPropertiesProvider, typeNameExtractor)
+    }
 
 }

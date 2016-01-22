@@ -28,66 +28,68 @@ import springfox.documentation.spi.DocumentationType;
 import java.lang.reflect.AnnotatedElement;
 
 public class ModelPropertyContext {
-  private final ModelPropertyBuilder builder;
-  private final TypeResolver resolver;
-  private final Optional<BeanPropertyDefinition> beanPropertyDefinition;
-  private final Optional<AnnotatedElement> annotatedElement;
-  private final DocumentationType documentationType;
+    private final ModelPropertyBuilder builder;
+    private final TypeResolver resolver;
+    private final Optional<BeanPropertyDefinition> beanPropertyDefinition;
+    private final Optional<AnnotatedElement> annotatedElement;
+    private final DocumentationType documentationType;
 
-  public ModelPropertyContext(ModelPropertyBuilder builder, AnnotatedElement annotatedElement,
-                              TypeResolver resolver, DocumentationType documentationType) {
-    this.builder = builder;
-    this.resolver = resolver;
-    this.annotatedElement = Optional.fromNullable(annotatedElement);
-    this.beanPropertyDefinition = Optional.absent();
-    this.documentationType = documentationType;
-  }
+    public ModelPropertyContext(ModelPropertyBuilder builder, AnnotatedElement annotatedElement,
+                                TypeResolver resolver, DocumentationType documentationType) {
+        this.builder = builder;
+        this.resolver = resolver;
+        this.annotatedElement = Optional.fromNullable(annotatedElement);
+        this.beanPropertyDefinition = Optional.absent();
+        this.documentationType = documentationType;
+    }
 
-  public ModelPropertyContext(ModelPropertyBuilder builder, BeanPropertyDefinition beanPropertyDefinition,
-                              TypeResolver resolver, DocumentationType documentationType) {
+    public ModelPropertyContext(ModelPropertyBuilder builder, BeanPropertyDefinition beanPropertyDefinition,
+                                TypeResolver resolver, DocumentationType documentationType) {
 
-    this.builder = builder;
-    this.resolver = resolver;
-    this.beanPropertyDefinition = Optional.fromNullable(beanPropertyDefinition);
-    this.documentationType = documentationType;
-    annotatedElement = Optional.absent();
-  }
+        this.builder = builder;
+        this.resolver = resolver;
+        this.beanPropertyDefinition = Optional.fromNullable(beanPropertyDefinition);
+        this.documentationType = documentationType;
+        annotatedElement = Optional.absent();
+    }
 
-  /**
-   * Model property build. Use this to override model property attributes
-   * @return
-   */
-  public ModelPropertyBuilder getBuilder() {
-    return builder;
-  }
+    /**
+     * Model property build. Use this to override model property attributes
+     *
+     * @return
+     */
+    public ModelPropertyBuilder getBuilder() {
+        return builder;
+    }
 
-  /**
-   * Documentation type this context supports, swagger 1.2, 2.0 or vanilla spring mvc
-   * @return documentation type
-   */
-  public DocumentationType getDocumentationType() {
-    return documentationType;
-  }
+    /**
+     * Documentation type this context supports, swagger 1.2, 2.0 or vanilla spring mvc
+     *
+     * @return documentation type
+     */
+    public DocumentationType getDocumentationType() {
+        return documentationType;
+    }
 
 
-  /**
-   * @return annotated element that this model property is annotated with
-   */
-  public Optional<AnnotatedElement> getAnnotatedElement() {
-    return annotatedElement;
-  }
+    /**
+     * @return annotated element that this model property is annotated with
+     */
+    public Optional<AnnotatedElement> getAnnotatedElement() {
+        return annotatedElement;
+    }
 
-  /**
-   * @return bean property definition for this model property
-   */
-  public Optional<BeanPropertyDefinition> getBeanPropertyDefinition() {
-    return beanPropertyDefinition;
-  }
+    /**
+     * @return bean property definition for this model property
+     */
+    public Optional<BeanPropertyDefinition> getBeanPropertyDefinition() {
+        return beanPropertyDefinition;
+    }
 
-  /**
-   * @return resolver used to resolve types
-   */
-  public TypeResolver getResolver() {
-    return resolver;
-  }
+    /**
+     * @return resolver used to resolve types
+     */
+    public TypeResolver getResolver() {
+        return resolver;
+    }
 }

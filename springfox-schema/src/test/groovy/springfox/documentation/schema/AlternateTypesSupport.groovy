@@ -18,28 +18,30 @@
  */
 
 package springfox.documentation.schema
+
 import com.fasterxml.classmate.TypeResolver
 import springfox.documentation.spi.schema.AlternateTypeProvider
 import springfox.documentation.spi.service.contexts.Defaults
 
-import static springfox.documentation.schema.AlternateTypeRules.*
+import static springfox.documentation.schema.AlternateTypeRules.newMapRule
+import static springfox.documentation.schema.AlternateTypeRules.newRule
 
 class AlternateTypesSupport {
 
-  def defaultRules(TypeResolver resolver = new TypeResolver()) {
-    def rules = new Defaults().defaultRules(resolver);
-    rules.add(newRule(resolver.arrayType(ToSubstitute), resolver.arrayType(Substituted)))
-    rules.add(newRule(resolver.resolve(List, ToSubstitute), resolver.resolve(List, Substituted)))
-    rules
-  }
+    def defaultRules(TypeResolver resolver = new TypeResolver()) {
+        def rules = new Defaults().defaultRules(resolver);
+        rules.add(newRule(resolver.arrayType(ToSubstitute), resolver.arrayType(Substituted)))
+        rules.add(newRule(resolver.resolve(List, ToSubstitute), resolver.resolve(List, Substituted)))
+        rules
+    }
 
-  AlternateTypeProvider alternateTypeProvider() {
-    new AlternateTypeProvider(defaultRules())
-  }
+    AlternateTypeProvider alternateTypeProvider() {
+        new AlternateTypeProvider(defaultRules())
+    }
 
-  AlternateTypeProvider alternateRulesWithWildcardMap() {
-    def rules = defaultRules()
-    rules.add(newMapRule(WildcardType, WildcardType))
-    new AlternateTypeProvider(rules)
-  }
+    AlternateTypeProvider alternateRulesWithWildcardMap() {
+        def rules = defaultRules()
+        rules.add(newMapRule(WildcardType, WildcardType))
+        new AlternateTypeProvider(rules)
+    }
 }

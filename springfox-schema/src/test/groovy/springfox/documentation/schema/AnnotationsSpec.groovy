@@ -32,124 +32,124 @@ import spock.lang.Unroll
 
 class AnnotationsSpec extends Specification {
 
-  def "Cannot instantiate the annotations helper"() {
-    when:
-      new Annotations()
-    then:
-      thrown(UnsupportedOperationException)
-  }
-
-  @Unroll
-  def "Introspects bean annotations on deserializable properties"() {
-    given:
-      ObjectMapper mapper = new ObjectMapper()
-      BeanDescription beanDesc =
-              mapper.deserializationConfig.introspect(TypeFactory.defaultInstance()
-                  .constructType(AnnotationType))
-      BeanPropertyDefinition property = beanDesc.findProperties().find { it -> it.name == fieldName }
-
-    expect:
-      Annotations.findPropertyAnnotation(property, Autowired).isPresent() == isPresent
-    where:
-      fieldName                  | isPresent
-      'field'                    | true
-      'fieldWithGetter'          | true
-      'fieldWithGetterAndSetter' | true
-      'fieldWithNoAnnotations'   | false
-      'fieldWith2Setters'        | true
-  }
-
-  @Unroll
-  def "Introspects bean annotations on serializable properties"() {
-    given:
-      ObjectMapper mapper = new ObjectMapper()
-      BeanDescription beanDesc =
-              mapper.serializationConfig.introspect(TypeFactory.defaultInstance()
-                      .constructType(AnnotationType))
-      BeanPropertyDefinition property = beanDesc.findProperties().find { it -> it.name == fieldName }
-    expect:
-      Annotations.findPropertyAnnotation(property, Autowired).isPresent() == isPresent
-    where:
-      fieldName                  | isPresent
-      'field'                    | true
-      'fieldWithGetter'          | true
-      'fieldWithGetterAndSetter' | true
-      'fieldWithNoAnnotations'   | false
-      'fieldWith2Setters'        | true
-  }
-
-  @Unroll
-  def "Introspects bean annotations and gets the member name"() {
-    given:
-      ObjectMapper mapper = new ObjectMapper()
-      BeanDescription beanDesc =
-              mapper.serializationConfig.introspect(TypeFactory.defaultInstance()
-                      .constructType(AnnotationType))
-      BeanPropertyDefinition property = beanDesc.findProperties().find { it -> it.name == fieldName }
-    expect:
-      Annotations.memberName(property.getPrimaryMember()) == memberName
-    where:
-      fieldName                  | memberName
-      'field'                    | 'field'
-      'fieldWithGetter'          | 'getFieldWithGetter'
-      'fieldWithGetterAndSetter' | 'getFieldWithGetterAndSetter'
-      'fieldWithNoAnnotations'   | 'fieldWithNoAnnotations'
-      'fieldWith2Setters'        | 'getFieldWith2Setters'
-  }
-
-  def "when member is null"() {
-    expect:
-      Annotations.memberName(null) == ""
-  }
-
-  def "when member.getMember is null"() {
-    given:
-      def member = Mock(AnnotatedMember)
-    and:
-      member.getMember() >> null
-    expect:
-      Annotations.memberName(member) == ""
-  }
-
-  class AnnotationType {
-    @Autowired
-    @JsonProperty
-    private String field
-    private String fieldWithGetter
-    private String fieldWithGetterAndSetter
-    private String fieldWith2Setters;
-
-    @JsonProperty
-    private String fieldWithNoAnnotations
-
-
-    @Autowired
-    String getFieldWithGetter() {
-      return fieldWithGetter
+    def "Cannot instantiate the annotations helper"() {
+        when:
+        new Annotations()
+        then:
+        thrown(UnsupportedOperationException)
     }
 
-    String getFieldWithGetterAndSetter() {
-      return fieldWithGetterAndSetter
+    @Unroll
+    def "Introspects bean annotations on deserializable properties"() {
+        given:
+        ObjectMapper mapper = new ObjectMapper()
+        BeanDescription beanDesc =
+                mapper.deserializationConfig.introspect(TypeFactory.defaultInstance()
+                        .constructType(AnnotationType))
+        BeanPropertyDefinition property = beanDesc.findProperties().find { it -> it.name == fieldName }
+
+        expect:
+        Annotations.findPropertyAnnotation(property, Autowired).isPresent() == isPresent
+        where:
+        fieldName                  | isPresent
+        'field'                    | true
+        'fieldWithGetter'          | true
+        'fieldWithGetterAndSetter' | true
+        'fieldWithNoAnnotations'   | false
+        'fieldWith2Setters'        | true
     }
 
-    public String getFieldWith2Setters() {
-      return fieldWith2Setters
+    @Unroll
+    def "Introspects bean annotations on serializable properties"() {
+        given:
+        ObjectMapper mapper = new ObjectMapper()
+        BeanDescription beanDesc =
+                mapper.serializationConfig.introspect(TypeFactory.defaultInstance()
+                        .constructType(AnnotationType))
+        BeanPropertyDefinition property = beanDesc.findProperties().find { it -> it.name == fieldName }
+        expect:
+        Annotations.findPropertyAnnotation(property, Autowired).isPresent() == isPresent
+        where:
+        fieldName                  | isPresent
+        'field'                    | true
+        'fieldWithGetter'          | true
+        'fieldWithGetterAndSetter' | true
+        'fieldWithNoAnnotations'   | false
+        'fieldWith2Setters'        | true
     }
 
-    @JsonIgnore
-    public void setFieldWith2Setters(UUID fieldWith2Setters) {
-      this.fieldWith2Setters = ownerId.toString();
+    @Unroll
+    def "Introspects bean annotations and gets the member name"() {
+        given:
+        ObjectMapper mapper = new ObjectMapper()
+        BeanDescription beanDesc =
+                mapper.serializationConfig.introspect(TypeFactory.defaultInstance()
+                        .constructType(AnnotationType))
+        BeanPropertyDefinition property = beanDesc.findProperties().find { it -> it.name == fieldName }
+        expect:
+        Annotations.memberName(property.getPrimaryMember()) == memberName
+        where:
+        fieldName                  | memberName
+        'field'                    | 'field'
+        'fieldWithGetter'          | 'getFieldWithGetter'
+        'fieldWithGetterAndSetter' | 'getFieldWithGetterAndSetter'
+        'fieldWithNoAnnotations'   | 'fieldWithNoAnnotations'
+        'fieldWith2Setters'        | 'getFieldWith2Setters'
     }
 
-    @JsonProperty
-    @Autowired
-    public void setFieldWith2Setters(String fieldWith2Setters) {
-      this.fieldWith2Setters = fieldWith2Setters;
+    def "when member is null"() {
+        expect:
+        Annotations.memberName(null) == ""
     }
 
-    @Autowired
-    void setFieldWithGetterAndSetter(String fieldWithGetterAndSetter) {
-      this.fieldWithGetterAndSetter = fieldWithGetterAndSetter
+    def "when member.getMember is null"() {
+        given:
+        def member = Mock(AnnotatedMember)
+        and:
+        member.getMember() >> null
+        expect:
+        Annotations.memberName(member) == ""
     }
-  }
+
+    class AnnotationType {
+        @Autowired
+        @JsonProperty
+        private String field
+        private String fieldWithGetter
+        private String fieldWithGetterAndSetter
+        private String fieldWith2Setters;
+
+        @JsonProperty
+        private String fieldWithNoAnnotations
+
+
+        @Autowired
+        String getFieldWithGetter() {
+            return fieldWithGetter
+        }
+
+        String getFieldWithGetterAndSetter() {
+            return fieldWithGetterAndSetter
+        }
+
+        public String getFieldWith2Setters() {
+            return fieldWith2Setters
+        }
+
+        @JsonIgnore
+        public void setFieldWith2Setters(UUID fieldWith2Setters) {
+            this.fieldWith2Setters = ownerId.toString();
+        }
+
+        @JsonProperty
+        @Autowired
+        public void setFieldWith2Setters(String fieldWith2Setters) {
+            this.fieldWith2Setters = fieldWith2Setters;
+        }
+
+        @Autowired
+        void setFieldWithGetterAndSetter(String fieldWithGetterAndSetter) {
+            this.fieldWithGetterAndSetter = fieldWithGetterAndSetter
+        }
+    }
 }

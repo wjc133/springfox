@@ -20,8 +20,8 @@
 package springfox.documentation.swagger1.dto;
 
 public class BasicAuth extends AuthorizationType {
-  public BasicAuth() {
-    super("basicAuth");
-  }
+    public BasicAuth() {
+        super("basicAuth");
+    }
 
 }

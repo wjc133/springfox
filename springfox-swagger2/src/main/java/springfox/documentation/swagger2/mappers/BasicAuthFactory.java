@@ -24,8 +24,8 @@ import io.swagger.models.auth.SecuritySchemeDefinition;
 import springfox.documentation.service.SecurityScheme;
 
 class BasicAuthFactory implements SecuritySchemeFactory {
-  @Override
-  public SecuritySchemeDefinition create(SecurityScheme input) {
-    return new BasicAuthDefinition();
-  }
+    @Override
+    public SecuritySchemeDefinition create(SecurityScheme input) {
+        return new BasicAuthDefinition();
+    }
 }

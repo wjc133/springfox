@@ -18,6 +18,7 @@
  */
 
 package springfox.documentation.swagger.readers.operation
+
 import com.fasterxml.classmate.TypeResolver
 import org.springframework.plugin.core.OrderAwarePluginRegistry
 import org.springframework.plugin.core.PluginRegistry
@@ -36,79 +37,79 @@ import springfox.documentation.spring.web.readers.operation.CachingOperationName
 @Mixin([RequestMappingSupport, ServicePluginsSupport])
 class SwaggerResponseMessageReaderSpec extends DocumentationContextSpec {
 
-  def "ApiResponse annotation should override when using swagger reader"() {
-    given:
-      OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
-              RequestMethod.GET, dummyHandlerMethod('methodWithApiResponses'), 0, requestMappingInfo('/somePath'),
-              context(), "")
+    def "ApiResponse annotation should override when using swagger reader"() {
+        given:
+        OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
+                RequestMethod.GET, dummyHandlerMethod('methodWithApiResponses'), 0, requestMappingInfo('/somePath'),
+                context(), "")
 
-      PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
-        OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
+        PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
+                OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
 
-      def resolver = new TypeResolver()
-      def typeNameExtractor = new TypeNameExtractor(resolver,  modelNameRegistry)
+        def resolver = new TypeResolver()
+        def typeNameExtractor = new TypeNameExtractor(resolver, modelNameRegistry)
 
-    when:
-      new SwaggerResponseMessageReader(typeNameExtractor, resolver).apply(operationContext)
+        when:
+        new SwaggerResponseMessageReader(typeNameExtractor, resolver).apply(operationContext)
 
-    and:
-      def operation = operationContext.operationBuilder().build()
-      def responseMessages = operation.responseMessages
+        and:
+        def operation = operationContext.operationBuilder().build()
+        def responseMessages = operation.responseMessages
 
-    then:
-      responseMessages.size() == 1
-      def annotatedResponse = responseMessages.find { it.code == 413 }
-      annotatedResponse != null
-      annotatedResponse.message == "a message"
-  }
+        then:
+        responseMessages.size() == 1
+        def annotatedResponse = responseMessages.find { it.code == 413 }
+        annotatedResponse != null
+        annotatedResponse.message == "a message"
+    }
 
-  def "ApiOperation annotation should provide response"() {
-    given:
-      OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
-          RequestMethod.GET, dummyHandlerMethod('methodApiResponseClass'), 0, requestMappingInfo('/somePath'),
-          context(), "")
+    def "ApiOperation annotation should provide response"() {
+        given:
+        OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
+                RequestMethod.GET, dummyHandlerMethod('methodApiResponseClass'), 0, requestMappingInfo('/somePath'),
+                context(), "")
 
-      PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
-          OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
+        PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
+                OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
 
-      def resolver = new TypeResolver()
-      def typeNameExtractor = new TypeNameExtractor(resolver,  modelNameRegistry)
+        def resolver = new TypeResolver()
+        def typeNameExtractor = new TypeNameExtractor(resolver, modelNameRegistry)
 
-    when:
-      new SwaggerResponseMessageReader(typeNameExtractor, resolver).apply(operationContext)
+        when:
+        new SwaggerResponseMessageReader(typeNameExtractor, resolver).apply(operationContext)
 
-    and:
-      def operation = operationContext.operationBuilder().build()
-      def responseMessages = operation.responseMessages
+        and:
+        def operation = operationContext.operationBuilder().build()
+        def responseMessages = operation.responseMessages
 
-    then:
-      responseMessages.size() == 1
-      def annotatedResponse = responseMessages.find { it.code == 200 }
-      annotatedResponse != null
-      annotatedResponse.message == "OK"
-  }
+        then:
+        responseMessages.size() == 1
+        def annotatedResponse = responseMessages.find { it.code == 200 }
+        annotatedResponse != null
+        annotatedResponse.message == "OK"
+    }
 
-  def "Successful status series is inferred" () {
-    expect:
-      SwaggerResponseMessageReader.isSuccessful(status)
-    where:
-      status << [200, 204]
-  }
+    def "Successful status series is inferred"() {
+        expect:
+        SwaggerResponseMessageReader.isSuccessful(status)
+        where:
+        status << [200, 204]
+    }
 
-  def "Supports all documentation types"() {
-    given:
-      PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
-        OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
+    def "Supports all documentation types"() {
+        given:
+        PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
+                OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
 
-      def resolver = new TypeResolver()
-      def typeNameExtractor = new TypeNameExtractor(resolver,  modelNameRegistry)
+        def resolver = new TypeResolver()
+        def typeNameExtractor = new TypeNameExtractor(resolver, modelNameRegistry)
 
-    when:
-      def sut = new SwaggerResponseMessageReader(typeNameExtractor, resolver)
+        when:
+        def sut = new SwaggerResponseMessageReader(typeNameExtractor, resolver)
 
-    then:
-      !sut.supports(DocumentationType.SPRING_WEB)
-      sut.supports(DocumentationType.SWAGGER_12)
-      sut.supports(DocumentationType.SWAGGER_2)
-  }
+        then:
+        !sut.supports(DocumentationType.SPRING_WEB)
+        sut.supports(DocumentationType.SWAGGER_12)
+        sut.supports(DocumentationType.SWAGGER_2)
+    }
 }

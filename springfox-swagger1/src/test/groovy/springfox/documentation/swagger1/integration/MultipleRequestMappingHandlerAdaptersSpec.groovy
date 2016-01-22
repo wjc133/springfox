@@ -27,13 +27,13 @@ import spock.lang.Specification
 
 @ContextConfiguration("classpath:handler-adapter-context.xml")
 @WebAppConfiguration
-class MultipleRequestMappingHandlerAdaptersSpec extends Specification{
+class MultipleRequestMappingHandlerAdaptersSpec extends Specification {
 
-  @Autowired
-  WebApplicationContext context;
+    @Autowired
+    WebApplicationContext context;
 
-  def "should survive multiple MultipleRequestMappingHandlerAdapters"(){
-    expect:
-      true
-  }
+    def "should survive multiple MultipleRequestMappingHandlerAdapters"() {
+        expect:
+        true
+    }
 }

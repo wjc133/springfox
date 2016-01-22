@@ -33,39 +33,38 @@ import springfox.documentation.spring.web.dummy.DummyClass
 import springfox.documentation.spring.web.mixins.ModelProviderForServiceSupport
 import springfox.documentation.spring.web.mixins.RequestMappingSupport
 import springfox.documentation.spring.web.plugins.DocumentationContextSpec
-import springfox.documentation.swagger.readers.parameter.ParameterMultiplesReader
 
 @Mixin([RequestMappingSupport, ModelProviderForServiceSupport])
 class ParameterMultiplesReaderSpec extends DocumentationContextSpec {
-  @Unroll
-  def "param multiples for swagger reader"() {
-    given:
-      MethodParameter methodParameter = Stub(MethodParameter)
-      methodParameter.getParameterAnnotation(ApiParam.class) >> apiParamAnnotation
-      methodParameter.getParameterType() >> paramType
-      ResolvedType resolvedType = paramType != null ? new TypeResolver().resolve(paramType) : null
-      ResolvedMethodParameter resolvedMethodParameter = new ResolvedMethodParameter(methodParameter, resolvedType)
-      def genericNamingStrategy = new DefaultGenericTypeNamingStrategy()
-      ParameterContext parameterContext = new ParameterContext(resolvedMethodParameter, new ParameterBuilder(),
-          context(), genericNamingStrategy, Mock(OperationContext))
+    @Unroll
+    def "param multiples for swagger reader"() {
+        given:
+        MethodParameter methodParameter = Stub(MethodParameter)
+        methodParameter.getParameterAnnotation(ApiParam.class) >> apiParamAnnotation
+        methodParameter.getParameterType() >> paramType
+        ResolvedType resolvedType = paramType != null ? new TypeResolver().resolve(paramType) : null
+        ResolvedMethodParameter resolvedMethodParameter = new ResolvedMethodParameter(methodParameter, resolvedType)
+        def genericNamingStrategy = new DefaultGenericTypeNamingStrategy()
+        ParameterContext parameterContext = new ParameterContext(resolvedMethodParameter, new ParameterBuilder(),
+                context(), genericNamingStrategy, Mock(OperationContext))
 
-    when:
-      def operationCommand = new ParameterMultiplesReader();
-      operationCommand.apply(parameterContext)
-    then:
-      parameterContext.parameterBuilder().build().isAllowMultiple() == expected
-    where:
-      apiParamAnnotation                        | paramType                       | expected
-      [allowMultiple: { -> true }] as ApiParam  | null                            | true
-      [allowMultiple: { -> false }] as ApiParam | String[].class                  | false
-      [allowMultiple: { -> false }] as ApiParam | DummyClass.BusinessType[].class | false
-      null                                      | String[].class                  | false
-      null                                      | List.class                      | false
-      null                                      | Collection.class                | false
-      null                                      | Set.class                       | false
-      null                                      | Vector.class                    | false
-      null                                      | Object[].class                  | false
-      null                                      | Integer.class                   | false
-      null                                      | Iterable.class                  | false
-  }
+        when:
+        def operationCommand = new ParameterMultiplesReader();
+        operationCommand.apply(parameterContext)
+        then:
+        parameterContext.parameterBuilder().build().isAllowMultiple() == expected
+        where:
+        apiParamAnnotation                        | paramType                       | expected
+        [allowMultiple: { -> true }] as ApiParam  | null                            | true
+        [allowMultiple: { -> false }] as ApiParam | String[].class                  | false
+        [allowMultiple: { -> false }] as ApiParam | DummyClass.BusinessType[].class | false
+        null                                      | String[].class                  | false
+        null                                      | List.class                      | false
+        null                                      | Collection.class                | false
+        null                                      | Set.class                       | false
+        null                                      | Vector.class                    | false
+        null                                      | Object[].class                  | false
+        null                                      | Integer.class                   | false
+        null                                      | Iterable.class                  | false
+    }
 }

@@ -24,47 +24,47 @@ import com.fasterxml.classmate.ResolvedType;
 import static springfox.documentation.schema.WildcardType.*;
 
 public class AlternateTypeRule {
-  protected final ResolvedType original;
-  protected final ResolvedType alternate;
+    protected final ResolvedType original;
+    protected final ResolvedType alternate;
 
-  /**
-   * Instantiates a new Alternate type rule.
-   *
-   * @param original  the original type
-   * @param alternate the alternate type
-   */
-  public AlternateTypeRule(ResolvedType original, ResolvedType alternate) {
-    this.original = original;
-    this.alternate = alternate;
-  }
-
-  /**
-   * Provides alternate for supplier type.
-   *
-   * @param type the type
-   * @return the alternate for the type
-   */
-  public ResolvedType alternateFor(ResolvedType type) {
-    if (appliesTo(type)) {
-      if (hasWildcards(original)) {
-        return replaceWildcardsFrom(WildcardType.collectReplaceables(type, original), alternate);
-      } else {
-        return alternate;
-      }
+    /**
+     * Instantiates a new Alternate type rule.
+     *
+     * @param original  the original type
+     * @param alternate the alternate type
+     */
+    public AlternateTypeRule(ResolvedType original, ResolvedType alternate) {
+        this.original = original;
+        this.alternate = alternate;
     }
-    return type;
-  }
 
-  /**
-   * Check if an alternate applies to type.
-   *
-   * @param type the source
-   * @return the boolean
-   */
-  public boolean appliesTo(ResolvedType type) {
-    return hasWildcards(original)
-            && wildcardMatch(type, original)
-            || exactMatch(original, type);
-  }
+    /**
+     * Provides alternate for supplier type.
+     *
+     * @param type the type
+     * @return the alternate for the type
+     */
+    public ResolvedType alternateFor(ResolvedType type) {
+        if (appliesTo(type)) {
+            if (hasWildcards(original)) {
+                return replaceWildcardsFrom(WildcardType.collectReplaceables(type, original), alternate);
+            } else {
+                return alternate;
+            }
+        }
+        return type;
+    }
+
+    /**
+     * Check if an alternate applies to type.
+     *
+     * @param type the source
+     * @return the boolean
+     */
+    public boolean appliesTo(ResolvedType type) {
+        return hasWildcards(original)
+                && wildcardMatch(type, original)
+                || exactMatch(original, type);
+    }
 
 }

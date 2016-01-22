@@ -36,56 +36,56 @@ import springfox.documentation.spring.web.readers.operation.OperationReader;
 import java.util.List;
 
 import static com.google.common.collect.FluentIterable.from;
-import static com.google.common.collect.Lists.*;
-import static com.google.common.collect.Ordering.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Ordering.natural;
 
 @Component
 public class ApiDescriptionReader {
 
-  private final OperationReader operationReader;
-  private final DocumentationPluginsManager pluginsManager;
-  private final ApiDescriptionLookup lookup;
+    private final OperationReader operationReader;
+    private final DocumentationPluginsManager pluginsManager;
+    private final ApiDescriptionLookup lookup;
 
-  @Autowired
-  public ApiDescriptionReader(
-      @Qualifier("cachedOperations") OperationReader operationReader,
-      DocumentationPluginsManager pluginsManager,
-      ApiDescriptionLookup lookup) {
-    this.operationReader = operationReader;
-    this.pluginsManager = pluginsManager;
-    this.lookup = lookup;
-  }
-
-  public List<ApiDescription> read(RequestMappingContext outerContext) {
-    RequestMappingInfo requestMappingInfo = outerContext.getRequestMappingInfo();
-    HandlerMethod handlerMethod = outerContext.getHandlerMethod();
-    PatternsRequestCondition patternsCondition = requestMappingInfo.getPatternsCondition();
-    ApiSelector selector = outerContext.getDocumentationContext().getApiSelector();
-
-    List<ApiDescription> apiDescriptionList = newArrayList();
-    for (String path : matchingPaths(selector, patternsCondition)) {
-      String methodName = handlerMethod.getMethod().getName();
-      RequestMappingContext operationContext = outerContext.copyPatternUsing(path);
-
-      List<Operation> operations = operationReader.read(operationContext);
-      if (operations.size() > 0) {
-        operationContext.apiDescriptionBuilder()
-            .operations(operations)
-            .pathDecorator(pluginsManager.decorator(new PathContext(outerContext, from(operations).first())))
-            .path(path)
-            .description(methodName)
-            .hidden(false);
-        ApiDescription apiDescription = operationContext.apiDescriptionBuilder().build();
-        lookup.add(outerContext.getHandlerMethod().getMethod(), apiDescription);
-        apiDescriptionList.add(apiDescription);
-      }
+    @Autowired
+    public ApiDescriptionReader(
+            @Qualifier("cachedOperations") OperationReader operationReader,
+            DocumentationPluginsManager pluginsManager,
+            ApiDescriptionLookup lookup) {
+        this.operationReader = operationReader;
+        this.pluginsManager = pluginsManager;
+        this.lookup = lookup;
     }
-    return apiDescriptionList;
-  }
 
-  private List<String> matchingPaths(ApiSelector selector, PatternsRequestCondition patternsCondition) {
-    return natural().sortedCopy(from(patternsCondition.getPatterns())
-        .filter(selector.getPathSelector()));
-  }
+    public List<ApiDescription> read(RequestMappingContext outerContext) {
+        RequestMappingInfo requestMappingInfo = outerContext.getRequestMappingInfo();
+        HandlerMethod handlerMethod = outerContext.getHandlerMethod();
+        PatternsRequestCondition patternsCondition = requestMappingInfo.getPatternsCondition();
+        ApiSelector selector = outerContext.getDocumentationContext().getApiSelector();
+
+        List<ApiDescription> apiDescriptionList = newArrayList();
+        for (String path : matchingPaths(selector, patternsCondition)) {
+            String methodName = handlerMethod.getMethod().getName();
+            RequestMappingContext operationContext = outerContext.copyPatternUsing(path);
+
+            List<Operation> operations = operationReader.read(operationContext);
+            if (operations.size() > 0) {
+                operationContext.apiDescriptionBuilder()
+                        .operations(operations)
+                        .pathDecorator(pluginsManager.decorator(new PathContext(outerContext, from(operations).first())))
+                        .path(path)
+                        .description(methodName)
+                        .hidden(false);
+                ApiDescription apiDescription = operationContext.apiDescriptionBuilder().build();
+                lookup.add(outerContext.getHandlerMethod().getMethod(), apiDescription);
+                apiDescriptionList.add(apiDescription);
+            }
+        }
+        return apiDescriptionList;
+    }
+
+    private List<String> matchingPaths(ApiSelector selector, PatternsRequestCondition patternsCondition) {
+        return natural().sortedCopy(from(patternsCondition.getPatterns())
+                .filter(selector.getPathSelector()));
+    }
 
 }

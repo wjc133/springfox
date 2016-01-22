@@ -26,20 +26,20 @@ import springfox.documentation.swagger1.dto.ApiListing
 
 class SwaggerJacksonModuleSpec extends Specification {
 
-  def "should create serialization module"() {
-    ObjectMapper objectMapper = new ObjectMapper()
-    new SwaggerJacksonModule().maybeRegisterModule(objectMapper)
+    def "should create serialization module"() {
+        ObjectMapper objectMapper = new ObjectMapper()
+        new SwaggerJacksonModule().maybeRegisterModule(objectMapper)
 
-    expect:
-    objectMapper.findMixInClassFor(ApiListing) != null
-  }
+        expect:
+        objectMapper.findMixInClassFor(ApiListing) != null
+    }
 
-  def "should create serialization module only once"() {
-    ObjectMapper objectMapper = new ObjectMapper()
-    new SwaggerJacksonModule().maybeRegisterModule(objectMapper)
-    new SwaggerJacksonModule().maybeRegisterModule(objectMapper)
+    def "should create serialization module only once"() {
+        ObjectMapper objectMapper = new ObjectMapper()
+        new SwaggerJacksonModule().maybeRegisterModule(objectMapper)
+        new SwaggerJacksonModule().maybeRegisterModule(objectMapper)
 
-    expect:
-    objectMapper.findMixInClassFor(ApiListing) != null
-  }
+        expect:
+        objectMapper.findMixInClassFor(ApiListing) != null
+    }
 }

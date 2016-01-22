@@ -26,21 +26,21 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 public class ServiceWithAnnotationOnInterface {
 
-  public static class SimpleServiceImpl implements SimpleService {
+    public static class SimpleServiceImpl implements SimpleService {
 
-    @Override
-    public Object aMethod() {
-      return null;
+        @Override
+        public Object aMethod() {
+            return null;
+        }
     }
-  }
 
-  public static interface SimpleService {
+    public static interface SimpleService {
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @ApiResponses({
-            @ApiResponse(code = 201, message = "201 Created")
-    })
-    Object aMethod();
-  }
+        @ResponseStatus(HttpStatus.CREATED)
+        @ApiResponses({
+                @ApiResponse(code = 201, message = "201 Created")
+        })
+        Object aMethod();
+    }
 
 }

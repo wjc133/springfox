@@ -21,16 +21,16 @@ package springfox.documentation.spring.web.readers.operation
 import spock.lang.Specification
 
 class CachingOperationNameGeneratorSpec extends Specification {
-  def "Generates unique name when called twice" (){
-    given:
-      CachingOperationNameGenerator sut = new CachingOperationNameGenerator()
-    when:
-      def first = sut.startingWith("first")
-    and:
-      def second = sut.startingWith("first")
-    then:
-      first.equals("first")
-    and:
-      second.equals("first_1")
-  }
+    def "Generates unique name when called twice"() {
+        given:
+        CachingOperationNameGenerator sut = new CachingOperationNameGenerator()
+        when:
+        def first = sut.startingWith("first")
+        and:
+        def second = sut.startingWith("first")
+        then:
+        first.equals("first")
+        and:
+        second.equals("first_1")
+    }
 }

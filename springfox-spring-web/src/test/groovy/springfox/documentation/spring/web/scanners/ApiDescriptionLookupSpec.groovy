@@ -24,18 +24,18 @@ import springfox.documentation.spring.web.mixins.RequestMappingSupport
 
 @Mixin(RequestMappingSupport)
 class ApiDescriptionLookupSpec extends Specification {
-  def "Given a controller method be able to lookup the api description" () {
-    given:
-      ApiDescriptionLookup sut = new ApiDescriptionLookup()
-    and:
-      def apiDescription = Mock(ApiDescription)
-      def unknownMethod = dummyOperationWithTags().getMethod()
-      def knownMethod = dummyControllerHandlerMethod().getMethod()
-    when:
-      sut.add(knownMethod, apiDescription)
-    then:
-      sut.description(knownMethod) == apiDescription
-    and:
-      sut.description(unknownMethod) == null
-  }
+    def "Given a controller method be able to lookup the api description"() {
+        given:
+        ApiDescriptionLookup sut = new ApiDescriptionLookup()
+        and:
+        def apiDescription = Mock(ApiDescription)
+        def unknownMethod = dummyOperationWithTags().getMethod()
+        def knownMethod = dummyControllerHandlerMethod().getMethod()
+        when:
+        sut.add(knownMethod, apiDescription)
+        then:
+        sut.description(knownMethod) == apiDescription
+        and:
+        sut.description(unknownMethod) == null
+    }
 }

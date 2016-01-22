@@ -24,12 +24,12 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 class SnapshotTask extends DefaultTask {
-  public static final String TASK_NAME = 'snapshot'
-  String description = 'snapshot release flow'
-  String group = 'release'
+    public static final String TASK_NAME = 'snapshot'
+    String description = 'snapshot release flow'
+    String group = 'release'
 
-  @TaskAction
-  void exec() {
-  }
+    @TaskAction
+    void exec() {
+    }
 
 }

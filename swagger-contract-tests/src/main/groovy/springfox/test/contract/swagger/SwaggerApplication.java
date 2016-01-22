@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableAutoConfiguration
 public class SwaggerApplication {
-  public static void main(String[] args) {
-    SpringApplication.run(SwaggerApplication.class, args);
-  }
+    public static void main(String[] args) {
+        SpringApplication.run(SwaggerApplication.class, args);
+    }
 }

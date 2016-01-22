@@ -19,5 +19,5 @@
 package springfox.documentation.service;
 
 public interface PathAdjuster {
-  String adjustedPath(String path);
+    String adjustedPath(String path);
 }

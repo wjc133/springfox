@@ -17,6 +17,7 @@
  *
  */
 package springfox.documentation.staticdocs;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
@@ -64,7 +65,7 @@ public class SwaggerResultHandler implements ResultHandler {
         MockHttpServletResponse response = result.getResponse();
         String swaggerJson = response.getContentAsString();
         Files.createDirectories(Paths.get(outputDir));
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(outputDir, fileName), StandardCharsets.UTF_8)){
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(outputDir, fileName), StandardCharsets.UTF_8)) {
             writer.write(swaggerJson);
         }
     }
@@ -86,7 +87,7 @@ public class SwaggerResultHandler implements ResultHandler {
          * @see org.springframework.test.web.servlet.ResultActions#andDo(org.springframework.test.web.servlet.ResultHandler)
          */
         public SwaggerResultHandler build() {
-            if(StringUtils.isBlank(fileName)){
+            if (StringUtils.isBlank(fileName)) {
                 fileName = "swagger.json";
             }
             return new SwaggerResultHandler(outputDir, fileName);

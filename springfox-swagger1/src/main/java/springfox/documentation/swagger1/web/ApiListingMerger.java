@@ -23,30 +23,30 @@ import springfox.documentation.swagger1.dto.ApiListing;
 
 import java.util.Collection;
 
-import static com.google.common.collect.FluentIterable.*;
-import static com.google.common.collect.Sets.*;
+import static com.google.common.collect.FluentIterable.from;
+import static com.google.common.collect.Sets.newHashSet;
 import static springfox.documentation.builders.BuilderDefaults.nullToEmptyList;
 
 public class ApiListingMerger {
-  public static Optional<ApiListing> mergedApiListing(Collection<ApiListing> apiListings) {
-    if (nullToEmptyList(apiListings).size() > 1) {
-      ApiListing merged = new ApiListing();
-      merged.setSwaggerVersion("1.2");
-      merged.setPosition(0);
-      for (ApiListing each : apiListings) {
-        merged.setApiVersion(each.getApiVersion());
-        merged.setBasePath(each.getBasePath());
-        merged.setResourcePath(each.getResourcePath());
-        merged.setDescription(each.getDescription());
-        merged.appendAuthorizations(each.getAuthorizations());
-        merged.appendApis(each.getApis());
-        merged.appendProtocols(newHashSet(each.getProtocols()));
-        merged.appendConsumes(newHashSet(each.getConsumes()));
-        merged.appendModels(each.getModels());
-        merged.appendProduces(newHashSet(each.getProduces()));
-      }
-      return Optional.of(merged);
+    public static Optional<ApiListing> mergedApiListing(Collection<ApiListing> apiListings) {
+        if (nullToEmptyList(apiListings).size() > 1) {
+            ApiListing merged = new ApiListing();
+            merged.setSwaggerVersion("1.2");
+            merged.setPosition(0);
+            for (ApiListing each : apiListings) {
+                merged.setApiVersion(each.getApiVersion());
+                merged.setBasePath(each.getBasePath());
+                merged.setResourcePath(each.getResourcePath());
+                merged.setDescription(each.getDescription());
+                merged.appendAuthorizations(each.getAuthorizations());
+                merged.appendApis(each.getApis());
+                merged.appendProtocols(newHashSet(each.getProtocols()));
+                merged.appendConsumes(newHashSet(each.getConsumes()));
+                merged.appendModels(each.getModels());
+                merged.appendProduces(newHashSet(each.getProduces()));
+            }
+            return Optional.of(merged);
+        }
+        return from(nullToEmptyList(apiListings)).first();
     }
-    return from(nullToEmptyList(apiListings)).first();
-  }
 }

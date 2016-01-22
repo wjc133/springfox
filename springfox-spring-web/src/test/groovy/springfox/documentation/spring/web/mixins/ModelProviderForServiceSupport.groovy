@@ -18,6 +18,7 @@
  */
 
 package springfox.documentation.spring.web.mixins
+
 import com.fasterxml.classmate.TypeResolver
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
@@ -38,53 +39,53 @@ import springfox.documentation.spi.schema.TypeNameProviderPlugin
 @SuppressWarnings("GrMethodMayBeStatic")
 @Mixin([ServicePluginsSupport, SchemaPluginsSupport])
 class ModelProviderForServiceSupport {
-  def typeNameExtractor() {
-    PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
-        OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
-    new TypeNameExtractor(new TypeResolver(),  modelNameRegistry)
-  }
+    def typeNameExtractor() {
+        PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
+                OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
+        new TypeNameExtractor(new TypeResolver(), modelNameRegistry)
+    }
 
-  ModelProvider modelProvider(SchemaPluginsManager pluginsManager = defaultSchemaPlugins(),
-                              TypeResolver typeResolver = new TypeResolver()) {
+    ModelProvider modelProvider(SchemaPluginsManager pluginsManager = defaultSchemaPlugins(),
+                                TypeResolver typeResolver = new TypeResolver()) {
 
-    def objectMapper = new ObjectMapper()
-    def typeNameExtractor = typeNameExtractor()
-    def namingStrategy = new ObjectMapperBeanPropertyNamingStrategy()
+        def objectMapper = new ObjectMapper()
+        def typeNameExtractor = typeNameExtractor()
+        def namingStrategy = new ObjectMapperBeanPropertyNamingStrategy()
 
-    def event = new ObjectMapperConfigured(this, objectMapper)
-    namingStrategy.onApplicationEvent(event)
+        def event = new ObjectMapperConfigured(this, objectMapper)
+        namingStrategy.onApplicationEvent(event)
 
-    def modelPropertiesProvider = new OptimizedModelPropertiesProvider(new AccessorsProvider(typeResolver),
-        new FieldProvider(typeResolver), new FactoryMethodProvider(typeResolver), typeResolver, namingStrategy,
-        pluginsManager, typeNameExtractor)
+        def modelPropertiesProvider = new OptimizedModelPropertiesProvider(new AccessorsProvider(typeResolver),
+                new FieldProvider(typeResolver), new FactoryMethodProvider(typeResolver), typeResolver, namingStrategy,
+                pluginsManager, typeNameExtractor)
 
-    modelPropertiesProvider.onApplicationEvent(event)
-    def modelDependenciesProvider = new DefaultModelDependencyProvider(typeResolver,
-            modelPropertiesProvider, typeNameExtractor)
-    new DefaultModelProvider(typeResolver, modelPropertiesProvider, modelDependenciesProvider,
-            pluginsManager, typeNameExtractor)
-  }
+        modelPropertiesProvider.onApplicationEvent(event)
+        def modelDependenciesProvider = new DefaultModelDependencyProvider(typeResolver,
+                modelPropertiesProvider, typeNameExtractor)
+        new DefaultModelProvider(typeResolver, modelPropertiesProvider, modelDependenciesProvider,
+                pluginsManager, typeNameExtractor)
+    }
 
-  ModelProvider modelProviderWithSnakeCaseNamingStrategy(SchemaPluginsManager pluginsManager = defaultSchemaPlugins(),
-      TypeResolver typeResolver = new TypeResolver()) {
+    ModelProvider modelProviderWithSnakeCaseNamingStrategy(SchemaPluginsManager pluginsManager = defaultSchemaPlugins(),
+                                                           TypeResolver typeResolver = new TypeResolver()) {
 
-    def objectMapper = new ObjectMapper()
-    def typeNameExtractor = typeNameExtractor()
-    objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES)
-    def namingStrategy = new ObjectMapperBeanPropertyNamingStrategy()
+        def objectMapper = new ObjectMapper()
+        def typeNameExtractor = typeNameExtractor()
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES)
+        def namingStrategy = new ObjectMapperBeanPropertyNamingStrategy()
 
-    def event = new ObjectMapperConfigured(this, objectMapper)
-    namingStrategy.onApplicationEvent(event)
+        def event = new ObjectMapperConfigured(this, objectMapper)
+        namingStrategy.onApplicationEvent(event)
 
-    def modelPropertiesProvider = new OptimizedModelPropertiesProvider(new AccessorsProvider(typeResolver),
-        new FieldProvider(typeResolver), new FactoryMethodProvider(typeResolver), typeResolver, namingStrategy,
-        pluginsManager, typeNameExtractor)
-    modelPropertiesProvider.onApplicationEvent(event)
-    def modelDependenciesProvider = new DefaultModelDependencyProvider(typeResolver,
-            modelPropertiesProvider, typeNameExtractor)
-    new DefaultModelProvider(typeResolver, modelPropertiesProvider, modelDependenciesProvider,
-            pluginsManager, typeNameExtractor)
-  }
+        def modelPropertiesProvider = new OptimizedModelPropertiesProvider(new AccessorsProvider(typeResolver),
+                new FieldProvider(typeResolver), new FactoryMethodProvider(typeResolver), typeResolver, namingStrategy,
+                pluginsManager, typeNameExtractor)
+        modelPropertiesProvider.onApplicationEvent(event)
+        def modelDependenciesProvider = new DefaultModelDependencyProvider(typeResolver,
+                modelPropertiesProvider, typeNameExtractor)
+        new DefaultModelProvider(typeResolver, modelPropertiesProvider, modelDependenciesProvider,
+                pluginsManager, typeNameExtractor)
+    }
 
 
 }

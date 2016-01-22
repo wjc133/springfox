@@ -23,44 +23,44 @@ import springfox.documentation.schema.ModelReference;
 import springfox.documentation.service.ResponseMessage;
 
 public class ResponseMessageBuilder {
-  private int code;
-  private String message;
-  private ModelReference responseModel;
+    private int code;
+    private String message;
+    private ModelReference responseModel;
 
-  /**
-   * Updates the http response code
-   *
-   * @param code - response code
-   * @return this
-   */
-  public ResponseMessageBuilder code(int code) {
-    this.code = code;
-    return this;
-  }
+    /**
+     * Updates the http response code
+     *
+     * @param code - response code
+     * @return this
+     */
+    public ResponseMessageBuilder code(int code) {
+        this.code = code;
+        return this;
+    }
 
-  /**
-   * Updates the response message
-   *
-   * @param message - message
-   * @return
-   */
-  public ResponseMessageBuilder message(String message) {
-    this.message = BuilderDefaults.defaultIfAbsent(message, this.message);
-    return this;
-  }
+    /**
+     * Updates the response message
+     *
+     * @param message - message
+     * @return
+     */
+    public ResponseMessageBuilder message(String message) {
+        this.message = BuilderDefaults.defaultIfAbsent(message, this.message);
+        return this;
+    }
 
-  /**
-   * Updates the model the response represents
-   *
-   * @param responseModel - model reference
-   * @return this
-   */
-  public ResponseMessageBuilder responseModel(ModelReference responseModel) {
-    this.responseModel = BuilderDefaults.defaultIfAbsent(responseModel, this.responseModel);
-    return this;
-  }
+    /**
+     * Updates the model the response represents
+     *
+     * @param responseModel - model reference
+     * @return this
+     */
+    public ResponseMessageBuilder responseModel(ModelReference responseModel) {
+        this.responseModel = BuilderDefaults.defaultIfAbsent(responseModel, this.responseModel);
+        return this;
+    }
 
-  public ResponseMessage build() {
-    return new ResponseMessage(code, message, responseModel);
-  }
+    public ResponseMessage build() {
+        return new ResponseMessage(code, message, responseModel);
+    }
 }

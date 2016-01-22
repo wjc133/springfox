@@ -18,6 +18,7 @@
  */
 
 package springfox.documentation.swagger.readers.operation
+
 import com.fasterxml.classmate.TypeResolver
 import org.springframework.plugin.core.OrderAwarePluginRegistry
 import org.springframework.plugin.core.PluginRegistry
@@ -31,52 +32,52 @@ import springfox.documentation.spi.schema.TypeNameProviderPlugin
 import springfox.documentation.spi.service.contexts.OperationContext
 import springfox.documentation.spring.web.mixins.RequestMappingSupport
 import springfox.documentation.spring.web.plugins.DocumentationContextSpec
-import springfox.documentation.swagger.mixins.SwaggerPluginsSupport
 import springfox.documentation.spring.web.readers.operation.CachingOperationNameGenerator
+import springfox.documentation.swagger.mixins.SwaggerPluginsSupport
 
 @Mixin([RequestMappingSupport, SwaggerPluginsSupport])
 class SwaggerOperationResponseClassReaderSpec extends DocumentationContextSpec {
-  @Unroll
-   def "should have correct response class"() {
-    given:
-      PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
-        OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
-      def typeNameExtractor = new TypeNameExtractor(new TypeResolver(),  modelNameRegistry)
-      OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
-              RequestMethod.GET, handlerMethod, 0, requestMappingInfo("/somePath"),
-              context(), "/anyPath")
+    @Unroll
+    def "should have correct response class"() {
+        given:
+        PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
+                OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
+        def typeNameExtractor = new TypeNameExtractor(new TypeResolver(), modelNameRegistry)
+        OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
+                RequestMethod.GET, handlerMethod, 0, requestMappingInfo("/somePath"),
+                context(), "/anyPath")
 
-      SwaggerOperationResponseClassReader sut =
-              new SwaggerOperationResponseClassReader(new TypeResolver(), typeNameExtractor)
+        SwaggerOperationResponseClassReader sut =
+                new SwaggerOperationResponseClassReader(new TypeResolver(), typeNameExtractor)
 
-    when:
-      sut.apply(operationContext)
-      def operation = operationContext.operationBuilder().build()
-    then:
-      if (operation.responseModel.collection) {
-        assert expectedClass == String.format("%s[%s]", operation.responseModel.type, operation.responseModel.itemType)
-      } else {
-        assert expectedClass == operation.responseModel.type
-      }
+        when:
+        sut.apply(operationContext)
+        def operation = operationContext.operationBuilder().build()
+        then:
+        if (operation.responseModel.collection) {
+            assert expectedClass == String.format("%s[%s]", operation.responseModel.type, operation.responseModel.itemType)
+        } else {
+            assert expectedClass == operation.responseModel.type
+        }
 
-      if (allowableValues == null) {
-        assert operation.responseModel.allowableValues == null
-      } else {
-        assert allowableValues == operation.responseModel.allowableValues.values
-      }
-    and:
-      !sut.supports(DocumentationType.SPRING_WEB)
-      sut.supports(DocumentationType.SWAGGER_12)
-      sut.supports(DocumentationType.SWAGGER_2)
-    where:
-      handlerMethod                                                        | expectedClass          | allowableValues
-      dummyHandlerMethod('methodWithConcreteResponseBody')                 | 'BusinessModel'        | null
-      dummyHandlerMethod('methodWithAPiAnnotationButWithoutResponseClass') | 'FunkyBusiness'        | null
-      dummyHandlerMethod('methodWithGenericType')                          | 'Paginated«string»'    | null
-      dummyHandlerMethod('methodApiResponseClass')                         | 'FunkyBusiness'        | null
-      dummyHandlerMethod('methodWithGenericPrimitiveArray')                | 'Array[byte]'          | null
-      dummyHandlerMethod('methodWithGenericComplexArray')                  | 'Array[DummyClass]'    | null
-      dummyHandlerMethod('methodWithEnumResponse')                         | 'string'               | ['ONE', 'TWO']
-   }
+        if (allowableValues == null) {
+            assert operation.responseModel.allowableValues == null
+        } else {
+            assert allowableValues == operation.responseModel.allowableValues.values
+        }
+        and:
+        !sut.supports(DocumentationType.SPRING_WEB)
+        sut.supports(DocumentationType.SWAGGER_12)
+        sut.supports(DocumentationType.SWAGGER_2)
+        where:
+        handlerMethod                                                        | expectedClass       | allowableValues
+        dummyHandlerMethod('methodWithConcreteResponseBody')                 | 'BusinessModel'     | null
+        dummyHandlerMethod('methodWithAPiAnnotationButWithoutResponseClass') | 'FunkyBusiness'     | null
+        dummyHandlerMethod('methodWithGenericType')                          | 'Paginated«string»' | null
+        dummyHandlerMethod('methodApiResponseClass')                         | 'FunkyBusiness'     | null
+        dummyHandlerMethod('methodWithGenericPrimitiveArray')                | 'Array[byte]'       | null
+        dummyHandlerMethod('methodWithGenericComplexArray')                  | 'Array[DummyClass]' | null
+        dummyHandlerMethod('methodWithEnumResponse')                         | 'string'            | ['ONE', 'TWO']
+    }
 
 }

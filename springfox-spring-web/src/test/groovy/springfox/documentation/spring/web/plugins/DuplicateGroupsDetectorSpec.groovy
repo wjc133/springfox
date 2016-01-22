@@ -19,72 +19,77 @@
 package springfox.documentation.spring.web.plugins
 
 import spock.lang.Specification
+import spock.lang.Specification
 import springfox.documentation.spi.DocumentationType
+import springfox.documentation.spi.DocumentationType
+import springfox.documentation.spi.service.DocumentationPlugin
 import springfox.documentation.spi.service.DocumentationPlugin
 
 import static com.google.common.collect.Lists.*
+import static com.google.common.collect.Lists.newArrayList
 import static springfox.documentation.spring.web.plugins.DuplicateGroupsDetector.*
+import static springfox.documentation.spring.web.plugins.DuplicateGroupsDetector.ensureNoDuplicateGroups
 
 class DuplicateGroupsDetectorSpec extends Specification {
-  def "The DuplicateGroupsDetector cannot be instantiated"() {
-    when:
-      new DuplicateGroupsDetector()
-    then:
-      thrown(UnsupportedOperationException)
-  }
+    def "The DuplicateGroupsDetector cannot be instantiated"() {
+        when:
+        new DuplicateGroupsDetector()
+        then:
+        thrown(UnsupportedOperationException)
+    }
 
-  def "The plugin list is empty"() {
-    when:
-      def plugins = newArrayList()
-    and:
-      ensureNoDuplicateGroups(plugins)
-    then:
-      noExceptionThrown()
-  }
+    def "The plugin list is empty"() {
+        when:
+        def plugins = newArrayList()
+        and:
+        ensureNoDuplicateGroups(plugins)
+        then:
+        noExceptionThrown()
+    }
 
-  def "The plugin list has one element"() {
-    given:
-      def plugin1 = Mock(DocumentationPlugin)
-      def plugins = newArrayList(plugin1)
-    and:
-      plugin1.getGroupName() >> "group1"
-    when:
-      ensureNoDuplicateGroups(plugins)
-    then:
-      noExceptionThrown()
-  }
+    def "The plugin list has one element"() {
+        given:
+        def plugin1 = Mock(DocumentationPlugin)
+        def plugins = newArrayList(plugin1)
+        and:
+        plugin1.getGroupName() >> "group1"
+        when:
+        ensureNoDuplicateGroups(plugins)
+        then:
+        noExceptionThrown()
+    }
 
-  def "The plugin list has multiple unique elements"() {
-    given:
-      def plugin1 = Mock(DocumentationPlugin)
-      def plugin2 = Mock(DocumentationPlugin)
-      def plugins = newArrayList(plugin1, plugin2)
-    and:
-      plugin1.getGroupName() >> "group1"
-      plugin2.getGroupName() >> "group2"
-    when:
-      ensureNoDuplicateGroups(plugins)
-    then:
-      noExceptionThrown()
-  }
+    def "The plugin list has multiple unique elements"() {
+        given:
+        def plugin1 = Mock(DocumentationPlugin)
+        def plugin2 = Mock(DocumentationPlugin)
+        def plugins = newArrayList(plugin1, plugin2)
+        and:
+        plugin1.getGroupName() >> "group1"
+        plugin2.getGroupName() >> "group2"
+        when:
+        ensureNoDuplicateGroups(plugins)
+        then:
+        noExceptionThrown()
+    }
 
-  def "The plugin list has duplicate elements"() {
-    given:
-      def plugin1 = Mock(DocumentationPlugin)
-      def plugin2 = Mock(DocumentationPlugin)
-      def plugins = newArrayList(plugin1, plugin2)
-    and:
-      plugin1.getGroupName() >> "group1"
-      plugin2.getGroupName() >> "group1"
-    when:
-      ensureNoDuplicateGroups(plugins)
-    then:
-      thrown(IllegalStateException)
-  }
+    def "The plugin list has duplicate elements"() {
+        given:
+        def plugin1 = Mock(DocumentationPlugin)
+        def plugin2 = Mock(DocumentationPlugin)
+        def plugins = newArrayList(plugin1, plugin2)
+        and:
+        plugin1.getGroupName() >> "group1"
+        plugin2.getGroupName() >> "group1"
+        when:
+        ensureNoDuplicateGroups(plugins)
+        then:
+        thrown(IllegalStateException)
+    }
 
-  def "A plugin with a null groupName is not considered a duplicate"() {
-    def plugins = [new Docket(DocumentationType.SWAGGER_2)]
-    expect:
-      ensureNoDuplicateGroups(plugins)
-  }
+    def "A plugin with a null groupName is not considered a duplicate"() {
+        def plugins = [new Docket(DocumentationType.SWAGGER_2)]
+        expect:
+        ensureNoDuplicateGroups(plugins)
+    }
 }

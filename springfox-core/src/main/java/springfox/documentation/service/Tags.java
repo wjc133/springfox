@@ -29,58 +29,58 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static com.google.common.collect.FluentIterable.*;
-import static com.google.common.collect.Sets.*;
-import static springfox.documentation.builders.BuilderDefaults.*;
+import static com.google.common.collect.FluentIterable.from;
+import static com.google.common.collect.Sets.newTreeSet;
+import static springfox.documentation.builders.BuilderDefaults.nullToEmptyMultimap;
 
 public class Tags {
-  private Tags() {
-    throw new UnsupportedOperationException();
-  }
+    private Tags() {
+        throw new UnsupportedOperationException();
+    }
 
-  public static Set<Tag> toTags(Multimap<String, ApiListing> apiListings) {
-    Iterable<ApiListing> allListings = Iterables.concat(nullToEmptyMultimap(apiListings).asMap().values());
-    List<Tag> tags = from(allListings)
-        .transformAndConcat(collectTags())
-        .toList();
-    TreeSet<Tag> tagSet = newTreeSet(byTagName());
-    tagSet.addAll(tags);
-    return tagSet;
-  }
+    public static Set<Tag> toTags(Multimap<String, ApiListing> apiListings) {
+        Iterable<ApiListing> allListings = Iterables.concat(nullToEmptyMultimap(apiListings).asMap().values());
+        List<Tag> tags = from(allListings)
+                .transformAndConcat(collectTags())
+                .toList();
+        TreeSet<Tag> tagSet = newTreeSet(byTagName());
+        tagSet.addAll(tags);
+        return tagSet;
+    }
 
-  public static Comparator<Tag> byTagName() {
-    return new Comparator<Tag>() {
-      @Override
-      public int compare(Tag first, Tag second) {
-        return first.getName().compareTo(second.getName());
-      }
-    };
-  }
+    public static Comparator<Tag> byTagName() {
+        return new Comparator<Tag>() {
+            @Override
+            public int compare(Tag first, Tag second) {
+                return first.getName().compareTo(second.getName());
+            }
+        };
+    }
 
-  static Function<String, Tag> toTag(final ApiListing listing) {
-    return new Function<String, Tag>() {
-      @Override
-      public Tag apply(String input){
-        return new Tag(input, listing.getDescription());
-      }
-    };
-  }
+    static Function<String, Tag> toTag(final ApiListing listing) {
+        return new Function<String, Tag>() {
+            @Override
+            public Tag apply(String input) {
+                return new Tag(input, listing.getDescription());
+            }
+        };
+    }
 
-  static Function<ApiListing, Iterable<Tag>> collectTags() {
-    return new Function<ApiListing, Iterable<Tag>>() {
-      @Override
-      public Iterable<Tag> apply(ApiListing input) {
-        return from(input.getTags()).filter(emptyTags()).transform(toTag(input)).toSet();
-      }
-    };
-  }
+    static Function<ApiListing, Iterable<Tag>> collectTags() {
+        return new Function<ApiListing, Iterable<Tag>>() {
+            @Override
+            public Iterable<Tag> apply(ApiListing input) {
+                return from(input.getTags()).filter(emptyTags()).transform(toTag(input)).toSet();
+            }
+        };
+    }
 
-  public static Predicate<String> emptyTags() {
-    return new Predicate<String>() {
-      @Override
-      public boolean apply(String input) {
-        return !Strings.isNullOrEmpty(input);
-      }
-    };
-  }
+    public static Predicate<String> emptyTags() {
+        return new Predicate<String>() {
+            @Override
+            public boolean apply(String input) {
+                return !Strings.isNullOrEmpty(input);
+            }
+        };
+    }
 }

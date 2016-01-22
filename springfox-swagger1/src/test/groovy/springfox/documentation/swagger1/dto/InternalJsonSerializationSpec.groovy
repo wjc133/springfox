@@ -27,25 +27,26 @@ import springfox.documentation.swagger1.configuration.SwaggerJacksonModule
 
 class InternalJsonSerializationSpec extends Specification {
 
-  @Shared ObjectMapper objectMapper
+    @Shared
+    ObjectMapper objectMapper
 
-  def setupSpec() {
-    def module = new SwaggerJacksonModule()
-    objectMapper = new ObjectMapper()
-    objectMapper.registerModule(module)
-  }
-
-  def writeAndParse(object, boolean print = true) {
-
-    def jsonString = objectMapper.writeValueAsString(object)
-    def json = new JsonSlurper().parseText(jsonString)
-    if (print) {
-      println jsonString
+    def setupSpec() {
+        def module = new SwaggerJacksonModule()
+        objectMapper = new ObjectMapper()
+        objectMapper.registerModule(module)
     }
-    json
-  }
 
-  def writePretty(object){
-    objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object)
-  }
+    def writeAndParse(object, boolean print = true) {
+
+        def jsonString = objectMapper.writeValueAsString(object)
+        def json = new JsonSlurper().parseText(jsonString)
+        if (print) {
+            println jsonString
+        }
+        json
+    }
+
+    def writePretty(object) {
+        objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object)
+    }
 }

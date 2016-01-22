@@ -30,16 +30,17 @@ import springfox.documentation.spi.schema.TypeNameProviderPlugin
 
 @Mixin([ModelProviderSupport, SchemaPluginsSupport])
 class SchemaSpecification extends Specification {
-  TypeNameExtractor typeNameExtractor
-  ModelProvider modelProvider
-  DefaultModelDependencyProvider modelDependencyProvider
-  DocumentationType documentationType = DocumentationType.SWAGGER_12
-  def setup() {
-    PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
-        OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
-    typeNameExtractor =
-            new TypeNameExtractor(new TypeResolver(), modelNameRegistry)
-    modelProvider = defaultModelProvider()
-    modelDependencyProvider = defaultModelDependencyProvider()
-  }
+    TypeNameExtractor typeNameExtractor
+    ModelProvider modelProvider
+    DefaultModelDependencyProvider modelDependencyProvider
+    DocumentationType documentationType = DocumentationType.SWAGGER_12
+
+    def setup() {
+        PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
+                OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
+        typeNameExtractor =
+                new TypeNameExtractor(new TypeResolver(), modelNameRegistry)
+        modelProvider = defaultModelProvider()
+        modelDependencyProvider = defaultModelDependencyProvider()
+    }
 }

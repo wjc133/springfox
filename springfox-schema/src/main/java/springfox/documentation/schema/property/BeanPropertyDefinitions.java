@@ -28,46 +28,46 @@ import com.fasterxml.jackson.databind.introspect.POJOPropertyBuilder;
 import com.google.common.base.Function;
 
 public class BeanPropertyDefinitions {
-  private BeanPropertyDefinitions() {
-    throw new UnsupportedOperationException();
-  }
+    private BeanPropertyDefinitions() {
+        throw new UnsupportedOperationException();
+    }
 
-  public static Function<BeanPropertyDefinition, String> beanPropertyByInternalName() {
-    return new Function<BeanPropertyDefinition, String>() {
-      @Override
-      public String apply(BeanPropertyDefinition input) {
-        return input.getInternalName();
-      }
-    };
-  }
+    public static Function<BeanPropertyDefinition, String> beanPropertyByInternalName() {
+        return new Function<BeanPropertyDefinition, String>() {
+            @Override
+            public String apply(BeanPropertyDefinition input) {
+                return input.getInternalName();
+            }
+        };
+    }
 
-  public static String name(BeanPropertyDefinition beanPropertyDefinition,
-                            boolean forSerialization, BeanPropertyNamingStrategy namingStrategy) {
+    public static String name(BeanPropertyDefinition beanPropertyDefinition,
+                              boolean forSerialization, BeanPropertyNamingStrategy namingStrategy) {
 
-    return forSerialization
-            ? namingStrategy.nameForSerialization(beanPropertyDefinition)
-            : namingStrategy.nameForDeserialization(beanPropertyDefinition);
-  }
+        return forSerialization
+                ? namingStrategy.nameForSerialization(beanPropertyDefinition)
+                : namingStrategy.nameForDeserialization(beanPropertyDefinition);
+    }
 
-  public static Function<PropertyNamingStrategy, String> overTheWireName(final BeanPropertyDefinition beanProperty,
-      final MapperConfig<?> config) {
+    public static Function<PropertyNamingStrategy, String> overTheWireName(final BeanPropertyDefinition beanProperty,
+                                                                           final MapperConfig<?> config) {
 
-    return new Function<PropertyNamingStrategy, String>() {
-      @Override
-      public String apply(PropertyNamingStrategy strategy) {
-        return getName(strategy, beanProperty, config);
-      }
-    };
-  }
+        return new Function<PropertyNamingStrategy, String>() {
+            @Override
+            public String apply(PropertyNamingStrategy strategy) {
+                return getName(strategy, beanProperty, config);
+            }
+        };
+    }
 
-  private static String getName(PropertyNamingStrategy naming, BeanPropertyDefinition beanProperty,
-                                MapperConfig<?> config) {
+    private static String getName(PropertyNamingStrategy naming, BeanPropertyDefinition beanProperty,
+                                  MapperConfig<?> config) {
 
-    AnnotationIntrospector annotationIntrospector = config.isAnnotationProcessingEnabled()
-            ? config.getAnnotationIntrospector()
-            : null;
-    POJOPropertyBuilder prop
-            = new POJOPropertyBuilder(new PropertyName(beanProperty.getName()),  annotationIntrospector,  true);
-    return naming.nameForField(config, prop.getField(), beanProperty.getName());
-  }
+        AnnotationIntrospector annotationIntrospector = config.isAnnotationProcessingEnabled()
+                ? config.getAnnotationIntrospector()
+                : null;
+        POJOPropertyBuilder prop
+                = new POJOPropertyBuilder(new PropertyName(beanProperty.getName()), annotationIntrospector, true);
+        return naming.nameForField(config, prop.getField(), beanProperty.getName());
+    }
 }

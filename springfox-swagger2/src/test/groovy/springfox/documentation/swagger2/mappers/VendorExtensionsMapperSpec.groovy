@@ -6,32 +6,32 @@ import springfox.documentation.service.StringVendorExtension
 
 class VendorExtensionsMapperSpec extends Specification {
 
-  def second() {
-    def second = new ObjectVendorExtension("x-test2")
-    second.with {
-      addProperty(new StringVendorExtension("x-name2", "value2"))
+    def second() {
+        def second = new ObjectVendorExtension("x-test2")
+        second.with {
+            addProperty(new StringVendorExtension("x-name2", "value2"))
+        }
+        second
     }
-    second
-  }
 
-  def first() {
-    def first = new ObjectVendorExtension("")
-    first.with {
-      addProperty(new StringVendorExtension("x-test1", "value1"))
+    def first() {
+        def first = new ObjectVendorExtension("")
+        first.with {
+            addProperty(new StringVendorExtension("x-test1", "value1"))
+        }
+        first
     }
-    first
-  }
 
-  def "mapper works as expected" () {
-    given:
-      VendorExtensionsMapper sut = new VendorExtensionsMapper()
-    when:
-      def mapped = sut.mapExtensions([first(), second()])
-    then:
-      mapped.containsKey("x-test1")
-      mapped["x-test1"] == "value1"
-    and:
-      mapped.containsKey("x-test2")
-      mapped["x-test2"] == ["x-name2": "value2"]
-  }
+    def "mapper works as expected"() {
+        given:
+        VendorExtensionsMapper sut = new VendorExtensionsMapper()
+        when:
+        def mapped = sut.mapExtensions([first(), second()])
+        then:
+        mapped.containsKey("x-test1")
+        mapped["x-test1"] == "value1"
+        and:
+        mapped.containsKey("x-test2")
+        mapped["x-test2"] == ["x-name2": "value2"]
+    }
 }

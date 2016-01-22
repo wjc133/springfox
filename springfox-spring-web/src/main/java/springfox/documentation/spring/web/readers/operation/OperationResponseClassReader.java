@@ -39,32 +39,32 @@ import static springfox.documentation.schema.ResolvedTypes.modelRefFactory;
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class OperationResponseClassReader implements OperationBuilderPlugin {
-  private static Logger log = LoggerFactory.getLogger(OperationResponseClassReader.class);
-  private final TypeResolver typeResolver;
-  private final TypeNameExtractor nameExtractor;
+    private static Logger log = LoggerFactory.getLogger(OperationResponseClassReader.class);
+    private final TypeResolver typeResolver;
+    private final TypeNameExtractor nameExtractor;
 
-  @Autowired
-  public OperationResponseClassReader(TypeResolver typeResolver,
-                                      TypeNameExtractor nameExtractor) {
-    this.typeResolver = typeResolver;
-    this.nameExtractor = nameExtractor;
-  }
+    @Autowired
+    public OperationResponseClassReader(TypeResolver typeResolver,
+                                        TypeNameExtractor nameExtractor) {
+        this.typeResolver = typeResolver;
+        this.nameExtractor = nameExtractor;
+    }
 
-  @Override
-  public void apply(OperationContext context) {
-    HandlerMethod handlerMethod = context.getHandlerMethod();
-    ResolvedType returnType = new HandlerMethodResolver(typeResolver).methodReturnType(handlerMethod);
-    returnType = context.alternateFor(returnType);
-    ModelContext modelContext = ModelContext.returnValue(returnType, context.getDocumentationType(),
-            context.getAlternateTypeProvider(), context.getDocumentationContext().getGenericsNamingStrategy());
-    String responseTypeName = nameExtractor.typeName(modelContext);
-    log.debug("Setting spring response class to:" + responseTypeName);
+    @Override
+    public void apply(OperationContext context) {
+        HandlerMethod handlerMethod = context.getHandlerMethod();
+        ResolvedType returnType = new HandlerMethodResolver(typeResolver).methodReturnType(handlerMethod);
+        returnType = context.alternateFor(returnType);
+        ModelContext modelContext = ModelContext.returnValue(returnType, context.getDocumentationType(),
+                context.getAlternateTypeProvider(), context.getDocumentationContext().getGenericsNamingStrategy());
+        String responseTypeName = nameExtractor.typeName(modelContext);
+        log.debug("Setting spring response class to:" + responseTypeName);
 
-    context.operationBuilder().responseModel(modelRefFactory(modelContext, nameExtractor).apply(returnType));
-  }
+        context.operationBuilder().responseModel(modelRefFactory(modelContext, nameExtractor).apply(returnType));
+    }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return true;
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return true;
+    }
 }

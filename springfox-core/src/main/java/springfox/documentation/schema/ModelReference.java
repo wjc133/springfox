@@ -23,15 +23,15 @@ import com.google.common.base.Optional;
 import springfox.documentation.service.AllowableValues;
 
 public interface ModelReference {
-  String getType();
+    String getType();
 
-  boolean isCollection();
+    boolean isCollection();
 
-  boolean isMap();
+    boolean isMap();
 
-  String getItemType();
+    String getItemType();
 
-  AllowableValues getAllowableValues();
+    AllowableValues getAllowableValues();
 
-  Optional<ModelReference> itemModel();
+    Optional<ModelReference> itemModel();
 }

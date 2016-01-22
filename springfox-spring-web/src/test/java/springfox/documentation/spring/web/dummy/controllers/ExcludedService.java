@@ -32,15 +32,15 @@ import springfox.documentation.spring.web.dummy.models.Pet;
 @RequestMapping("/excluded")
 @Api(value = "", description = "Operations that are excluded")
 public class ExcludedService {
-  @RequestMapping(method = RequestMethod.POST)
-  public void someExcludedOperation(
-          @ApiParam(value = "Pet object that needs to be added to the store", required = true) Pet pet) {
-    throw new RuntimeException("NotImplementedException");
-  }
+    @RequestMapping(method = RequestMethod.POST)
+    public void someExcludedOperation(
+            @ApiParam(value = "Pet object that needs to be added to the store", required = true) Pet pet) {
+        throw new RuntimeException("NotImplementedException");
+    }
 
-  @RequestMapping(value = "/another", method = RequestMethod.POST)
-  public void anotherExcludedOperation(
-          @ApiParam(value = "Pet object that needs to be added to the store", required = true) Pet pet) {
-    throw new RuntimeException("NotImplementedException");
-  }
+    @RequestMapping(value = "/another", method = RequestMethod.POST)
+    public void anotherExcludedOperation(
+            @ApiParam(value = "Pet object that needs to be added to the store", required = true) Pet pet) {
+        throw new RuntimeException("NotImplementedException");
+    }
 }

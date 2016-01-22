@@ -22,5 +22,5 @@ import io.swagger.models.parameters.SerializableParameter;
 import springfox.documentation.service.Parameter;
 
 interface SerializableParameterFactory {
-  SerializableParameter create(Parameter parameter);
+    SerializableParameter create(Parameter parameter);
 }

@@ -18,6 +18,7 @@
  */
 
 package springfox.documentation.swagger.readers.operation
+
 import org.springframework.http.HttpMethod
 import org.springframework.web.bind.annotation.RequestMethod
 import springfox.documentation.builders.OperationBuilder
@@ -29,30 +30,30 @@ import springfox.documentation.spring.web.readers.operation.CachingOperationName
 
 @Mixin([RequestMappingSupport])
 class OperationHttpMethodReaderSpec extends DocumentationContextSpec {
-  def "should return api method annotation when present"() {
+    def "should return api method annotation when present"() {
 
-    given:
-      OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
-              currentHttpMethod, handlerMethod, 0, requestMappingInfo("/somePath"),
-              context(), "/anyPath")
+        given:
+        OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
+                currentHttpMethod, handlerMethod, 0, requestMappingInfo("/somePath"),
+                context(), "/anyPath")
 
-      OperationHttpMethodReader sut = new OperationHttpMethodReader();
-    when:
-      sut.apply(operationContext)
-    and:
-      def operation = operationContext.operationBuilder().build()
+        OperationHttpMethodReader sut = new OperationHttpMethodReader();
+        when:
+        sut.apply(operationContext)
+        and:
+        def operation = operationContext.operationBuilder().build()
 
-    then:
-      operation.method == expected
-    and:
-      !sut.supports(DocumentationType.SPRING_WEB)
-      sut.supports(DocumentationType.SWAGGER_12)
-      sut.supports(DocumentationType.SWAGGER_2)
-    where:
-      currentHttpMethod  | handlerMethod                                     | expected
-      RequestMethod.GET  | dummyHandlerMethod()                              | HttpMethod.GET
-      RequestMethod.PUT  | dummyHandlerMethod()                              | HttpMethod.GET
-      RequestMethod.POST | dummyHandlerMethod('methodWithHttpGETMethod')     | HttpMethod.GET
-      RequestMethod.POST | dummyHandlerMethod('methodWithInvalidHttpMethod') | HttpMethod.GET
-  }
+        then:
+        operation.method == expected
+        and:
+        !sut.supports(DocumentationType.SPRING_WEB)
+        sut.supports(DocumentationType.SWAGGER_12)
+        sut.supports(DocumentationType.SWAGGER_2)
+        where:
+        currentHttpMethod  | handlerMethod                                     | expected
+        RequestMethod.GET  | dummyHandlerMethod()                              | HttpMethod.GET
+        RequestMethod.PUT  | dummyHandlerMethod()                              | HttpMethod.GET
+        RequestMethod.POST | dummyHandlerMethod('methodWithHttpGETMethod')     | HttpMethod.GET
+        RequestMethod.POST | dummyHandlerMethod('methodWithInvalidHttpMethod') | HttpMethod.GET
+    }
 }

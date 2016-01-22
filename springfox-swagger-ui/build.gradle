@@ -15,82 +15,82 @@
  */
 
 buildscript {
-  repositories {
-    jcenter()
-  }
+    repositories {
+        jcenter()
+    }
 
 }
 
 plugins {
-  id "de.undercouch.download" version "2.0.0"
+    id "de.undercouch.download" version "2.0.0"
 }
 
 ext {
-  swaggerUiVersion = '2.1.4'
-  swaggerUiDist = "build/libs/swagger-ui-dist.zip"
-  swaggerUiExplodedDir = "swagger-ui-${swaggerUiVersion}/dist/"
-  downloadUrl = "https://github.com/swagger-api/swagger-ui/archive/v${swaggerUiVersion}.zip"
-  destinationZip = "$buildDir/zip/${swaggerUiVersion}.zip"
-  replacePath = 'window.location.origin + "\\${pageContext.request.contextPath}/api-docs"'
-  artifactRepoBase = 'http://oss.jfrog.org/artifactory'
+    swaggerUiVersion = '2.1.4'
+    swaggerUiDist = "build/libs/swagger-ui-dist.zip"
+    swaggerUiExplodedDir = "swagger-ui-${swaggerUiVersion}/dist/"
+    downloadUrl = "https://github.com/swagger-api/swagger-ui/archive/v${swaggerUiVersion}.zip"
+    destinationZip = "$buildDir/zip/${swaggerUiVersion}.zip"
+    replacePath = 'window.location.origin + "\\${pageContext.request.contextPath}/api-docs"'
+    artifactRepoBase = 'http://oss.jfrog.org/artifactory'
 }
 
 dependencies {
-  compile project(':springfox-spring-web')
-  testCompile libs.test
+    compile project(':springfox-spring-web')
+    testCompile libs.test
 }
 
 
 task swaggerUiDownload << {
-  if (!file(destinationZip)?.exists()) {
-    download {
-      src downloadUrl
-      dest destinationZip
-      onlyIfNewer true
+    if (!file(destinationZip)?.exists()) {
+        download {
+            src downloadUrl
+            dest destinationZip
+            onlyIfNewer true
+        }
     }
-  }
 }
 
 task unzip(type: Copy) {
-  from zipTree(file(destinationZip))
-  include "*/dist/**"
-  into file("${buildDir}")
+    from zipTree(file(destinationZip))
+    include "*/dist/**"
+    into file("${buildDir}")
 }
 
 task sdoc(type: Copy) {
-  from("${projectDir}/src/web/js/springfox.js")
-  into("${buildDir}/${swaggerUiExplodedDir}")
+    from("${projectDir}/src/web/js/springfox.js")
+    into("${buildDir}/${swaggerUiExplodedDir}")
 }
 
 task removeHtmlIndex(type: Delete) {
-  delete "${buildDir}/${swaggerUiExplodedDir}/index.html"
-  delete "${buildDir}/${swaggerUiExplodedDir}/swagger-ui.js"
+    delete "${buildDir}/${swaggerUiExplodedDir}/index.html"
+    delete "${buildDir}/${swaggerUiExplodedDir}/swagger-ui.js"
 }
 
 jar {
-  from("${projectDir}/src/web/swagger-ui.html") {
-    into "META-INF/resources"
-  }
-
-  from("${buildDir}/${swaggerUiExplodedDir}") {
-    into "META-INF/resources/webjars/${project.name}"
-
-    manifest {
-      attributes(
-              "Implementation-Title": project.name,
-              "Implementation-Version": project.version,
-              "SwaggerUi-Version": swaggerUiVersion,
-      )
+    from("${projectDir}/src/web/swagger-ui.html") {
+        into "META-INF/resources"
     }
-  }
+
+    from("${buildDir}/${swaggerUiExplodedDir}") {
+        into "META-INF/resources/webjars/${project.name}"
+
+        manifest {
+            attributes(
+                    "Implementation-Title": project.name,
+                    "Implementation-Version": project.version,
+                    "SwaggerUi-Version": swaggerUiVersion,
+            )
+        }
+    }
 }
 
 task sourceJar(type: Jar) {
-  from sourceSets.main.allJava
+    from sourceSets.main.allJava
 }
 
 task cleanup(type: Delete) {
-  delete "${buildDir}/${swaggerUiExplodedDir}"
+    delete "${buildDir}/${swaggerUiExplodedDir}"
 }
 
 clean.dependsOn(cleanup)

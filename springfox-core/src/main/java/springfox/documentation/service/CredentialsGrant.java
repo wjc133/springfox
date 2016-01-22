@@ -21,15 +21,15 @@ package springfox.documentation.service;
 
 public class CredentialsGrant extends GrantType {
 
-  private final String tokenUrl;
+    private final String tokenUrl;
 
-  public CredentialsGrant(String type, String tokenUrl) {
-    super(type);
-    this.tokenUrl = tokenUrl;
-  }
+    public CredentialsGrant(String type, String tokenUrl) {
+        super(type);
+        this.tokenUrl = tokenUrl;
+    }
 
-  public String getTokenUrl() {
-    return tokenUrl;
-  }
+    public String getTokenUrl() {
+        return tokenUrl;
+    }
 
 }

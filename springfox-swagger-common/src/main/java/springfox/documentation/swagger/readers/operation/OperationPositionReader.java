@@ -33,19 +33,19 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class OperationPositionReader implements OperationBuilderPlugin {
 
-  private static final Logger log = LoggerFactory.getLogger(OperationPositionReader.class);
+    private static final Logger log = LoggerFactory.getLogger(OperationPositionReader.class);
 
-  @Override
-  public void apply(OperationContext context) {
-    ApiOperation apiOperation = context.getHandlerMethod().getMethodAnnotation(ApiOperation.class);
-    if (null != apiOperation && apiOperation.position() > 0) {
-      context.operationBuilder().position(apiOperation.position());
-      log.debug("Added operation at position: {}", apiOperation.position());
+    @Override
+    public void apply(OperationContext context) {
+        ApiOperation apiOperation = context.getHandlerMethod().getMethodAnnotation(ApiOperation.class);
+        if (null != apiOperation && apiOperation.position() > 0) {
+            context.operationBuilder().position(apiOperation.position());
+            log.debug("Added operation at position: {}", apiOperation.position());
+        }
     }
-  }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return SwaggerPluginSupport.pluginDoesApply(delimiter);
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return SwaggerPluginSupport.pluginDoesApply(delimiter);
+    }
 }

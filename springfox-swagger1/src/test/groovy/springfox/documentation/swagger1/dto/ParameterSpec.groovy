@@ -21,20 +21,20 @@ package springfox.documentation.swagger1.dto
 
 class ParameterSpec extends InternalJsonSerializationSpec {
 
-  final Parameter testParameter = new Parameter('aname'
-          , 'adesc'
-          , 'defaultVal'
-          , true
-          , true
-          , "int"
-          , new AllowableListValues(['a', 'b'], 'string')
-          , "path"
-          , "all")
+    final Parameter testParameter = new Parameter('aname'
+            , 'adesc'
+            , 'defaultVal'
+            , true
+            , true
+            , "int"
+            , new AllowableListValues(['a', 'b'], 'string')
+            , "path"
+            , "all")
 
-  def "should serialize with allowable list values"() {
-    expect:
+    def "should serialize with allowable list values"() {
+        expect:
 
-      writePretty(testParameter) == """{
+        writePretty(testParameter) == """{
   "allowMultiple" : true,
   "enum" : [ "a", "b" ],
   "defaultValue" : "defaultVal",
@@ -46,22 +46,22 @@ class ParameterSpec extends InternalJsonSerializationSpec {
   "type" : "integer",
   "required" : true
 }"""
-  }
+    }
 
 
-  def "should serialize with allowable range values"() {
-    expect:
-      Parameter parameter = new Parameter('aname'
-              ,'adesc'
-              ,'2'
-              ,true
-              ,true
-              ,"int"
-              ,new AllowableRangeValues('1', '2')
-              ,"path"
-              ,"all")
+    def "should serialize with allowable range values"() {
+        expect:
+        Parameter parameter = new Parameter('aname'
+                , 'adesc'
+                , '2'
+                , true
+                , true
+                , "int"
+                , new AllowableRangeValues('1', '2')
+                , "path"
+                , "all")
 
-      writePretty(parameter) == """{
+        writePretty(parameter) == """{
   "allowMultiple" : true,
   "maximum" : "2",
   "minimum" : "1",
@@ -74,22 +74,22 @@ class ParameterSpec extends InternalJsonSerializationSpec {
   "type" : "integer",
   "required" : true
 }"""
-  }
+    }
 
-  def "should override body param name"() {
-    expect:
+    def "should override body param name"() {
+        expect:
 
-      Parameter parameter = new Parameter('aname'
-              ,'adesc'
-              ,'2'
-              ,true
-              ,true
-              ,"int"
-              ,new AllowableRangeValues('1', '2')
-              ,"body"
-              ,"all")
+        Parameter parameter = new Parameter('aname'
+                , 'adesc'
+                , '2'
+                , true
+                , true
+                , "int"
+                , new AllowableRangeValues('1', '2')
+                , "body"
+                , "all")
 
-      writePretty(parameter) == """{
+        writePretty(parameter) == """{
   "allowMultiple" : true,
   "maximum" : "2",
   "minimum" : "1",
@@ -102,21 +102,21 @@ class ParameterSpec extends InternalJsonSerializationSpec {
   "type" : "integer",
   "required" : true
 }"""
-  }
+    }
 
-  def "array types are unwrapped"() {
-    expect:
-      Parameter parameter = new Parameter('aname'
-              ,'adesc'
-              , '2'
-              , true
-              , true
-              , "Set[Pet]"
-              , null
-              , "body"
-              , "all")
+    def "array types are unwrapped"() {
+        expect:
+        Parameter parameter = new Parameter('aname'
+                , 'adesc'
+                , '2'
+                , true
+                , true
+                , "Set[Pet]"
+                , null
+                , "body"
+                , "all")
 
-      writePretty(parameter) == """{
+        writePretty(parameter) == """{
   "allowMultiple" : true,
   "defaultValue" : "2",
   "description" : "adesc",
@@ -130,17 +130,17 @@ class ParameterSpec extends InternalJsonSerializationSpec {
   "uniqueItems" : true,
   "required" : true
 }"""
-  }
+    }
 
-  def "should pass coverage"() {
-    expect:
-      testParameter.allowableValues
-      testParameter.defaultValue
-      testParameter.description
-      testParameter.isAllowMultiple()
-      testParameter.isRequired()
-      testParameter.name
-      testParameter.paramAccess
-      testParameter.paramType
-  }
+    def "should pass coverage"() {
+        expect:
+        testParameter.allowableValues
+        testParameter.defaultValue
+        testParameter.description
+        testParameter.isAllowMultiple()
+        testParameter.isRequired()
+        testParameter.name
+        testParameter.paramAccess
+        testParameter.paramType
+    }
 }

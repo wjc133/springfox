@@ -19,16 +19,16 @@
 package springfox.documentation.swagger.web;
 
 public enum ApiKeyVehicle {
-  HEADER("header"),
-  QUERY_PARAM("query");
+    HEADER("header"),
+    QUERY_PARAM("query");
 
-  private final String value;
+    private final String value;
 
-  ApiKeyVehicle(String value) {
-    this.value = value;
-  }
+    ApiKeyVehicle(String value) {
+        this.value = value;
+    }
 
-  public String getValue() {
-    return value;
-  }
+    public String getValue() {
+        return value;
+    }
 }

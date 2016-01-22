@@ -20,13 +20,13 @@
 package springfox.documentation.schema;
 
 public class ExampleWithEnums {
-  private ExampleEnum exampleEnum;
+    private ExampleEnum exampleEnum;
 
-  public ExampleEnum getExampleEnum() {
-    return exampleEnum;
-  }
+    public ExampleEnum getExampleEnum() {
+        return exampleEnum;
+    }
 
-  public void setExampleEnum(ExampleEnum exampleEnum) {
-    this.exampleEnum = exampleEnum;
-  }
+    public void setExampleEnum(ExampleEnum exampleEnum) {
+        this.exampleEnum = exampleEnum;
+    }
 }

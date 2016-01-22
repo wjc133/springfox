@@ -10,13 +10,13 @@ import springfox.documentation.spring.web.dummy.models.GroovyModel
 @Controller
 @RequestMapping("/groovy")
 class GroovyService {
-  @RequestMapping(value = "groovyModel", method = RequestMethod.GET)
-  @ResponseBody
-  public GroovyModel groovyModel() {
-    return new GroovyModel("test");
-  }
+    @RequestMapping(value = "groovyModel", method = RequestMethod.GET)
+    @ResponseBody
+    public GroovyModel groovyModel() {
+        return new GroovyModel("test");
+    }
 
-  @RequestMapping(value = "groovyModel", method = RequestMethod.PUT)
-  public void updateGroovyModel(@RequestBody GroovyModel model) {
-  }
+    @RequestMapping(value = "groovyModel", method = RequestMethod.PUT)
+    public void updateGroovyModel(@RequestBody GroovyModel model) {
+    }
 }

@@ -18,177 +18,197 @@
  */
 
 package springfox.documentation.swagger.schema
+
+import com.fasterxml.classmate.TypeResolver
 import com.fasterxml.classmate.TypeResolver
 import com.fasterxml.jackson.databind.BeanDescription
+import com.fasterxml.jackson.databind.BeanDescription
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.type.TypeFactory
+import com.fasterxml.jackson.databind.type.TypeFactory
+import org.joda.time.LocalDate
 import org.joda.time.LocalDate
 import org.springframework.plugin.core.OrderAwarePluginRegistry
+import org.springframework.plugin.core.OrderAwarePluginRegistry
+import org.springframework.plugin.core.PluginRegistry
 import org.springframework.plugin.core.PluginRegistry
 import spock.lang.Specification
+import spock.lang.Specification
+import springfox.documentation.builders.ModelPropertyBuilder
 import springfox.documentation.builders.ModelPropertyBuilder
 import springfox.documentation.schema.*
+import springfox.documentation.schema.*
+import springfox.documentation.schema.mixins.ConfiguredObjectMapperSupport
 import springfox.documentation.schema.mixins.ConfiguredObjectMapperSupport
 import springfox.documentation.schema.mixins.SchemaPluginsSupport
+import springfox.documentation.schema.mixins.SchemaPluginsSupport
+import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spi.schema.TypeNameProviderPlugin
+import springfox.documentation.spi.schema.TypeNameProviderPlugin
 import springfox.documentation.spi.schema.contexts.ModelContext
+import springfox.documentation.spi.schema.contexts.ModelContext
+import springfox.documentation.spi.schema.contexts.ModelPropertyContext
 import springfox.documentation.spi.schema.contexts.ModelPropertyContext
 
 import static springfox.documentation.schema.ResolvedTypes.*
+import static springfox.documentation.schema.ResolvedTypes.modelRefFactory
 import static springfox.documentation.spi.DocumentationType.*
+import static springfox.documentation.spi.DocumentationType.SWAGGER_12
 import static springfox.documentation.spi.schema.contexts.ModelContext.*
+import static springfox.documentation.spi.schema.contexts.ModelContext.inputParam
 
 @Mixin([ConfiguredObjectMapperSupport, AlternateTypesSupport, SchemaPluginsSupport])
 class ApiModelPropertyPropertyBuilderPluginSpec extends Specification {
-  BeanDescription beanDescription
+    BeanDescription beanDescription
 
-  def setup() {
-    beanDescription = beanDescription(TypeWithAnnotatedGettersAndSetters)
-  }
+    def setup() {
+        beanDescription = beanDescription(TypeWithAnnotatedGettersAndSetters)
+    }
 
-  def "ApiModelProperty annotated models get enriched with additional info given a bean property" (){
-    given:
-      ApiModelPropertyPropertyBuilder sut = new ApiModelPropertyPropertyBuilder()
-      def properties = beanDescription.findProperties()
-      def context = new ModelPropertyContext(new ModelPropertyBuilder(),
-              properties.find { it.name == property }, new TypeResolver(),
-              DocumentationType.SWAGGER_12)
-    when:
-      sut.apply(context)
-    and:
-      def enriched = context.getBuilder().build()
-    then:
-      enriched.allowableValues?.values == allowableValues
-      enriched.isRequired() == required
-      enriched.description == description
-      enriched.readOnly == readOnly
-      !enriched.isHidden()
-    where:
-      property    | required | description              | allowableValues | readOnly
-      "intProp"   | true     | "int Property Field"     | null            | false
-      "boolProp"  | false    | "bool Property Getter"   | null            | false
-      "enumProp"  | true     | "enum Prop Getter value" | ["ONE"]         | false
-      "readOnlyProp" | false    | "readOnly property getter" | null          | true
-  }
+    def "ApiModelProperty annotated models get enriched with additional info given a bean property"() {
+        given:
+        ApiModelPropertyPropertyBuilder sut = new ApiModelPropertyPropertyBuilder()
+        def properties = beanDescription.findProperties()
+        def context = new ModelPropertyContext(new ModelPropertyBuilder(),
+                properties.find { it.name == property }, new TypeResolver(),
+                DocumentationType.SWAGGER_12)
+        when:
+        sut.apply(context)
+        and:
+        def enriched = context.getBuilder().build()
+        then:
+        enriched.allowableValues?.values == allowableValues
+        enriched.isRequired() == required
+        enriched.description == description
+        enriched.readOnly == readOnly
+        !enriched.isHidden()
+        where:
+        property       | required | description                | allowableValues | readOnly
+        "intProp"      | true     | "int Property Field"       | null            | false
+        "boolProp"     | false    | "bool Property Getter"     | null            | false
+        "enumProp"     | true     | "enum Prop Getter value"   | ["ONE"]         | false
+        "readOnlyProp" | false    | "readOnly property getter" | null            | true
+    }
 
-  def "ApiModelProperty annotated models get enriched with additional info given an annotated element" (){
-    given:
-      ApiModelPropertyPropertyBuilder sut = new ApiModelPropertyPropertyBuilder()
-      def properties = beanDescription.findProperties()
-      def context = new ModelPropertyContext(new ModelPropertyBuilder(),
-              properties.find { it.name == property }.getter.annotated, new TypeResolver(),
-              DocumentationType.SWAGGER_12)
-    when:
-      sut.apply(context)
-    and:
-      def enriched = context.getBuilder().build()
-    then:
-      enriched.allowableValues?.values == allowableValues
-      enriched.isRequired() == required
-      enriched.description == description
-      enriched.readOnly == readOnly
-      !enriched.isHidden()
-    where:
-      property    | required | description              | allowableValues | readOnly
-      "intProp"   | null     | null                     | null            | null
-      "boolProp"  | false    | "bool Property Getter"   | null            | false
-      "enumProp"  | true     | "enum Prop Getter value" | ["ONE"]         | false
-      "readOnlyProp" | false    | "readOnly property getter" | null          | true
+    def "ApiModelProperty annotated models get enriched with additional info given an annotated element"() {
+        given:
+        ApiModelPropertyPropertyBuilder sut = new ApiModelPropertyPropertyBuilder()
+        def properties = beanDescription.findProperties()
+        def context = new ModelPropertyContext(new ModelPropertyBuilder(),
+                properties.find { it.name == property }.getter.annotated, new TypeResolver(),
+                DocumentationType.SWAGGER_12)
+        when:
+        sut.apply(context)
+        and:
+        def enriched = context.getBuilder().build()
+        then:
+        enriched.allowableValues?.values == allowableValues
+        enriched.isRequired() == required
+        enriched.description == description
+        enriched.readOnly == readOnly
+        !enriched.isHidden()
+        where:
+        property       | required | description                | allowableValues | readOnly
+        "intProp"      | null     | null                       | null            | null
+        "boolProp"     | false    | "bool Property Getter"     | null            | false
+        "enumProp"     | true     | "enum Prop Getter value"   | ["ONE"]         | false
+        "readOnlyProp" | false    | "readOnly property getter" | null            | true
 
-  }
+    }
 
-  def "ApiModelProperties marked as hidden properties are respected" (){
-    given:
-      ApiModelPropertyPropertyBuilder sut = new ApiModelPropertyPropertyBuilder()
-      def properties = beanDescription.findProperties()
-      def context = new ModelPropertyContext(new ModelPropertyBuilder(),
-              properties.find { it.name == property }.getter.annotated, new TypeResolver(),
-              DocumentationType.SWAGGER_12)
-    when:
-      sut.apply(context)
-    and:
-      def enriched = context.getBuilder().build()
-    then:
-      enriched.allowableValues?.values == allowableValues
-      enriched.isRequired() == required
-      enriched.description == description
-      enriched.isHidden()
-    where:
-      property    | required | description              | allowableValues
-      "hiddenProp"| false    | ""                       | null
-  }
+    def "ApiModelProperties marked as hidden properties are respected"() {
+        given:
+        ApiModelPropertyPropertyBuilder sut = new ApiModelPropertyPropertyBuilder()
+        def properties = beanDescription.findProperties()
+        def context = new ModelPropertyContext(new ModelPropertyBuilder(),
+                properties.find { it.name == property }.getter.annotated, new TypeResolver(),
+                DocumentationType.SWAGGER_12)
+        when:
+        sut.apply(context)
+        and:
+        def enriched = context.getBuilder().build()
+        then:
+        enriched.allowableValues?.values == allowableValues
+        enriched.isRequired() == required
+        enriched.description == description
+        enriched.isHidden()
+        where:
+        property     | required | description | allowableValues
+        "hiddenProp" | false    | ""          | null
+    }
 
-  def "Supports ApiModelProperty annotated models with dataType overrides" (){
-    given:
-      ApiModelPropertyPropertyBuilder sut = new ApiModelPropertyPropertyBuilder()
-      def properties = beanDescription.findProperties()
+    def "Supports ApiModelProperty annotated models with dataType overrides"() {
+        given:
+        ApiModelPropertyPropertyBuilder sut = new ApiModelPropertyPropertyBuilder()
+        def properties = beanDescription.findProperties()
 
-      def resolver = new TypeResolver()
-      ModelContext modelContext = inputParam(resolver.resolve(TypeWithAnnotatedGettersAndSetters),
-        SWAGGER_12, alternateTypeProvider(), new DefaultGenericTypeNamingStrategy())
-      PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
-        OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
-      def typeNameExtractor = new TypeNameExtractor(resolver,  modelNameRegistry)
-      def context = new ModelPropertyContext(new ModelPropertyBuilder(),
-              properties.find { it.name == property }.getter.annotated, resolver,
-              DocumentationType.SWAGGER_12)
-    when:
-      sut.apply(context)
-    and:
-      def enriched = context.getBuilder().build()
-      enriched.updateModelRef(modelRefFactory(modelContext, typeNameExtractor))
-    then:
-      enriched.allowableValues?.values == null
-      !enriched.isRequired()
-      enriched.description == ""
-      !enriched.isHidden()
-      enriched.type.getErasedType() == dataType
-      enriched.modelRef.type == modelRef
-    where:
-      property          | dataType  | modelRef
-      "validOverride"    | String   | "string"
-      "invalidOverride"  | Object   | "object"
-  }
+        def resolver = new TypeResolver()
+        ModelContext modelContext = inputParam(resolver.resolve(TypeWithAnnotatedGettersAndSetters),
+                SWAGGER_12, alternateTypeProvider(), new DefaultGenericTypeNamingStrategy())
+        PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
+                OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
+        def typeNameExtractor = new TypeNameExtractor(resolver, modelNameRegistry)
+        def context = new ModelPropertyContext(new ModelPropertyBuilder(),
+                properties.find { it.name == property }.getter.annotated, resolver,
+                DocumentationType.SWAGGER_12)
+        when:
+        sut.apply(context)
+        and:
+        def enriched = context.getBuilder().build()
+        enriched.updateModelRef(modelRefFactory(modelContext, typeNameExtractor))
+        then:
+        enriched.allowableValues?.values == null
+        !enriched.isRequired()
+        enriched.description == ""
+        !enriched.isHidden()
+        enriched.type.getErasedType() == dataType
+        enriched.modelRef.type == modelRef
+        where:
+        property          | dataType | modelRef
+        "validOverride"   | String   | "string"
+        "invalidOverride" | Object   | "object"
+    }
 
-  def "Supports ApiModelProperty annotated models with dataType overrides but protects specific types" (){
-    given:
-      ApiModelPropertyPropertyBuilder sut = new ApiModelPropertyPropertyBuilder()
-      def properties = beanDescription.findProperties()
+    def "Supports ApiModelProperty annotated models with dataType overrides but protects specific types"() {
+        given:
+        ApiModelPropertyPropertyBuilder sut = new ApiModelPropertyPropertyBuilder()
+        def properties = beanDescription.findProperties()
 
-      def resolver = new TypeResolver()
-      ModelContext modelContext = inputParam(resolver.resolve(TypeWithAnnotatedGettersAndSetters),
-          SWAGGER_12, alternateTypeProvider(), new DefaultGenericTypeNamingStrategy())
-      PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
-        OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
-      def typeNameExtractor = new TypeNameExtractor(resolver,  modelNameRegistry)
-      def context = new ModelPropertyContext(new ModelPropertyBuilder(),
-              properties.find { it.name == property }.getter.annotated, resolver,
-              DocumentationType.SWAGGER_12)
-    when:
-      context.builder.type(resolver.resolve(LocalDate))
-    and:
-      sut.apply(context)
-    and:
-      def enriched = context.getBuilder().build()
-      enriched.updateModelRef(modelRefFactory(modelContext, typeNameExtractor))
-    then:
-      enriched.allowableValues?.values == null
-      !enriched.isRequired()
-      enriched.description == ""
-      !enriched.isHidden()
-      enriched.type.getErasedType() == dataType
-      enriched.modelRef.type == modelRef
-    where:
-      property          | dataType    | modelRef
-      "validOverride"    | String     | "string"
-      "invalidOverride"  | LocalDate  | "LocalDate"
-  }
+        def resolver = new TypeResolver()
+        ModelContext modelContext = inputParam(resolver.resolve(TypeWithAnnotatedGettersAndSetters),
+                SWAGGER_12, alternateTypeProvider(), new DefaultGenericTypeNamingStrategy())
+        PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
+                OrderAwarePluginRegistry.create([new DefaultTypeNameProvider()])
+        def typeNameExtractor = new TypeNameExtractor(resolver, modelNameRegistry)
+        def context = new ModelPropertyContext(new ModelPropertyBuilder(),
+                properties.find { it.name == property }.getter.annotated, resolver,
+                DocumentationType.SWAGGER_12)
+        when:
+        context.builder.type(resolver.resolve(LocalDate))
+        and:
+        sut.apply(context)
+        and:
+        def enriched = context.getBuilder().build()
+        enriched.updateModelRef(modelRefFactory(modelContext, typeNameExtractor))
+        then:
+        enriched.allowableValues?.values == null
+        !enriched.isRequired()
+        enriched.description == ""
+        !enriched.isHidden()
+        enriched.type.getErasedType() == dataType
+        enriched.modelRef.type == modelRef
+        where:
+        property          | dataType  | modelRef
+        "validOverride"   | String    | "string"
+        "invalidOverride" | LocalDate | "LocalDate"
+    }
 
-  BeanDescription beanDescription(Class<TypeWithAnnotatedGettersAndSetters> clazz) {
-    def objectMapper = new ObjectMapper()
-    objectMapper.getDeserializationConfig()
-            .introspect(TypeFactory.defaultInstance().constructType(clazz))
-  }
+    BeanDescription beanDescription(Class<TypeWithAnnotatedGettersAndSetters> clazz) {
+        def objectMapper = new ObjectMapper()
+        objectMapper.getDeserializationConfig()
+                .introspect(TypeFactory.defaultInstance().constructType(clazz))
+    }
 
 }

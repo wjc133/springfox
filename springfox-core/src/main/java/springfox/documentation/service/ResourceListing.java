@@ -22,35 +22,35 @@ package springfox.documentation.service;
 import java.util.List;
 
 public class ResourceListing {
-  private final String apiVersion;
-  private final List<ApiListingReference> apis;
-  private final List<SecurityScheme> securitySchemes;
-  private final ApiInfo info;
+    private final String apiVersion;
+    private final List<ApiListingReference> apis;
+    private final List<SecurityScheme> securitySchemes;
+    private final ApiInfo info;
 
-  public ResourceListing(String apiVersion,
-                         List<ApiListingReference> apis,
-                         List<SecurityScheme> securitySchemes,
-                         ApiInfo info) {
+    public ResourceListing(String apiVersion,
+                           List<ApiListingReference> apis,
+                           List<SecurityScheme> securitySchemes,
+                           ApiInfo info) {
 
-    this.apiVersion = apiVersion;
-    this.apis = apis;
-    this.securitySchemes = securitySchemes;
-    this.info = info;
-  }
+        this.apiVersion = apiVersion;
+        this.apis = apis;
+        this.securitySchemes = securitySchemes;
+        this.info = info;
+    }
 
-  public String getApiVersion() {
-    return apiVersion;
-  }
+    public String getApiVersion() {
+        return apiVersion;
+    }
 
-  public List<ApiListingReference> getApis() {
-    return apis;
-  }
+    public List<ApiListingReference> getApis() {
+        return apis;
+    }
 
-  public List<SecurityScheme> getSecuritySchemes() {
-    return securitySchemes;
-  }
+    public List<SecurityScheme> getSecuritySchemes() {
+        return securitySchemes;
+    }
 
-  public ApiInfo getInfo() {
-    return info;
-  }
+    public ApiInfo getInfo() {
+        return info;
+    }
 }

@@ -32,43 +32,43 @@ import springfox.documentation.spi.service.RequestHandlerProvider;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.collect.FluentIterable.*;
-import static springfox.documentation.builders.BuilderDefaults.*;
-import static springfox.documentation.spi.service.contexts.Orderings.*;
+import static com.google.common.collect.FluentIterable.from;
+import static springfox.documentation.builders.BuilderDefaults.nullToEmptyList;
+import static springfox.documentation.spi.service.contexts.Orderings.byPatternsCondition;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class WebMvcRequestHandlerProvider implements RequestHandlerProvider {
-  private final List<RequestMappingInfoHandlerMapping> handlerMappings;
+    private final List<RequestMappingInfoHandlerMapping> handlerMappings;
 
-  @Autowired
-  public WebMvcRequestHandlerProvider(List<RequestMappingInfoHandlerMapping> handlerMappings) {
-    this.handlerMappings = handlerMappings;
-  }
+    @Autowired
+    public WebMvcRequestHandlerProvider(List<RequestMappingInfoHandlerMapping> handlerMappings) {
+        this.handlerMappings = handlerMappings;
+    }
 
-  @Override
-  public List<RequestHandler> requestHandlers() {
-    return byPatternsCondition().sortedCopy(from(nullToEmptyList(handlerMappings))
-        .transformAndConcat(toMappingEntries())
-        .transform(toRequestHandler()));
-  }
+    @Override
+    public List<RequestHandler> requestHandlers() {
+        return byPatternsCondition().sortedCopy(from(nullToEmptyList(handlerMappings))
+                .transformAndConcat(toMappingEntries())
+                .transform(toRequestHandler()));
+    }
 
-  private Function<? super RequestMappingInfoHandlerMapping,
-      Iterable<Map.Entry<RequestMappingInfo, HandlerMethod>>> toMappingEntries() {
-    return new Function<RequestMappingInfoHandlerMapping, Iterable<Map.Entry<RequestMappingInfo, HandlerMethod>>>() {
-      @Override
-      public Iterable<Map.Entry<RequestMappingInfo, HandlerMethod>> apply(RequestMappingInfoHandlerMapping input) {
-        return input.getHandlerMethods().entrySet();
-      }
-    };
-  }
+    private Function<? super RequestMappingInfoHandlerMapping,
+            Iterable<Map.Entry<RequestMappingInfo, HandlerMethod>>> toMappingEntries() {
+        return new Function<RequestMappingInfoHandlerMapping, Iterable<Map.Entry<RequestMappingInfo, HandlerMethod>>>() {
+            @Override
+            public Iterable<Map.Entry<RequestMappingInfo, HandlerMethod>> apply(RequestMappingInfoHandlerMapping input) {
+                return input.getHandlerMethods().entrySet();
+            }
+        };
+    }
 
-  private Function<Map.Entry<RequestMappingInfo, HandlerMethod>, RequestHandler> toRequestHandler() {
-    return new Function<Map.Entry<RequestMappingInfo, HandlerMethod>, RequestHandler>() {
-      @Override
-      public RequestHandler apply(Map.Entry<RequestMappingInfo, HandlerMethod> input) {
-        return new RequestHandler(input.getKey(), input.getValue());
-      }
-    };
-  }
+    private Function<Map.Entry<RequestMappingInfo, HandlerMethod>, RequestHandler> toRequestHandler() {
+        return new Function<Map.Entry<RequestMappingInfo, HandlerMethod>, RequestHandler>() {
+            @Override
+            public RequestHandler apply(Map.Entry<RequestMappingInfo, HandlerMethod> input) {
+                return new RequestHandler(input.getKey(), input.getValue());
+            }
+        };
+    }
 }

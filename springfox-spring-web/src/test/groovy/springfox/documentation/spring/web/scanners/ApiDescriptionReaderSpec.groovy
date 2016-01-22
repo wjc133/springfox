@@ -23,24 +23,24 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo
 import springfox.documentation.service.ApiDescription
 import springfox.documentation.service.Operation
 import springfox.documentation.spi.service.contexts.RequestMappingContext
-import springfox.documentation.spring.web.paths.RelativePathProvider
 import springfox.documentation.spring.web.mixins.RequestMappingSupport
 import springfox.documentation.spring.web.mixins.ServicePluginsSupport
+import springfox.documentation.spring.web.paths.Paths
+import springfox.documentation.spring.web.paths.RelativePathProvider
 import springfox.documentation.spring.web.plugins.DocumentationContextSpec
 import springfox.documentation.spring.web.readers.operation.ApiOperationReader
-import springfox.documentation.spring.web.paths.Paths
 
 import javax.servlet.ServletContext
 
 @Mixin([RequestMappingSupport, ServicePluginsSupport])
 class ApiDescriptionReaderSpec extends DocumentationContextSpec {
 
-   def "should generate an api description for each request mapping pattern"() {
-      given:
+    def "should generate an api description for each request mapping pattern"() {
+        given:
         def operationReader = Mock(ApiOperationReader)
         ApiDescriptionReader sut =
-            new ApiDescriptionReader(operationReader, defaultWebPlugins(), new ApiDescriptionLookup())
-      and:
+                new ApiDescriptionReader(operationReader, defaultWebPlugins(), new ApiDescriptionLookup())
+        and:
         plugin.pathProvider(pathProvider)
         RequestMappingInfo requestMappingInfo = requestMappingInfo("/doesNotMatterForThisTest",
                 [patternsRequestCondition: patternsRequestCondition('/somePath/{businessId}', '/somePath/{businessId:\\d+}')]
@@ -48,10 +48,10 @@ class ApiDescriptionReaderSpec extends DocumentationContextSpec {
         RequestMappingContext mappingContext = new RequestMappingContext(context(), requestMappingInfo,
                 dummyHandlerMethod())
         operationReader.read(_) >> [Mock(Operation), Mock(Operation)]
-      when:
+        when:
         def descriptionList = sut.read(mappingContext)
 
-      then:
+        then:
         descriptionList.size() == 2
 
         ApiDescription apiDescription = descriptionList[0]
@@ -65,16 +65,16 @@ class ApiDescriptionReaderSpec extends DocumentationContextSpec {
         secondApiDescription.getDescription() == dummyHandlerMethod().method.name
         !secondApiDescription.isHidden()
 
-      where:
-        pathProvider                                    | prefix
-        new RelativePathProvider(Mock(ServletContext))  | ""
-   }
+        where:
+        pathProvider                                   | prefix
+        new RelativePathProvider(Mock(ServletContext)) | ""
+    }
 
-   def "should sanitize request mapping endpoints"() {
-      expect:
+    def "should sanitize request mapping endpoints"() {
+        expect:
         Paths.sanitizeRequestMappingPattern(mappingPattern) == expected
 
-      where:
+        where:
         mappingPattern                                  | expected
         ""                                              | "/"
         "/"                                             | "/"
@@ -88,5 +88,5 @@ class ApiDescriptionReaderSpec extends DocumentationContextSpec {
         "/foo:{foo}/bar:{baz}"                          | "/foo:{foo}/bar:{baz}"
         "/foo/bar:{baz:\\w+}"                           | "/foo/bar:{baz}"
 
-   }
+    }
 }

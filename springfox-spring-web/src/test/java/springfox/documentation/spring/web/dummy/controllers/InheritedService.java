@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("child")
 public interface InheritedService {
 
-  @RequestMapping(value = "child-method", method = RequestMethod.GET)
-  public String getSomething(String parameter);
+    @RequestMapping(value = "child-method", method = RequestMethod.GET)
+    public String getSomething(String parameter);
 
 }

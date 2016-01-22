@@ -19,53 +19,45 @@
 
 package springfox.documentation.swagger1.jackson
 
-import springfox.documentation.swagger1.dto.AuthorizationCodeGrant
-import springfox.documentation.swagger1.dto.AuthorizationScope
-import springfox.documentation.swagger1.dto.GrantType
-import springfox.documentation.swagger1.dto.ImplicitGrant
-import springfox.documentation.swagger1.dto.InternalJsonSerializationSpec
-import springfox.documentation.swagger1.dto.LoginEndpoint
-import springfox.documentation.swagger1.dto.OAuth
-import springfox.documentation.swagger1.dto.TokenEndpoint
-import springfox.documentation.swagger1.dto.TokenRequestEndpoint
+import springfox.documentation.swagger1.dto.*
 
 class AuthorizationTypesSerializerSpec extends InternalJsonSerializationSpec {
 
-  def "should serialize AuthorizationTypesSerializer"() {
-    setup:
-      def authorizationScopeList = []
-      authorizationScopeList << new AuthorizationScope("email", "access all")
+    def "should serialize AuthorizationTypesSerializer"() {
+        setup:
+        def authorizationScopeList = []
+        authorizationScopeList << new AuthorizationScope("email", "access all")
 
-      List<GrantType> grantTypes = []
-      LoginEndpoint loginEndpoint = new LoginEndpoint("http://petstore.swagger.io/oauth/dialog");
-      grantTypes.add(new ImplicitGrant(loginEndpoint, "access_token"));
+        List<GrantType> grantTypes = []
+        LoginEndpoint loginEndpoint = new LoginEndpoint("http://petstore.swagger.io/oauth/dialog");
+        grantTypes.add(new ImplicitGrant(loginEndpoint, "access_token"));
 
-      TokenRequestEndpoint tokenRequestEndpoint = new TokenRequestEndpoint("http://petstore.swagger.io/oauth/requestToken", "client_id", "client_secret");
-      TokenEndpoint tokenEndpoint = new TokenEndpoint("http://petstore.swagger.io/oauth/token", "auth_code");
+        TokenRequestEndpoint tokenRequestEndpoint = new TokenRequestEndpoint("http://petstore.swagger.io/oauth/requestToken", "client_id", "client_secret");
+        TokenEndpoint tokenEndpoint = new TokenEndpoint("http://petstore.swagger.io/oauth/token", "auth_code");
 
-      AuthorizationCodeGrant authorizationCodeGrant =  new AuthorizationCodeGrant()
-      authorizationCodeGrant.tokenRequestEndpoint = tokenRequestEndpoint
-      authorizationCodeGrant.tokenEndpoint = tokenEndpoint
+        AuthorizationCodeGrant authorizationCodeGrant = new AuthorizationCodeGrant()
+        authorizationCodeGrant.tokenRequestEndpoint = tokenRequestEndpoint
+        authorizationCodeGrant.tokenEndpoint = tokenEndpoint
 
-      grantTypes.add(authorizationCodeGrant);
+        grantTypes.add(authorizationCodeGrant);
 
-      OAuth oAuth = new OAuth()
-      oAuth.scopes = authorizationScopeList
-      oAuth.grantTypes = grantTypes
+        OAuth oAuth = new OAuth()
+        oAuth.scopes = authorizationScopeList
+        oAuth.grantTypes = grantTypes
 
-    when:
-      def json = writeAndParse(oAuth)
+        when:
+        def json = writeAndParse(oAuth)
 
-    then:
-      json.type == 'oauth2'
-      json.scopes[0].scope == 'email'
-      json.scopes[0].description == 'access all'
+        then:
+        json.type == 'oauth2'
+        json.scopes[0].scope == 'email'
+        json.scopes[0].description == 'access all'
 
-      json.grantTypes.implicit.loginEndpoint.url == 'http://petstore.swagger.io/oauth/dialog'
-      json.grantTypes.implicit.tokenName == 'access_token'
+        json.grantTypes.implicit.loginEndpoint.url == 'http://petstore.swagger.io/oauth/dialog'
+        json.grantTypes.implicit.tokenName == 'access_token'
 
-      json.grantTypes.authorization_code.tokenRequestEndpoint.url == "http://petstore.swagger.io/oauth/requestToken"
-      json.grantTypes.authorization_code.tokenRequestEndpoint.clientIdName == "client_id"
-      json.grantTypes.authorization_code.tokenRequestEndpoint.clientSecretName == "client_secret"
-  }
+        json.grantTypes.authorization_code.tokenRequestEndpoint.url == "http://petstore.swagger.io/oauth/requestToken"
+        json.grantTypes.authorization_code.tokenRequestEndpoint.clientIdName == "client_id"
+        json.grantTypes.authorization_code.tokenRequestEndpoint.clientSecretName == "client_secret"
+    }
 }

@@ -24,80 +24,81 @@ import springfox.documentation.schema.ModelProperty;
 import springfox.documentation.service.AllowableListValues;
 import springfox.documentation.service.AllowableValues;
 
-import static springfox.documentation.builders.BuilderDefaults.*;
-import static springfox.documentation.schema.Enums.*;
+import static springfox.documentation.builders.BuilderDefaults.defaultIfAbsent;
+import static springfox.documentation.builders.BuilderDefaults.replaceIfMoreSpecific;
+import static springfox.documentation.schema.Enums.emptyListValuesToNull;
 
 public class ModelPropertyBuilder {
-  private ResolvedType type;
-  private String qualifiedType;
-  private int position;
-  private Boolean required;
-  private Boolean readOnly;
-  private String description;
-  private AllowableValues allowableValues;
-  private String name;
-  private boolean isHidden;
-  private String example;
+    private ResolvedType type;
+    private String qualifiedType;
+    private int position;
+    private Boolean required;
+    private Boolean readOnly;
+    private String description;
+    private AllowableValues allowableValues;
+    private String name;
+    private boolean isHidden;
+    private String example;
 
-  public ModelPropertyBuilder name(String name) {
-    this.name = defaultIfAbsent(name, this.name);
-    return this;
-  }
-
-  public ModelPropertyBuilder type(ResolvedType type) {
-    this.type = replaceIfMoreSpecific(type, this.type);
-    return this;
-  }
-
-  public ModelPropertyBuilder qualifiedType(String qualifiedType) {
-    this.qualifiedType = defaultIfAbsent(qualifiedType, this.qualifiedType);
-    return this;
-  }
-
-  public ModelPropertyBuilder position(int position) {
-    this.position = position;
-    return this;
-  }
-
-  public ModelPropertyBuilder required(Boolean required) {
-    this.required = required;
-    return this;
-  }
-
-  public ModelPropertyBuilder readOnly(Boolean readOnly) {
-    this.readOnly = readOnly;
-    return this;
-  }
-
-  public ModelPropertyBuilder description(String description) {
-    this.description = defaultIfAbsent(description, this.description);
-    return this;
-  }
-
-  public ModelPropertyBuilder example(String example) {
-    this.example = defaultIfAbsent(example, this.example);
-    return this;
-  }
-
-  public ModelPropertyBuilder allowableValues(AllowableValues allowableValues) {
-    if (allowableValues != null) {
-      if (allowableValues instanceof AllowableListValues) {
-        this.allowableValues
-            = defaultIfAbsent(emptyListValuesToNull((AllowableListValues) allowableValues), this.allowableValues);
-      } else {
-        this.allowableValues = defaultIfAbsent(allowableValues, this.allowableValues);
-      }
+    public ModelPropertyBuilder name(String name) {
+        this.name = defaultIfAbsent(name, this.name);
+        return this;
     }
-    return this;
-  }
 
-  public ModelPropertyBuilder isHidden(Boolean isHidden) {
-    this.isHidden = isHidden;
-    return this;
-  }
+    public ModelPropertyBuilder type(ResolvedType type) {
+        this.type = replaceIfMoreSpecific(type, this.type);
+        return this;
+    }
 
-  public ModelProperty build() {
-    return new ModelProperty(name, type, qualifiedType, position, required, isHidden, readOnly, description,
-        allowableValues, example);
-  }
+    public ModelPropertyBuilder qualifiedType(String qualifiedType) {
+        this.qualifiedType = defaultIfAbsent(qualifiedType, this.qualifiedType);
+        return this;
+    }
+
+    public ModelPropertyBuilder position(int position) {
+        this.position = position;
+        return this;
+    }
+
+    public ModelPropertyBuilder required(Boolean required) {
+        this.required = required;
+        return this;
+    }
+
+    public ModelPropertyBuilder readOnly(Boolean readOnly) {
+        this.readOnly = readOnly;
+        return this;
+    }
+
+    public ModelPropertyBuilder description(String description) {
+        this.description = defaultIfAbsent(description, this.description);
+        return this;
+    }
+
+    public ModelPropertyBuilder example(String example) {
+        this.example = defaultIfAbsent(example, this.example);
+        return this;
+    }
+
+    public ModelPropertyBuilder allowableValues(AllowableValues allowableValues) {
+        if (allowableValues != null) {
+            if (allowableValues instanceof AllowableListValues) {
+                this.allowableValues
+                        = defaultIfAbsent(emptyListValuesToNull((AllowableListValues) allowableValues), this.allowableValues);
+            } else {
+                this.allowableValues = defaultIfAbsent(allowableValues, this.allowableValues);
+            }
+        }
+        return this;
+    }
+
+    public ModelPropertyBuilder isHidden(Boolean isHidden) {
+        this.isHidden = isHidden;
+        return this;
+    }
+
+    public ModelProperty build() {
+        return new ModelProperty(name, type, qualifiedType, position, required, isHidden, readOnly, description,
+                allowableValues, example);
+    }
 }

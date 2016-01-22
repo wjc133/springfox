@@ -31,23 +31,23 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
 @Component("swaggerParameterMultiplesReader")
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class ParameterMultiplesReader implements ParameterBuilderPlugin {
-  @Override
-  public void apply(ParameterContext context) {
+    @Override
+    public void apply(ParameterContext context) {
 
-    MethodParameter methodParameter = context.methodParameter();
-    ApiParam apiParam = methodParameter.getParameterAnnotation(ApiParam.class);
+        MethodParameter methodParameter = context.methodParameter();
+        ApiParam apiParam = methodParameter.getParameterAnnotation(ApiParam.class);
 
-    Boolean allowMultiple;
-    Class<?> parameterType = methodParameter.getParameterType();
-    if (null != apiParam && !(parameterType != null
-            && parameterType.isArray() && parameterType.getComponentType().isEnum())) {
-      allowMultiple = apiParam.allowMultiple();
-      context.parameterBuilder().allowMultiple(allowMultiple);
+        Boolean allowMultiple;
+        Class<?> parameterType = methodParameter.getParameterType();
+        if (null != apiParam && !(parameterType != null
+                && parameterType.isArray() && parameterType.getComponentType().isEnum())) {
+            allowMultiple = apiParam.allowMultiple();
+            context.parameterBuilder().allowMultiple(allowMultiple);
+        }
     }
-  }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return SwaggerPluginSupport.pluginDoesApply(delimiter);
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return SwaggerPluginSupport.pluginDoesApply(delimiter);
+    }
 }

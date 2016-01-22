@@ -32,20 +32,20 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
 @Component
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class OperationNicknameIntoUniqueIdReader implements OperationBuilderPlugin {
-  @Override
-  public void apply(OperationContext context) {
+    @Override
+    public void apply(OperationContext context) {
 
-    HandlerMethod handlerMethod = context.getHandlerMethod();
-    ApiOperation methodAnnotation = handlerMethod.getMethodAnnotation(ApiOperation.class);
-    if (null != methodAnnotation && StringUtils.hasText(methodAnnotation.nickname())) {
-      // Populate the value of nickname annotation into uniqueId
-      context.operationBuilder().uniqueId(methodAnnotation.nickname());
-      context.operationBuilder().codegenMethodNameStem(methodAnnotation.nickname());
+        HandlerMethod handlerMethod = context.getHandlerMethod();
+        ApiOperation methodAnnotation = handlerMethod.getMethodAnnotation(ApiOperation.class);
+        if (null != methodAnnotation && StringUtils.hasText(methodAnnotation.nickname())) {
+            // Populate the value of nickname annotation into uniqueId
+            context.operationBuilder().uniqueId(methodAnnotation.nickname());
+            context.operationBuilder().codegenMethodNameStem(methodAnnotation.nickname());
+        }
     }
-  }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return SwaggerPluginSupport.pluginDoesApply(delimiter);
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return SwaggerPluginSupport.pluginDoesApply(delimiter);
+    }
 }

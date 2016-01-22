@@ -37,61 +37,61 @@ import springfox.documentation.spi.service.contexts.OperationContext;
 import java.util.List;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.Iterables.*;
-import static com.google.common.collect.Lists.*;
-import static springfox.documentation.builders.Parameters.*;
+import static com.google.common.collect.Iterables.any;
+import static com.google.common.collect.Lists.newArrayList;
+import static springfox.documentation.builders.Parameters.withName;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE + 10)
 public class OperationParameterRequestConditionReader implements OperationBuilderPlugin {
 
-  private final TypeResolver resolver;
+    private final TypeResolver resolver;
 
-  @Autowired
-  public OperationParameterRequestConditionReader(TypeResolver resolver) {
-    this.resolver = resolver;
-  }
-
-  @Override
-  public void apply(OperationContext context) {
-    ParamsRequestCondition paramsCondition = context.getRequestMappingInfo().getParamsCondition();
-    List<Parameter> parameters = newArrayList();
-    for (NameValueExpression<String> expression : paramsCondition.getExpressions()) {
-      if (skipParameter(parameters, expression)) {
-        continue;
-      }
-
-      String paramValue = expression.getValue();
-      AllowableListValues allowableValues = null;
-      if (!isNullOrEmpty(paramValue)) {
-        allowableValues = new AllowableListValues(newArrayList(paramValue), "string");
-      }
-      Parameter parameter = new ParameterBuilder()
-              .name(expression.getName())
-              .description(null)
-              .defaultValue(paramValue)
-              .required(true)
-              .allowMultiple(false)
-              .type(resolver.resolve(String.class))
-              .modelRef(new ModelRef("string"))
-              .allowableValues(allowableValues)
-              .parameterType("query")
-              .build();
-      parameters.add(parameter);
+    @Autowired
+    public OperationParameterRequestConditionReader(TypeResolver resolver) {
+        this.resolver = resolver;
     }
-    context.operationBuilder().parameters(parameters);
-  }
 
-  private boolean skipParameter(List<Parameter> parameters, NameValueExpression<String> expression) {
-    return expression.isNegated() || parameterHandled(parameters, expression);
-  }
+    @Override
+    public void apply(OperationContext context) {
+        ParamsRequestCondition paramsCondition = context.getRequestMappingInfo().getParamsCondition();
+        List<Parameter> parameters = newArrayList();
+        for (NameValueExpression<String> expression : paramsCondition.getExpressions()) {
+            if (skipParameter(parameters, expression)) {
+                continue;
+            }
 
-  private boolean parameterHandled(List<Parameter> parameters, NameValueExpression<String> expression) {
-    return any(parameters, withName(expression.getName()));
-  }
+            String paramValue = expression.getValue();
+            AllowableListValues allowableValues = null;
+            if (!isNullOrEmpty(paramValue)) {
+                allowableValues = new AllowableListValues(newArrayList(paramValue), "string");
+            }
+            Parameter parameter = new ParameterBuilder()
+                    .name(expression.getName())
+                    .description(null)
+                    .defaultValue(paramValue)
+                    .required(true)
+                    .allowMultiple(false)
+                    .type(resolver.resolve(String.class))
+                    .modelRef(new ModelRef("string"))
+                    .allowableValues(allowableValues)
+                    .parameterType("query")
+                    .build();
+            parameters.add(parameter);
+        }
+        context.operationBuilder().parameters(parameters);
+    }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return true;
-  }
+    private boolean skipParameter(List<Parameter> parameters, NameValueExpression<String> expression) {
+        return expression.isNegated() || parameterHandled(parameters, expression);
+    }
+
+    private boolean parameterHandled(List<Parameter> parameters, NameValueExpression<String> expression) {
+        return any(parameters, withName(expression.getName()));
+    }
+
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return true;
+    }
 }

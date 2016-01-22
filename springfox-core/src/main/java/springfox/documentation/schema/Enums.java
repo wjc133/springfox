@@ -30,64 +30,65 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.google.common.base.Strings.*;
-import static com.google.common.collect.Lists.*;
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Lists.transform;
 
 public class Enums {
 
-  private Enums() {
-    throw new UnsupportedOperationException();
-  }
-
-  public static AllowableValues allowableValues(Class<?> type) {
-    if (type.isEnum()) {
-      List<String> enumValues = getEnumValues(type);
-      return new AllowableListValues(enumValues, "LIST");
+    private Enums() {
+        throw new UnsupportedOperationException();
     }
-    return null;
-  }
 
-  static List<String> getEnumValues(final Class<?> subject) {
-    return transform(Arrays.asList(subject.getEnumConstants()), new Function<Object, String>() {
-      @Override
-      public String apply(Object input) {
-        Optional<String> jsonValue = findJsonValueAnnotatedMethod(input)
-                .transform(evaluateJsonValue(input));
-        if (jsonValue.isPresent() && !isNullOrEmpty(jsonValue.get())) {
-          return jsonValue.get();
+    public static AllowableValues allowableValues(Class<?> type) {
+        if (type.isEnum()) {
+            List<String> enumValues = getEnumValues(type);
+            return new AllowableListValues(enumValues, "LIST");
         }
-        return input.toString();
-      }
-    });
-  }
-  @SuppressWarnings("PMD")
-  private static Function<Method, String> evaluateJsonValue(final Object enumConstant) {
-    return new Function<Method, String>() {
-      @Override
-      public String apply(Method input) {
-        try {
-            return input.invoke(enumConstant).toString();
-        } catch (Exception ignored) {
+        return null;
+    }
+
+    static List<String> getEnumValues(final Class<?> subject) {
+        return transform(Arrays.asList(subject.getEnumConstants()), new Function<Object, String>() {
+            @Override
+            public String apply(Object input) {
+                Optional<String> jsonValue = findJsonValueAnnotatedMethod(input)
+                        .transform(evaluateJsonValue(input));
+                if (jsonValue.isPresent() && !isNullOrEmpty(jsonValue.get())) {
+                    return jsonValue.get();
+                }
+                return input.toString();
+            }
+        });
+    }
+
+    @SuppressWarnings("PMD")
+    private static Function<Method, String> evaluateJsonValue(final Object enumConstant) {
+        return new Function<Method, String>() {
+            @Override
+            public String apply(Method input) {
+                try {
+                    return input.invoke(enumConstant).toString();
+                } catch (Exception ignored) {
+                }
+                return "";
+            }
+        };
+    }
+
+    private static Optional<Method> findJsonValueAnnotatedMethod(Object enumConstant) {
+        for (Method each : enumConstant.getClass().getMethods()) {
+            JsonValue jsonValue = AnnotationUtils.findAnnotation(each, JsonValue.class);
+            if (jsonValue != null && jsonValue.value()) {
+                return Optional.of(each);
+            }
         }
-        return "";
-      }
-    };
-  }
-
-  private static Optional<Method> findJsonValueAnnotatedMethod(Object enumConstant) {
-    for (Method each : enumConstant.getClass().getMethods()) {
-      JsonValue jsonValue = AnnotationUtils.findAnnotation(each, JsonValue.class);
-      if (jsonValue != null && jsonValue.value()) {
-        return Optional.of(each);
-      }
+        return Optional.absent();
     }
-    return Optional.absent();
-  }
 
-  public static AllowableValues emptyListValuesToNull(AllowableListValues values) {
-    if (!values.getValues().isEmpty()) {
-      return values;
+    public static AllowableValues emptyListValuesToNull(AllowableListValues values) {
+        if (!values.getValues().isEmpty()) {
+            return values;
+        }
+        return null;
     }
-    return null;
-  }
 }

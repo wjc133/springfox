@@ -37,30 +37,30 @@ import java.util.concurrent.TimeUnit;
 @Qualifier("cachedModelProperties")
 public class CachingModelPropertiesProvider implements ModelPropertiesProvider {
 
-  private final LoadingCache<ModelContext, List<ModelProperty>> cache;
+    private final LoadingCache<ModelContext, List<ModelProperty>> cache;
 
-  @Autowired
-  public CachingModelPropertiesProvider(
-      final TypeResolver resolver,
-      @Qualifier("optimized") final ModelPropertiesProvider delegate) {
-    cache = CacheBuilder.newBuilder()
-        .maximumSize(1000)
-        .expireAfterWrite(24, TimeUnit.HOURS)
-        .build(
-            new CacheLoader<ModelContext, List<ModelProperty>>() {
-              public List<ModelProperty> load(ModelContext key) {
-                return delegate.propertiesFor(key.resolvedType(resolver), key);
-              }
-            });
-  }
+    @Autowired
+    public CachingModelPropertiesProvider(
+            final TypeResolver resolver,
+            @Qualifier("optimized") final ModelPropertiesProvider delegate) {
+        cache = CacheBuilder.newBuilder()
+                .maximumSize(1000)
+                .expireAfterWrite(24, TimeUnit.HOURS)
+                .build(
+                        new CacheLoader<ModelContext, List<ModelProperty>>() {
+                            public List<ModelProperty> load(ModelContext key) {
+                                return delegate.propertiesFor(key.resolvedType(resolver), key);
+                            }
+                        });
+    }
 
-  @Override
-  public List<ModelProperty> propertiesFor(ResolvedType type, ModelContext givenContext) {
-    return cache.getUnchecked(givenContext);
-  }
+    @Override
+    public List<ModelProperty> propertiesFor(ResolvedType type, ModelContext givenContext) {
+        return cache.getUnchecked(givenContext);
+    }
 
-  @Override
-  public void onApplicationEvent(ObjectMapperConfigured event) {
-    //No-op
-  }
+    @Override
+    public void onApplicationEvent(ObjectMapperConfigured event) {
+        //No-op
+    }
 }

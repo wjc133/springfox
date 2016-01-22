@@ -29,46 +29,49 @@ import java.util.Set;
 
 /***
  * Deprecated in lieu of using ApiListingBuilderPlugins instead
- * @deprecated  @since 2.2.0 - only here for backward compatibility
+ *
+ * @deprecated @since 2.2.0 - only here for backward compatibility
  */
 @Deprecated
 public interface ResourceGroupingStrategy extends Plugin<DocumentationType> {
-  /**
-   * Gets the resource group for a particular request mapping.
-   * Typically several requestMappings will live under a particular resource group.
-   *
-   * @param requestMappingInfo request mapping info
-   * @param handlerMethod      handler method
-   * @return Resource group uris.
-   * @see <code>ApiListingReferenceScanner</code>
-   */
-  Set<ResourceGroup> getResourceGroups(RequestMappingInfo requestMappingInfo, HandlerMethod handlerMethod);
+    /**
+     * Gets the resource group for a particular request mapping.
+     * Typically several requestMappings will live under a particular resource group.
+     *
+     * @param requestMappingInfo request mapping info
+     * @param handlerMethod      handler method
+     * @return Resource group uris.
+     * @see <code>ApiListingReferenceScanner</code>
+     */
+    Set<ResourceGroup> getResourceGroups(RequestMappingInfo requestMappingInfo, HandlerMethod handlerMethod);
 
 
-  /**
-   * Gets the resource description.
-   * This is typically the class name of the spring controller or value() attribute of any @Api annotations on that
-   * controller class
-   *
-   * This method is deprecated since this functionality will likely be changed as we rework some of the internals
-   * @deprecated @since 2.0.2
-   * @param requestMappingInfo request mapping info
-   * @param handlerMethod      handler method
-   * @return description of the resource
-   */
-  @Deprecated
-  String getResourceDescription(RequestMappingInfo requestMappingInfo, HandlerMethod handlerMethod);
+    /**
+     * Gets the resource description.
+     * This is typically the class name of the spring controller or value() attribute of any @Api annotations on that
+     * controller class
+     * <p/>
+     * This method is deprecated since this functionality will likely be changed as we rework some of the internals
+     *
+     * @param requestMappingInfo request mapping info
+     * @param handlerMethod      handler method
+     * @return description of the resource
+     * @deprecated @since 2.0.2
+     */
+    @Deprecated
+    String getResourceDescription(RequestMappingInfo requestMappingInfo, HandlerMethod handlerMethod);
 
-  /**
-   * Gets the position of the resource.
-   *
-   * This method is deprecated since this functionality will likely be changed as we rework some of the internals
-   * @deprecated @since 2.0.2
-   * @param requestMappingInfo mapping information
-   * @param handlerMethod handler method
-   * @return The numeric position
-   */
-  @Deprecated
-  Integer getResourcePosition(RequestMappingInfo requestMappingInfo, HandlerMethod handlerMethod);
+    /**
+     * Gets the position of the resource.
+     * <p/>
+     * This method is deprecated since this functionality will likely be changed as we rework some of the internals
+     *
+     * @param requestMappingInfo mapping information
+     * @param handlerMethod      handler method
+     * @return The numeric position
+     * @deprecated @since 2.0.2
+     */
+    @Deprecated
+    Integer getResourcePosition(RequestMappingInfo requestMappingInfo, HandlerMethod handlerMethod);
 
 }

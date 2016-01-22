@@ -18,39 +18,40 @@
  */
 
 package springfox.test.contract.swaggertests
+
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import springfox.documentation.builders.ImplicitGrantBuilder
 import springfox.documentation.builders.OAuthBuilder
 import springfox.documentation.service.*
 
-import static com.google.common.collect.Lists.*
+import static com.google.common.collect.Lists.newArrayList
 
 @Configuration
 public class SecuritySupport {
-  @Bean
-  SecurityScheme oauth() {
-    new OAuthBuilder()
-            .name("petstore_auth")
-            .grantTypes(grantTypes())
-            .scopes(scopes())
-            .build()
-  }
+    @Bean
+    SecurityScheme oauth() {
+        new OAuthBuilder()
+                .name("petstore_auth")
+                .grantTypes(grantTypes())
+                .scopes(scopes())
+                .build()
+    }
 
-  @Bean
-  SecurityScheme apiKey() {
-    new ApiKey("api_key", "api_key", "header")
-  }
+    @Bean
+    SecurityScheme apiKey() {
+        new ApiKey("api_key", "api_key", "header")
+    }
 
-  List<AuthorizationScope> scopes() {
-    newArrayList(
-      new AuthorizationScope("write:pets", "modify pets in your account"),
-      new AuthorizationScope("read:pets", "read your pets"))
-  }
+    List<AuthorizationScope> scopes() {
+        newArrayList(
+                new AuthorizationScope("write:pets", "modify pets in your account"),
+                new AuthorizationScope("read:pets", "read your pets"))
+    }
 
-  List<GrantType> grantTypes() {
-    newArrayList(new ImplicitGrantBuilder()
-            .loginEndpoint(new LoginEndpoint("http://petstore.swagger.io/api/oauth/dialog"))
-            .build())
-  }
+    List<GrantType> grantTypes() {
+        newArrayList(new ImplicitGrantBuilder()
+                .loginEndpoint(new LoginEndpoint("http://petstore.swagger.io/api/oauth/dialog"))
+                .build())
+    }
 }

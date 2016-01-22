@@ -25,22 +25,22 @@ import springfox.documentation.spi.service.contexts.DocumentationContext
 import springfox.documentation.spring.web.paths.PathMappingAdjuster
 
 class PathMappingAdjusterSpec extends Specification {
-  def "Adjust path mapping according to servlet registration" () {
-    given:
-      def context = Mock(DocumentationContext)
-    and:
-      context.pathMapping >> Optional.fromNullable(pathMapping)
-    when:
-      def sut = new PathMappingAdjuster(context)
-    then:
-      sut.adjustedPath(path) == expected
+    def "Adjust path mapping according to servlet registration"() {
+        given:
+        def context = Mock(DocumentationContext)
+        and:
+        context.pathMapping >> Optional.fromNullable(pathMapping)
+        when:
+        def sut = new PathMappingAdjuster(context)
+        then:
+        sut.adjustedPath(path) == expected
 
-    where:
-      pathMapping   | path    | expected
-      "/"           | "/v1"   | "/v1"
-      "/path"       | "/v1"   | "/path/v1"
-      ""            | "/v1"   | "/v1"
-      null          | "/v1"   | "/v1"
+        where:
+        pathMapping | path  | expected
+        "/"         | "/v1" | "/v1"
+        "/path"     | "/v1" | "/path/v1"
+        ""          | "/v1" | "/v1"
+        null        | "/v1" | "/v1"
 
-  }
+    }
 }

@@ -30,20 +30,20 @@ import springfox.documentation.spi.service.contexts.OperationContext;
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class OperationTagsReader implements OperationBuilderPlugin {
-  private final DefaultTagsProvider tagsProvider;
+    private final DefaultTagsProvider tagsProvider;
 
-  @Autowired
-  public OperationTagsReader(DefaultTagsProvider tagsProvider) {
-    this.tagsProvider = tagsProvider;
-  }
+    @Autowired
+    public OperationTagsReader(DefaultTagsProvider tagsProvider) {
+        this.tagsProvider = tagsProvider;
+    }
 
-  @Override
-  public void apply(OperationContext context) {
-    context.operationBuilder().tags(tagsProvider.tags(context));
-  }
+    @Override
+    public void apply(OperationContext context) {
+        context.operationBuilder().tags(tagsProvider.tags(context));
+    }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return true;
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return true;
+    }
 }

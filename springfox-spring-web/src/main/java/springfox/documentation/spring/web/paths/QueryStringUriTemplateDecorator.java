@@ -33,112 +33,113 @@ import springfox.documentation.spi.service.contexts.PathContext;
 
 import java.util.Set;
 
-import static com.google.common.base.Predicates.*;
-import static com.google.common.base.Strings.*;
-import static com.google.common.collect.FluentIterable.*;
+import static com.google.common.base.Predicates.and;
+import static com.google.common.base.Predicates.not;
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.FluentIterable.from;
 
 @Component
 @Order(value = Ordered.HIGHEST_PRECEDENCE + 60)
 class QueryStringUriTemplateDecorator implements PathDecorator {
-  @Override
-  public Function<String, String> decorator(final PathContext context) {
-    return new Function<String, String>() {
-      @Override
-      public String apply(String input) {
-        StringBuilder sb = new StringBuilder(input);
-        String prefilled = prefilledQueryParams(context);
-        if (!isNullOrEmpty(prefilled)) {
-          sb.append(requiresContinuation(input) ? "&" : "?");
-          sb.append(prefilled);
-        }
-        Set<String> expressions = queryParamNames(context);
-        if (expressions.size() == 0) {
-          return sb.toString();
-        }
-        String prefix = queryTemplatePrefix(input, prefilled);
-        String queryTemplate = Joiner.on(',').join(expressions);
-        sb.append(prefix).append(queryTemplate).append("}");
-        return sb.toString();
-      }
-    };
-  }
-
-  private String queryTemplatePrefix(String input, String prefilled) {
-    String prefix;
-    if (isNullOrEmpty(prefilled)) {
-      if (requiresContinuation(input)) {
-        prefix = "{&";
-      } else {
-        prefix = "{?";
-      }
-    } else {
-      prefix = "{&";
+    @Override
+    public Function<String, String> decorator(final PathContext context) {
+        return new Function<String, String>() {
+            @Override
+            public String apply(String input) {
+                StringBuilder sb = new StringBuilder(input);
+                String prefilled = prefilledQueryParams(context);
+                if (!isNullOrEmpty(prefilled)) {
+                    sb.append(requiresContinuation(input) ? "&" : "?");
+                    sb.append(prefilled);
+                }
+                Set<String> expressions = queryParamNames(context);
+                if (expressions.size() == 0) {
+                    return sb.toString();
+                }
+                String prefix = queryTemplatePrefix(input, prefilled);
+                String queryTemplate = Joiner.on(',').join(expressions);
+                sb.append(prefix).append(queryTemplate).append("}");
+                return sb.toString();
+            }
+        };
     }
-    return prefix;
-  }
 
-  private boolean requiresContinuation(String url) {
-    return url.contains("?");
-  }
+    private String queryTemplatePrefix(String input, String prefilled) {
+        String prefix;
+        if (isNullOrEmpty(prefilled)) {
+            if (requiresContinuation(input)) {
+                prefix = "{&";
+            } else {
+                prefix = "{?";
+            }
+        } else {
+            prefix = "{&";
+        }
+        return prefix;
+    }
 
-  private Set<String> queryParamNames(PathContext context) {
-    return from(context.getParameters())
-        .filter(and(queryStringParams(), not(onlyOneAllowableValue())))
-        .transform(paramName())
-        .toSet();
-  }
+    private boolean requiresContinuation(String url) {
+        return url.contains("?");
+    }
 
-  private String prefilledQueryParams(PathContext context) {
-    return Joiner.on("&").join(from(context.getParameters())
-        .filter(onlyOneAllowableValue())
-        .transform(queryStringWithValue())
-        .toSet())
-        .trim();
-  }
+    private Set<String> queryParamNames(PathContext context) {
+        return from(context.getParameters())
+                .filter(and(queryStringParams(), not(onlyOneAllowableValue())))
+                .transform(paramName())
+                .toSet();
+    }
 
-  private Predicate<Parameter> onlyOneAllowableValue() {
-    return new Predicate<Parameter>() {
-      @Override
-      public boolean apply(Parameter input) {
-        AllowableValues allowableValues = input.getAllowableValues();
-        return allowableValues != null
-            && allowableValues instanceof AllowableListValues
-            && ((AllowableListValues) allowableValues).getValues().size() == 1;
-      }
-    };
-  }
+    private String prefilledQueryParams(PathContext context) {
+        return Joiner.on("&").join(from(context.getParameters())
+                .filter(onlyOneAllowableValue())
+                .transform(queryStringWithValue())
+                .toSet())
+                .trim();
+    }
 
-  private Predicate<Parameter> queryStringParams() {
-    return new Predicate<Parameter>() {
-      @Override
-      public boolean apply(Parameter input) {
-        return "query".equals(input.getParamType());
-      }
-    };
-  }
+    private Predicate<Parameter> onlyOneAllowableValue() {
+        return new Predicate<Parameter>() {
+            @Override
+            public boolean apply(Parameter input) {
+                AllowableValues allowableValues = input.getAllowableValues();
+                return allowableValues != null
+                        && allowableValues instanceof AllowableListValues
+                        && ((AllowableListValues) allowableValues).getValues().size() == 1;
+            }
+        };
+    }
 
-  private Function<Parameter, String> paramName() {
-    return new Function<Parameter, String>() {
-      @Override
-      public String apply(Parameter input) {
-        return input.getName();
-      }
-    };
-  }
+    private Predicate<Parameter> queryStringParams() {
+        return new Predicate<Parameter>() {
+            @Override
+            public boolean apply(Parameter input) {
+                return "query".equals(input.getParamType());
+            }
+        };
+    }
+
+    private Function<Parameter, String> paramName() {
+        return new Function<Parameter, String>() {
+            @Override
+            public String apply(Parameter input) {
+                return input.getName();
+            }
+        };
+    }
 
 
-  private Function<Parameter, String> queryStringWithValue() {
-    return new Function<Parameter, String>() {
-      @Override
-      public String apply(Parameter input) {
-        AllowableListValues allowableValues = (AllowableListValues) input.getAllowableValues();
-        return String.format("%s=%s", input.getName(), allowableValues.getValues().get(0).trim());
-      }
-    };
-  }
+    private Function<Parameter, String> queryStringWithValue() {
+        return new Function<Parameter, String>() {
+            @Override
+            public String apply(Parameter input) {
+                AllowableListValues allowableValues = (AllowableListValues) input.getAllowableValues();
+                return String.format("%s=%s", input.getName(), allowableValues.getValues().get(0).trim());
+            }
+        };
+    }
 
-  @Override
-  public boolean supports(DocumentationContext delimiter) {
-    return delimiter.isUriTemplatesEnabled();
-  }
+    @Override
+    public boolean supports(DocumentationContext delimiter) {
+        return delimiter.isUriTemplatesEnabled();
+    }
 }

@@ -27,16 +27,16 @@ import org.springframework.core.Ordered;
 import springfox.documentation.schema.configuration.ObjectMapperConfigured;
 
 public class ObjectMapperEventListener implements ApplicationListener<ObjectMapperConfigured>, Ordered {
-  @Override
-  public void onApplicationEvent(ObjectMapperConfigured event) {
-    ObjectMapper objectMapper = event.getObjectMapper();
-    objectMapper.configure(com.fasterxml.jackson.databind.SerializationFeature.WRITE_EMPTY_JSON_ARRAYS, true);
-    objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
-  }
+    @Override
+    public void onApplicationEvent(ObjectMapperConfigured event) {
+        ObjectMapper objectMapper = event.getObjectMapper();
+        objectMapper.configure(com.fasterxml.jackson.databind.SerializationFeature.WRITE_EMPTY_JSON_ARRAYS, true);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
+    }
 
-  @Override
-  public int getOrder() {
-    //Always runs last so it's the effective ObjectMapper configuration
-    return LOWEST_PRECEDENCE;
-  }
+    @Override
+    public int getOrder() {
+        //Always runs last so it's the effective ObjectMapper configuration
+        return LOWEST_PRECEDENCE;
+    }
 }

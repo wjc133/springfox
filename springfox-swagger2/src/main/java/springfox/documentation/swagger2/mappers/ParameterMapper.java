@@ -30,49 +30,50 @@ import org.mapstruct.Mapper;
 import springfox.documentation.schema.ModelReference;
 import springfox.documentation.service.AllowableListValues;
 
-import static springfox.documentation.schema.Types.*;
-import static springfox.documentation.swagger2.mappers.Properties.*;
+import static springfox.documentation.schema.Types.isBaseType;
+import static springfox.documentation.swagger2.mappers.Properties.itemTypeProperty;
+import static springfox.documentation.swagger2.mappers.Properties.property;
 
 
 @Mapper
 public class ParameterMapper {
 
-  public Parameter mapParameter(springfox.documentation.service.Parameter source) {
-    Parameter bodyParameter = bodyParameter(source);
-    return SerializableParameterFactories.create(source).or(bodyParameter);
-  }
+    public Parameter mapParameter(springfox.documentation.service.Parameter source) {
+        Parameter bodyParameter = bodyParameter(source);
+        return SerializableParameterFactories.create(source).or(bodyParameter);
+    }
 
-  private Parameter bodyParameter(springfox.documentation.service.Parameter source) {
-    BodyParameter parameter = new BodyParameter()
-        .description(source.getDescription())
-        .name(source.getName())
-        .schema(fromModelRef(source.getModelRef()));
-    parameter.setAccess(source.getParamAccess());
-    parameter.setRequired(source.isRequired());
-    return parameter;
-  }
+    private Parameter bodyParameter(springfox.documentation.service.Parameter source) {
+        BodyParameter parameter = new BodyParameter()
+                .description(source.getDescription())
+                .name(source.getName())
+                .schema(fromModelRef(source.getModelRef()));
+        parameter.setAccess(source.getParamAccess());
+        parameter.setRequired(source.isRequired());
+        return parameter;
+    }
 
-  Model fromModelRef(ModelReference modelRef) {
-    if (modelRef.isCollection()) {
-      return new ArrayModel()
-          .items(itemTypeProperty(modelRef.itemModel().get()));
+    Model fromModelRef(ModelReference modelRef) {
+        if (modelRef.isCollection()) {
+            return new ArrayModel()
+                    .items(itemTypeProperty(modelRef.itemModel().get()));
+        }
+        if (modelRef.isMap()) {
+            ModelImpl baseModel = new ModelImpl();
+            baseModel.additionalProperties(property(modelRef.getItemType()));
+            return baseModel;
+        }
+        if (isBaseType(modelRef.getType())) {
+            Property property = property(modelRef.getType());
+            ModelImpl baseModel = new ModelImpl();
+            baseModel.setType(property.getType());
+            baseModel.setFormat(property.getFormat());
+            if (modelRef.getAllowableValues() instanceof AllowableListValues) {
+                AllowableListValues allowableValues = (AllowableListValues) modelRef.getAllowableValues();
+                baseModel.setEnum(allowableValues.getValues());
+            }
+            return baseModel;
+        }
+        return new RefModel(modelRef.getType());
     }
-    if (modelRef.isMap()) {
-      ModelImpl baseModel = new ModelImpl();
-      baseModel.additionalProperties(property(modelRef.getItemType()));
-      return baseModel;
-    }
-    if (isBaseType(modelRef.getType())) {
-      Property property = property(modelRef.getType());
-      ModelImpl baseModel = new ModelImpl();
-      baseModel.setType(property.getType());
-      baseModel.setFormat(property.getFormat());
-      if (modelRef.getAllowableValues() instanceof AllowableListValues) {
-        AllowableListValues allowableValues = (AllowableListValues) modelRef.getAllowableValues();
-        baseModel.setEnum(allowableValues.getValues());
-      }
-      return baseModel;
-    }
-    return new RefModel(modelRef.getType());
-  }
 }

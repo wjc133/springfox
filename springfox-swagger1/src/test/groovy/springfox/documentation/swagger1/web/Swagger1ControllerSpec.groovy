@@ -18,126 +18,157 @@
  */
 
 package springfox.documentation.swagger1.web
+
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.collect.LinkedListMultimap
+import com.google.common.collect.LinkedListMultimap
+import com.google.common.collect.Multimap
 import com.google.common.collect.Multimap
 import org.springframework.http.MediaType
+import org.springframework.http.MediaType
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.web.servlet.View
+import org.springframework.web.servlet.View
+import spock.lang.Shared
 import spock.lang.Shared
 import spock.lang.Unroll
+import spock.lang.Unroll
+import springfox.documentation.builders.DocumentationBuilder
 import springfox.documentation.builders.DocumentationBuilder
 import springfox.documentation.service.ApiListing
+import springfox.documentation.service.ApiListing
+import springfox.documentation.service.Documentation
 import springfox.documentation.service.Documentation
 import springfox.documentation.service.SecurityScheme
+import springfox.documentation.service.SecurityScheme
+import springfox.documentation.spring.web.DocumentationCache
 import springfox.documentation.spring.web.DocumentationCache
 import springfox.documentation.spring.web.json.JsonSerializer
+import springfox.documentation.spring.web.json.JsonSerializer
+import springfox.documentation.spring.web.mixins.ApiListingSupport
 import springfox.documentation.spring.web.mixins.ApiListingSupport
 import springfox.documentation.spring.web.mixins.AuthSupport
+import springfox.documentation.spring.web.mixins.AuthSupport
+import springfox.documentation.spring.web.mixins.JsonSupport
 import springfox.documentation.spring.web.mixins.JsonSupport
 import springfox.documentation.spring.web.plugins.DocumentationContextSpec
+import springfox.documentation.spring.web.plugins.DocumentationContextSpec
+import springfox.documentation.spring.web.scanners.ApiDocumentationScanner
 import springfox.documentation.spring.web.scanners.ApiDocumentationScanner
 import springfox.documentation.spring.web.scanners.ApiListingReferenceScanResult
+import springfox.documentation.spring.web.scanners.ApiListingReferenceScanResult
+import springfox.documentation.spring.web.scanners.ApiListingReferenceScanner
 import springfox.documentation.spring.web.scanners.ApiListingReferenceScanner
 import springfox.documentation.spring.web.scanners.ApiListingScanner
+import springfox.documentation.spring.web.scanners.ApiListingScanner
 import springfox.documentation.swagger1.configuration.SwaggerJacksonModule
+import springfox.documentation.swagger1.configuration.SwaggerJacksonModule
+import springfox.documentation.swagger1.mixins.MapperSupport
 import springfox.documentation.swagger1.mixins.MapperSupport
 
 import static com.google.common.collect.Maps.*
+import static com.google.common.collect.Maps.newHashMap
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup
 
 @Mixin([JsonSupport, ApiListingSupport, AuthSupport, MapperSupport])
 class Swagger1ControllerSpec extends DocumentationContextSpec {
 
-  @Shared
-  MockMvc mockMvc
-  @Shared
-  View mockView
-  @Shared
-  Swagger1Controller controller = new Swagger1Controller()
-  ApiListingReferenceScanner listingReferenceScanner
-  ApiListingScanner listingScanner
+    @Shared
+    MockMvc mockMvc
+    @Shared
+    View mockView
+    @Shared
+    Swagger1Controller controller = new Swagger1Controller()
+    ApiListingReferenceScanner listingReferenceScanner
+    ApiListingScanner listingScanner
 
-  def setup() {
-    controller.documentationCache = new DocumentationCache()
+    def setup() {
+        controller.documentationCache = new DocumentationCache()
 
-    controller.jsonSerializer = new JsonSerializer([new SwaggerJacksonModule()])
-    listingReferenceScanner = Mock(ApiListingReferenceScanner)
-    listingScanner = Mock(ApiListingScanner)
-    listingReferenceScanner.scan(_) >> new ApiListingReferenceScanResult(newHashMap())
-    listingScanner.scan(_) >> LinkedListMultimap.create()
-    controller.mapper = serviceMapper()
-    def jackson2 = new MappingJackson2HttpMessageConverter()
-    jackson2.setSupportedMediaTypes([MediaType.ALL, MediaType.APPLICATION_JSON])
+        controller.jsonSerializer = new JsonSerializer([new SwaggerJacksonModule()])
+        listingReferenceScanner = Mock(ApiListingReferenceScanner)
+        listingScanner = Mock(ApiListingScanner)
+        listingReferenceScanner.scan(_) >> new ApiListingReferenceScanResult(newHashMap())
+        listingScanner.scan(_) >> LinkedListMultimap.create()
+        controller.mapper = serviceMapper()
+        def jackson2 = new MappingJackson2HttpMessageConverter()
+        jackson2.setSupportedMediaTypes([MediaType.ALL, MediaType.APPLICATION_JSON])
 
-    def mapper = new ObjectMapper()
+        def mapper = new ObjectMapper()
 
-    jackson2.setObjectMapper(mapper)
-    mockMvc = standaloneSetup(controller)
-            .setSingleView(mockView)
-            .setMessageConverters(jackson2)
-            .build();
-  }
+        jackson2.setObjectMapper(mapper)
+        mockMvc = standaloneSetup(controller)
+                .setSingleView(mockView)
+                .setMessageConverters(jackson2)
+                .build();
+    }
 
-  @Unroll("path: #path")
-  def "should return the default or first swagger resource listing"() {
-    given:
-      ApiDocumentationScanner sut = new ApiDocumentationScanner(listingReferenceScanner, listingScanner)
-      controller.documentationCache.addDocumentation(sut.scan(context()))
-    when:
-      MvcResult result = mockMvc
-              .perform(get(path))
-              .andDo(print())
-              .andReturn()
+    @Unroll("path: #path")
+    def "should return the default or first swagger resource listing"() {
+        given:
+        ApiDocumentationScanner sut = new ApiDocumentationScanner(listingReferenceScanner, listingScanner)
+        controller.documentationCache.addDocumentation(sut.scan(context()))
+        when:
+        MvcResult result = mockMvc
+                .perform(get(path))
+                .andDo(print())
+                .andReturn()
 
-      jsonBodyResponse(result)
-    then:
-      result.getResponse().getStatus() == expectedStatus
-    where:
-      path                      | expectedStatus
-      "/api-docs"               | 200
-      "/api-docs?group=default" | 200
-      "/api-docs?group=unknown" | 404
-  }
+        jsonBodyResponse(result)
+        then:
+        result.getResponse().getStatus() == expectedStatus
+        where:
+        path                      | expectedStatus
+        "/api-docs"               | 200
+        "/api-docs?group=default" | 200
+        "/api-docs?group=unknown" | 404
+    }
 
-  def "should respond with api listing for a given resource group"() {
-    given:
-      Multimap<String, ApiListing> listings = LinkedListMultimap.<String, ApiListing>create()
-      listings.put('businesses', apiListing())
-    and:
-      Documentation group = new DocumentationBuilder()
-              .name("groupName")
-              .apiListingsByResourceGroupName(listings)
-              .build()
-      controller.documentationCache.addDocumentation(group)
-    when:
-      MvcResult result = mockMvc.perform(get("/api-docs/groupName/businesses")).andDo(print()).andReturn()
-      jsonBodyResponse(result)
+    def "should respond with api listing for a given resource group"() {
+        given:
+        Multimap<String, ApiListing> listings = LinkedListMultimap.<String, ApiListing> create()
+        listings.put('businesses', apiListing())
+        and:
+        Documentation group = new DocumentationBuilder()
+                .name("groupName")
+                .apiListingsByResourceGroupName(listings)
+                .build()
+        controller.documentationCache.addDocumentation(group)
+        when:
+        MvcResult result = mockMvc.perform(get("/api-docs/groupName/businesses")).andDo(print()).andReturn()
+        jsonBodyResponse(result)
 
-    then:
-      result.getResponse().getStatus() == 200
-  }
+        then:
+        result.getResponse().getStatus() == 200
+    }
 
-  def "should respond with auth included"() {
-    given:
-      def authTypes = new ArrayList<SecurityScheme>()
-      authTypes.add(authorizationTypes());
-      Documentation group = new DocumentationBuilder()
-              .name("groupName")
-              .resourceListing(resourceListing(authTypes))
-              .build()
+    def "should respond with auth included"() {
+        given:
+        def authTypes = new ArrayList<SecurityScheme>()
+        authTypes.add(authorizationTypes());
+        Documentation group = new DocumentationBuilder()
+                .name("groupName")
+                .resourceListing(resourceListing(authTypes))
+                .build()
 
-      controller.documentationCache.addDocumentation(group)
-    when:
-      MvcResult result = mockMvc.perform(get("/api-docs?group=groupName")).andDo(print()).andReturn()
-      def json = jsonBodyResponse(result)
+        controller.documentationCache.addDocumentation(group)
+        when:
+        MvcResult result = mockMvc.perform(get("/api-docs?group=groupName")).andDo(print()).andReturn()
+        def json = jsonBodyResponse(result)
 
-    then:
-      result.getResponse().getStatus() == 200
-      assertDefaultAuth(json)
-  }
+        then:
+        result.getResponse().getStatus() == 200
+        assertDefaultAuth(json)
+    }
 }

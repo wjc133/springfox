@@ -34,52 +34,52 @@ import springfox.documentation.spring.web.mixins.ModelProviderForServiceSupport
 import springfox.documentation.spring.web.mixins.RequestMappingSupport
 import springfox.documentation.spring.web.plugins.DocumentationContextSpec
 
-import static com.google.common.base.Optional.*
+import static com.google.common.base.Optional.fromNullable
 
 @Mixin([RequestMappingSupport, ModelProviderForServiceSupport])
 class ParameterNameReaderSpec extends DocumentationContextSpec {
 
-  def "Should support only swagger 1 documentation types"() {
-    given:
-      def sut = new ParameterNameReader()
-    expect:
-      !sut.supports(DocumentationType.SPRING_WEB)
-      sut.supports(DocumentationType.SWAGGER_12)
-      !sut.supports(DocumentationType.SWAGGER_2)
-  }
-
-  def "param required"() {
-    given:
-      def operationContext = Mock(OperationContext)
-      def resolvedMethodParameter = Mock(ResolvedMethodParameter)
-      def genericNamingStrategy = new DefaultGenericTypeNamingStrategy()
-      def methodParameter = Mock(MethodParameter)
-    and: "mocks are setup"
-      operationContext.consumes() >> []
-      operationContext.handlerMethod >> HttpMethod.GET
-      resolvedMethodParameter.resolvedParameterType >> new TypeResolver().resolve(String)
-      resolvedMethodParameter.methodParameter >> methodParameter
-      methodParameter.getParameterAnnotations() >> [apiParam]
-    and: "context is setup"
-      ParameterContext parameterContext = new ParameterContext(resolvedMethodParameter, new ParameterBuilder(),
-          context(), genericNamingStrategy, operationContext)
-    when:
-      def sut = nameReader(apiParam)
-      sut.apply(parameterContext)
-    then:
-      parameterContext.parameterBuilder().build().name == expectedName
-    where:
-      apiParam                                                            | paramType | expectedName
-      [name: { -> "bodyParam" }, value: { -> "body Param"}] as ApiParam   | "body"    | "body"
-      null                                                                | "body"    | "body"
-  }
-
-  def nameReader(annotation) {
-    new ParameterNameReader() {
-      @Override
-      def Optional<ApiParam> apiParam(MethodParameter mp) {
-        fromNullable(annotation)
-      }
+    def "Should support only swagger 1 documentation types"() {
+        given:
+        def sut = new ParameterNameReader()
+        expect:
+        !sut.supports(DocumentationType.SPRING_WEB)
+        sut.supports(DocumentationType.SWAGGER_12)
+        !sut.supports(DocumentationType.SWAGGER_2)
     }
-  }
+
+    def "param required"() {
+        given:
+        def operationContext = Mock(OperationContext)
+        def resolvedMethodParameter = Mock(ResolvedMethodParameter)
+        def genericNamingStrategy = new DefaultGenericTypeNamingStrategy()
+        def methodParameter = Mock(MethodParameter)
+        and: "mocks are setup"
+        operationContext.consumes() >> []
+        operationContext.handlerMethod >> HttpMethod.GET
+        resolvedMethodParameter.resolvedParameterType >> new TypeResolver().resolve(String)
+        resolvedMethodParameter.methodParameter >> methodParameter
+        methodParameter.getParameterAnnotations() >> [apiParam]
+        and: "context is setup"
+        ParameterContext parameterContext = new ParameterContext(resolvedMethodParameter, new ParameterBuilder(),
+                context(), genericNamingStrategy, operationContext)
+        when:
+        def sut = nameReader(apiParam)
+        sut.apply(parameterContext)
+        then:
+        parameterContext.parameterBuilder().build().name == expectedName
+        where:
+        apiParam                                                           | paramType | expectedName
+        [name: { -> "bodyParam" }, value: { -> "body Param" }] as ApiParam | "body"    | "body"
+        null                                                               | "body"    | "body"
+    }
+
+    def nameReader(annotation) {
+        new ParameterNameReader() {
+            @Override
+            def Optional<ApiParam> apiParam(MethodParameter mp) {
+                fromNullable(annotation)
+            }
+        }
+    }
 }

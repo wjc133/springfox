@@ -1,5 +1,3 @@
-
-
 /*
  *
  *  Copyright 2015 the original author or authors.
@@ -30,23 +28,23 @@ import springfox.documentation.spring.web.readers.operation.OperationReader
 
 @Mixin([TypesForTestingSupport, RequestMappingSupport])
 class CachingOperationReaderSpec extends DocumentationContextSpec {
-  def "Implementation caches the invocations" () {
-    given:
-      RequestMappingInfo requestMappingInfo = requestMappingInfo('/anyPath')
+    def "Implementation caches the invocations"() {
+        given:
+        RequestMappingInfo requestMappingInfo = requestMappingInfo('/anyPath')
 
-      def context = context()
-      def requestMappingContext = new RequestMappingContext(context, requestMappingInfo,
-        dummyHandlerMethod("methodWithConcreteResponseBody"))
-      def mock = Mock(OperationReader) {
-        read(requestMappingContext) >> [anOperation()]
-      }
-    when:
-    def sut = new CachingOperationReader(mock)
-    then:
-    sut.read(requestMappingContext) == sut.read(requestMappingContext)
-  }
+        def context = context()
+        def requestMappingContext = new RequestMappingContext(context, requestMappingInfo,
+                dummyHandlerMethod("methodWithConcreteResponseBody"))
+        def mock = Mock(OperationReader) {
+            read(requestMappingContext) >> [anOperation()]
+        }
+        when:
+        def sut = new CachingOperationReader(mock)
+        then:
+        sut.read(requestMappingContext) == sut.read(requestMappingContext)
+    }
 
-  def anOperation() {
-    Mock(Operation)
-  }
+    def anOperation() {
+        Mock(Operation)
+    }
 }

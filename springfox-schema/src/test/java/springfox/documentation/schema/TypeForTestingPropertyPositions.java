@@ -16,7 +16,7 @@
  *
  *
  */
- 
+
 package springfox.documentation.schema;
 
 public class TypeForTestingPropertyPositions {

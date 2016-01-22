@@ -1,4 +1,5 @@
 package springfox.documentation.swagger.readers.operation
+
 import org.springframework.web.bind.annotation.RequestMethod
 import springfox.documentation.builders.OperationBuilder
 import springfox.documentation.service.ObjectVendorExtension
@@ -11,38 +12,38 @@ import springfox.documentation.spring.web.readers.operation.CachingOperationName
 
 @Mixin([RequestMappingSupport])
 class VendorExtensionsReaderSpec extends DocumentationContextSpec {
-  def "should read from annotations"() {
-    given:
-      OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
-        RequestMethod.GET, dummyHandlerMethod('methodWithExtensions'), 0, requestMappingInfo("somePath"),
-        context(), "/anyPath")
-      VendorExtensionsReader sut = new VendorExtensionsReader()
-    when:
-      sut.apply(operationContext)
-      def operation = operationContext.operationBuilder().build()
-    and:
-      !sut.supports(DocumentationType.SPRING_WEB)
-      sut.supports(DocumentationType.SWAGGER_12)
-      sut.supports(DocumentationType.SWAGGER_2)
-    then:
-      operation.vendorExtensions.size() == 2
-      operation.vendorExtensions.first().equals(first())
-      operation.vendorExtensions.subList(1, 2).first().equals(second())
-  }
-
-  def second() {
-    def second = new ObjectVendorExtension("x-test2")
-    second.with {
-      addProperty(new StringVendorExtension("name2", "value2"))
+    def "should read from annotations"() {
+        given:
+        OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
+                RequestMethod.GET, dummyHandlerMethod('methodWithExtensions'), 0, requestMappingInfo("somePath"),
+                context(), "/anyPath")
+        VendorExtensionsReader sut = new VendorExtensionsReader()
+        when:
+        sut.apply(operationContext)
+        def operation = operationContext.operationBuilder().build()
+        and:
+        !sut.supports(DocumentationType.SPRING_WEB)
+        sut.supports(DocumentationType.SWAGGER_12)
+        sut.supports(DocumentationType.SWAGGER_2)
+        then:
+        operation.vendorExtensions.size() == 2
+        operation.vendorExtensions.first().equals(first())
+        operation.vendorExtensions.subList(1, 2).first().equals(second())
     }
-    second
-  }
 
-  def first() {
-    def first = new ObjectVendorExtension("")
-    first.with {
-      addProperty(new StringVendorExtension("x-test1", "value1"))
+    def second() {
+        def second = new ObjectVendorExtension("x-test2")
+        second.with {
+            addProperty(new StringVendorExtension("name2", "value2"))
+        }
+        second
     }
-    first
-  }
+
+    def first() {
+        def first = new ObjectVendorExtension("")
+        first.with {
+            addProperty(new StringVendorExtension("x-test1", "value1"))
+        }
+        first
+    }
 }

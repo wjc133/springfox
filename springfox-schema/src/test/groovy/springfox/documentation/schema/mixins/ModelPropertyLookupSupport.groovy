@@ -18,6 +18,7 @@
  */
 
 package springfox.documentation.schema.mixins
+
 import com.fasterxml.classmate.MemberResolver
 import com.fasterxml.classmate.ResolvedTypeWithMembers
 import com.fasterxml.classmate.TypeResolver
@@ -29,45 +30,45 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition
 import com.fasterxml.jackson.databind.type.TypeFactory
 
-import static springfox.documentation.schema.property.bean.Accessors.*
+import static springfox.documentation.schema.property.bean.Accessors.propertyName
 
 @SuppressWarnings("GrMethodMayBeStatic")
 class ModelPropertyLookupSupport {
-  static final ObjectMapper mapper = new ObjectMapper();
+    static final ObjectMapper mapper = new ObjectMapper();
 
-  ResolvedMethod accessorMethod(def typeToTest, String methodName) {
-    TypeResolver resolver = new TypeResolver()
-    MemberResolver memberResolver = new MemberResolver(resolver);
-    memberResolver.setIncludeLangObject(false);
+    ResolvedMethod accessorMethod(def typeToTest, String methodName) {
+        TypeResolver resolver = new TypeResolver()
+        MemberResolver memberResolver = new MemberResolver(resolver);
+        memberResolver.setIncludeLangObject(false);
 
-    ResolvedTypeWithMembers typeWithMembers = memberResolver.resolve(resolver.resolve(typeToTest), null, null);
-    typeWithMembers.memberMethods.find { it.name == methodName}
-  }
+        ResolvedTypeWithMembers typeWithMembers = memberResolver.resolve(resolver.resolve(typeToTest), null, null);
+        typeWithMembers.memberMethods.find { it.name == methodName }
+    }
 
-  ResolvedField field(def typeToTest, String fieldName) {
-    TypeResolver resolver = new TypeResolver()
-    MemberResolver memberResolver = new MemberResolver(resolver);
-    memberResolver.setIncludeLangObject(false);
+    ResolvedField field(def typeToTest, String fieldName) {
+        TypeResolver resolver = new TypeResolver()
+        MemberResolver memberResolver = new MemberResolver(resolver);
+        memberResolver.setIncludeLangObject(false);
 
-    ResolvedTypeWithMembers typeWithMembers = memberResolver.resolve(resolver.resolve(typeToTest), null, null);
-    typeWithMembers.memberFields.find { it.name == fieldName}
-  }
+        ResolvedTypeWithMembers typeWithMembers = memberResolver.resolve(resolver.resolve(typeToTest), null, null);
+        typeWithMembers.memberFields.find { it.name == fieldName }
+    }
 
-  BeanPropertyDefinition beanPropertyDefinition(Class typeToTest, def methodName) {
-    JavaType type = TypeFactory.defaultInstance().constructType(typeToTest)
-    BeanDescription beanDescription = mapper.getDeserializationConfig().introspectForBuilder(type)
-    Map<String, BeanPropertyDefinition> propertyDefinitionsByInternalName =
-            beanDescription.findProperties()
-                    .collectEntries {[ it.getInternalName(), it ]}
-    return propertyDefinitionsByInternalName[propertyName(typeToTest.methods.find { it.name == methodName })]
-  }
+    BeanPropertyDefinition beanPropertyDefinition(Class typeToTest, def methodName) {
+        JavaType type = TypeFactory.defaultInstance().constructType(typeToTest)
+        BeanDescription beanDescription = mapper.getDeserializationConfig().introspectForBuilder(type)
+        Map<String, BeanPropertyDefinition> propertyDefinitionsByInternalName =
+                beanDescription.findProperties()
+                        .collectEntries { [it.getInternalName(), it] }
+        return propertyDefinitionsByInternalName[propertyName(typeToTest.methods.find { it.name == methodName })]
+    }
 
-  BeanPropertyDefinition beanPropertyDefinitionByField(def typeToTest, def fieldName) {
-    JavaType type = TypeFactory.defaultInstance().constructType(typeToTest)
-    BeanDescription beanDescription = mapper.getDeserializationConfig().introspectForBuilder(type)
-    Map<String, BeanPropertyDefinition> propertyDefinitionsByInternalName =
-            beanDescription.findProperties()
-                    .collectEntries {[ it.getInternalName(), it ]}
-    return propertyDefinitionsByInternalName[fieldName]
-  }
+    BeanPropertyDefinition beanPropertyDefinitionByField(def typeToTest, def fieldName) {
+        JavaType type = TypeFactory.defaultInstance().constructType(typeToTest)
+        BeanDescription beanDescription = mapper.getDeserializationConfig().introspectForBuilder(type)
+        Map<String, BeanPropertyDefinition> propertyDefinitionsByInternalName =
+                beanDescription.findProperties()
+                        .collectEntries { [it.getInternalName(), it] }
+        return propertyDefinitionsByInternalName[fieldName]
+    }
 }

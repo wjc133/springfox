@@ -30,34 +30,34 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
 
 import java.util.Set;
 
-import static com.google.common.base.Strings.*;
-import static com.google.common.collect.Sets.*;
-import static org.springframework.core.annotation.AnnotationUtils.*;
+import static com.google.common.base.Strings.nullToEmpty;
+import static com.google.common.collect.Sets.newHashSet;
+import static org.springframework.core.annotation.AnnotationUtils.findAnnotation;
 
 @Component
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class SwaggerMediaTypeReader implements OperationBuilderPlugin {
-  @Override
-  public void apply(OperationContext context) {
-    ApiOperation annotation = findAnnotation(context.getHandlerMethod().getMethod(), ApiOperation.class);
-    if (null != annotation) {
-      context.operationBuilder().consumes(asSet(nullToEmpty(annotation.consumes())));
-      context.operationBuilder().produces(asSet(nullToEmpty(annotation.produces())));
+    @Override
+    public void apply(OperationContext context) {
+        ApiOperation annotation = findAnnotation(context.getHandlerMethod().getMethod(), ApiOperation.class);
+        if (null != annotation) {
+            context.operationBuilder().consumes(asSet(nullToEmpty(annotation.consumes())));
+            context.operationBuilder().produces(asSet(nullToEmpty(annotation.produces())));
+        }
     }
-  }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return SwaggerPluginSupport.pluginDoesApply(delimiter);
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return SwaggerPluginSupport.pluginDoesApply(delimiter);
+    }
 
 
-  private Set<String> asSet(String mediaTypes) {
-    return newHashSet(Splitter.on(',')
-            .trimResults()
-            .omitEmptyStrings()
-            .splitToList(mediaTypes));
-  }
+    private Set<String> asSet(String mediaTypes) {
+        return newHashSet(Splitter.on(',')
+                .trimResults()
+                .omitEmptyStrings()
+                .splitToList(mediaTypes));
+    }
 
 
 }

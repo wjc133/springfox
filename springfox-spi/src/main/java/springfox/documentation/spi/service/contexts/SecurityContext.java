@@ -31,28 +31,28 @@ import java.util.List;
  */
 public class SecurityContext {
 
-  private final List<SecurityReference> securityReferences;
-  private final Predicate<String> selector;
+    private final List<SecurityReference> securityReferences;
+    private final Predicate<String> selector;
 
-  public SecurityContext(List<SecurityReference> securityReferences, Predicate<String> selector) {
+    public SecurityContext(List<SecurityReference> securityReferences, Predicate<String> selector) {
 
-    this.securityReferences = securityReferences;
-    this.selector = selector;
-  }
-
-  public List<SecurityReference> securityForPath(String path) {
-    if (selector.apply(path)) {
-      return securityReferences;
+        this.securityReferences = securityReferences;
+        this.selector = selector;
     }
-    return null;
-  }
 
-  public List<SecurityReference> getSecurityReferences() {
-    return securityReferences;
-  }
+    public List<SecurityReference> securityForPath(String path) {
+        if (selector.apply(path)) {
+            return securityReferences;
+        }
+        return null;
+    }
 
-  public static SecurityContextBuilder builder() {
-    return new SecurityContextBuilder();
-  }
+    public List<SecurityReference> getSecurityReferences() {
+        return securityReferences;
+    }
+
+    public static SecurityContextBuilder builder() {
+        return new SecurityContextBuilder();
+    }
 
 }

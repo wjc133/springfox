@@ -26,23 +26,24 @@ import springfox.documentation.service.PathDecorator;
 import springfox.documentation.spi.service.contexts.DocumentationContext;
 import springfox.documentation.spi.service.contexts.PathContext;
 
-import static springfox.documentation.spring.web.paths.Paths.*;
+import static springfox.documentation.spring.web.paths.Paths.removeAdjacentForwardSlashes;
+import static springfox.documentation.spring.web.paths.Paths.sanitizeRequestMappingPattern;
 
 @Component
 @Order(value = Ordered.HIGHEST_PRECEDENCE + 20)
 class PathSanitizer implements PathDecorator {
-  @Override
-  public Function<String, String> decorator(PathContext context) {
-    return new Function<String, String>() {
-      @Override
-      public String apply(String input) {
-        return removeAdjacentForwardSlashes(sanitizeRequestMappingPattern(input));
-      }
-    };
-  }
+    @Override
+    public Function<String, String> decorator(PathContext context) {
+        return new Function<String, String>() {
+            @Override
+            public String apply(String input) {
+                return removeAdjacentForwardSlashes(sanitizeRequestMappingPattern(input));
+            }
+        };
+    }
 
-  @Override
-  public boolean supports(DocumentationContext delimiter) {
-    return true;
-  }
+    @Override
+    public boolean supports(DocumentationContext delimiter) {
+        return true;
+    }
 }

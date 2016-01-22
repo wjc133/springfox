@@ -31,21 +31,21 @@ import springfox.documentation.swagger1.annotations.EnableSwagger;
 @EnableSwagger
 @EnableWebMvc
 public class CustomXmlJavaConfig {
-  @Bean
-  public Docket customImplementation() {
-    return new Docket(DocumentationType.SWAGGER_12)
-        .groupName("customPlugin")
-        .select()
-          .paths(PathSelectors.regex(".*pet.*"))
-          .build();
-  }
+    @Bean
+    public Docket customImplementation() {
+        return new Docket(DocumentationType.SWAGGER_12)
+                .groupName("customPlugin")
+                .select()
+                .paths(PathSelectors.regex(".*pet.*"))
+                .build();
+    }
 
-  @Bean
-  public Docket secondCustomImplementation() {
-    return new Docket(DocumentationType.SWAGGER_12)
-        .groupName("secondCustomPlugin")
-        .select()
-          .paths(PathSelectors.regex("/feature.*"))
-          .build();
-  }
+    @Bean
+    public Docket secondCustomImplementation() {
+        return new Docket(DocumentationType.SWAGGER_12)
+                .groupName("secondCustomPlugin")
+                .select()
+                .paths(PathSelectors.regex("/feature.*"))
+                .build();
+    }
 }

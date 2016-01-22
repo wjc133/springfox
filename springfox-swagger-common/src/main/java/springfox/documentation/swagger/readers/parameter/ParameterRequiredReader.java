@@ -35,32 +35,32 @@ import java.lang.annotation.Annotation;
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class ParameterRequiredReader implements ParameterBuilderPlugin {
 
-  @Override
-  public void apply(ParameterContext context) {
-    MethodParameter methodParameter = context.methodParameter();
-    if(getAnnotatedRequired(methodParameter).isPresent()) {
-      context.parameterBuilder().required(getAnnotatedRequired(methodParameter).get());
-    }
-  }
-
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return SwaggerPluginSupport.pluginDoesApply(delimiter);
-  }
-
-  private Optional<Boolean> getAnnotatedRequired(MethodParameter methodParameter) {
-    Annotation[] methodAnnotations = methodParameter.getParameterAnnotations();
-
-    // when the type is Optional, the required property of @RequestParam/@RequestHeader doesn't matter,
-    // since the value is always a non-null Optional after conversion
-
-    if (null != methodAnnotations) {
-      for (Annotation annotation : methodAnnotations) {
-        if (annotation instanceof ApiParam) {
-          return Optional.of(((ApiParam) annotation).required());
+    @Override
+    public void apply(ParameterContext context) {
+        MethodParameter methodParameter = context.methodParameter();
+        if (getAnnotatedRequired(methodParameter).isPresent()) {
+            context.parameterBuilder().required(getAnnotatedRequired(methodParameter).get());
         }
-      }
     }
-    return Optional.absent();
-  }
+
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return SwaggerPluginSupport.pluginDoesApply(delimiter);
+    }
+
+    private Optional<Boolean> getAnnotatedRequired(MethodParameter methodParameter) {
+        Annotation[] methodAnnotations = methodParameter.getParameterAnnotations();
+
+        // when the type is Optional, the required property of @RequestParam/@RequestHeader doesn't matter,
+        // since the value is always a non-null Optional after conversion
+
+        if (null != methodAnnotations) {
+            for (Annotation annotation : methodAnnotations) {
+                if (annotation instanceof ApiParam) {
+                    return Optional.of(((ApiParam) annotation).required());
+                }
+            }
+        }
+        return Optional.absent();
+    }
 }

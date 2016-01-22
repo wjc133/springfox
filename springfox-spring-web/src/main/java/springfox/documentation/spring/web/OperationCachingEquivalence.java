@@ -24,32 +24,32 @@ import springfox.documentation.spi.service.contexts.RequestMappingContext;
 
 
 public class OperationCachingEquivalence extends Equivalence<RequestMappingContext> {
-  @Override
-  protected boolean doEquivalent(RequestMappingContext first, RequestMappingContext second) {
-    if (bothAreNull(first, second)) {
-      return true;
+    @Override
+    protected boolean doEquivalent(RequestMappingContext first, RequestMappingContext second) {
+        if (bothAreNull(first, second)) {
+            return true;
+        }
+        if (eitherOfThemIsNull(first, second)) {
+            return false;
+        }
+        return Objects.equal(first.getHandlerMethod().getMethod(), second.getHandlerMethod().getMethod())
+                && Objects.equal(first.getRequestMappingPattern(), second.getRequestMappingPattern())
+                && Objects.equal(first.getDocumentationContext().getGenericsNamingStrategy(),
+                second.getDocumentationContext().getGenericsNamingStrategy());
     }
-    if (eitherOfThemIsNull(first, second)) {
-      return false;
+
+    private boolean eitherOfThemIsNull(RequestMappingContext first, RequestMappingContext second) {
+        return first.getHandlerMethod() == null || second.getHandlerMethod() == null;
     }
-    return Objects.equal(first.getHandlerMethod().getMethod(), second.getHandlerMethod().getMethod())
-        && Objects.equal(first.getRequestMappingPattern(), second.getRequestMappingPattern())
-        && Objects.equal(first.getDocumentationContext().getGenericsNamingStrategy(),
-        second.getDocumentationContext().getGenericsNamingStrategy());
-  }
 
-  private boolean eitherOfThemIsNull(RequestMappingContext first, RequestMappingContext second) {
-    return first.getHandlerMethod() == null || second.getHandlerMethod() == null;
-  }
+    private boolean bothAreNull(RequestMappingContext first, RequestMappingContext second) {
+        return first.getHandlerMethod() == null && second.getHandlerMethod() == null;
+    }
 
-  private boolean bothAreNull(RequestMappingContext first, RequestMappingContext second) {
-    return first.getHandlerMethod() == null && second.getHandlerMethod() == null;
-  }
-
-  @Override
-  protected int doHash(RequestMappingContext requestMappingContext) {
-    return Objects.hashCode(requestMappingContext.getHandlerMethod().getMethod(),
-        requestMappingContext.getRequestMappingPattern(),
-        requestMappingContext.getDocumentationContext().getGenericsNamingStrategy());
-  }
+    @Override
+    protected int doHash(RequestMappingContext requestMappingContext) {
+        return Objects.hashCode(requestMappingContext.getHandlerMethod().getMethod(),
+                requestMappingContext.getRequestMappingPattern(),
+                requestMappingContext.getDocumentationContext().getGenericsNamingStrategy());
+    }
 }

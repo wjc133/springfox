@@ -36,111 +36,111 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.Collections;
 import java.util.List;
 
-import static com.google.common.collect.Lists.*;
-import static org.springframework.util.StringUtils.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static org.springframework.util.StringUtils.hasText;
 
 public final class ApiModelProperties {
 
-  private ApiModelProperties() {
-    throw new UnsupportedOperationException();
-  }
-
-  public static Function<ApiModelProperty, AllowableValues> toAllowableValues() {
-    return new Function<ApiModelProperty, AllowableValues>() {
-      @Override
-      public AllowableValues apply(ApiModelProperty annotation) {
-        return allowableValueFromString(annotation.allowableValues());
-      }
-    };
-  }
-
-  public static AllowableValues allowableValueFromString(String allowableValueString) {
-    AllowableValues allowableValues = new AllowableListValues(Lists.<String>newArrayList(), "LIST");
-    allowableValueString = allowableValueString.trim().replaceAll(" ", "");
-    if (allowableValueString.startsWith("range[")) {
-      allowableValueString = allowableValueString.replaceAll("range\\[", "").replaceAll("]", "");
-      Iterable<String> split = Splitter.on(',').trimResults().omitEmptyStrings().split(allowableValueString);
-      List<String> ranges = newArrayList(split);
-      allowableValues = new AllowableRangeValues(ranges.get(0), ranges.get(1));
-    } else if (allowableValueString.contains(",")) {
-      Iterable<String> split = Splitter.on(',').trimResults().omitEmptyStrings().split(allowableValueString);
-      allowableValues = new AllowableListValues(newArrayList(split), "LIST");
-    } else if (hasText(allowableValueString)) {
-      List<String> singleVal = Collections.singletonList(allowableValueString.trim());
-      allowableValues = new AllowableListValues(singleVal, "LIST");
+    private ApiModelProperties() {
+        throw new UnsupportedOperationException();
     }
-    return allowableValues;
-  }
 
-  public static Function<ApiModelProperty, Boolean> toIsRequired() {
-    return new Function<ApiModelProperty, Boolean>() {
-      @Override
-      public Boolean apply(ApiModelProperty annotation) {
-        return annotation.required();
-      }
-    };
-  }
+    public static Function<ApiModelProperty, AllowableValues> toAllowableValues() {
+        return new Function<ApiModelProperty, AllowableValues>() {
+            @Override
+            public AllowableValues apply(ApiModelProperty annotation) {
+                return allowableValueFromString(annotation.allowableValues());
+            }
+        };
+    }
 
-  public static Function<ApiModelProperty, Boolean> toIsReadOnly() {
-    return new Function<ApiModelProperty, Boolean>() {
-      @Override
-      public Boolean apply(ApiModelProperty annotation) {
-        return annotation.readOnly();
-      }
-    };
-  }
-
-  public static Function<ApiModelProperty, String> toDescription() {
-    return new Function<ApiModelProperty, String>() {
-      @Override
-      public String apply(ApiModelProperty annotation) {
-        String description = "";
-        if (!Strings.isNullOrEmpty(annotation.value())) {
-          description = annotation.value();
-        } else if (!Strings.isNullOrEmpty(annotation.notes())) {
-          description = annotation.notes();
+    public static AllowableValues allowableValueFromString(String allowableValueString) {
+        AllowableValues allowableValues = new AllowableListValues(Lists.<String>newArrayList(), "LIST");
+        allowableValueString = allowableValueString.trim().replaceAll(" ", "");
+        if (allowableValueString.startsWith("range[")) {
+            allowableValueString = allowableValueString.replaceAll("range\\[", "").replaceAll("]", "");
+            Iterable<String> split = Splitter.on(',').trimResults().omitEmptyStrings().split(allowableValueString);
+            List<String> ranges = newArrayList(split);
+            allowableValues = new AllowableRangeValues(ranges.get(0), ranges.get(1));
+        } else if (allowableValueString.contains(",")) {
+            Iterable<String> split = Splitter.on(',').trimResults().omitEmptyStrings().split(allowableValueString);
+            allowableValues = new AllowableListValues(newArrayList(split), "LIST");
+        } else if (hasText(allowableValueString)) {
+            List<String> singleVal = Collections.singletonList(allowableValueString.trim());
+            allowableValues = new AllowableListValues(singleVal, "LIST");
         }
-        return description;
-      }
-    };
-  }
+        return allowableValues;
+    }
 
-  public static Function<ApiModelProperty, ResolvedType> toType(final TypeResolver resolver) {
-    return new Function<ApiModelProperty, ResolvedType>() {
-      @Override
-      public ResolvedType apply(ApiModelProperty annotation) {
-        try {
-          return resolver.resolve(Class.forName(annotation.dataType()));
-        } catch (ClassNotFoundException e) {
-          return resolver.resolve(Object.class);
-        }
-      }
-    };
-  }
+    public static Function<ApiModelProperty, Boolean> toIsRequired() {
+        return new Function<ApiModelProperty, Boolean>() {
+            @Override
+            public Boolean apply(ApiModelProperty annotation) {
+                return annotation.required();
+            }
+        };
+    }
 
-  public static Optional<ApiModelProperty> findApiModePropertyAnnotation(AnnotatedElement annotated) {
-    return Optional.fromNullable(AnnotationUtils.getAnnotation(annotated, ApiModelProperty.class));
-  }
+    public static Function<ApiModelProperty, Boolean> toIsReadOnly() {
+        return new Function<ApiModelProperty, Boolean>() {
+            @Override
+            public Boolean apply(ApiModelProperty annotation) {
+                return annotation.readOnly();
+            }
+        };
+    }
 
-  public static Function<ApiModelProperty, Boolean> toHidden() {
-    return new Function<ApiModelProperty, Boolean>() {
-      @Override
-      public Boolean apply(ApiModelProperty annotation) {
-        return annotation.hidden();
-      }
-    };
-  }
+    public static Function<ApiModelProperty, String> toDescription() {
+        return new Function<ApiModelProperty, String>() {
+            @Override
+            public String apply(ApiModelProperty annotation) {
+                String description = "";
+                if (!Strings.isNullOrEmpty(annotation.value())) {
+                    description = annotation.value();
+                } else if (!Strings.isNullOrEmpty(annotation.notes())) {
+                    description = annotation.notes();
+                }
+                return description;
+            }
+        };
+    }
 
-  public static Function<ApiModelProperty, String> toExample() {
-    return new Function<ApiModelProperty, String>() {
-      @Override
-      public String apply(ApiModelProperty annotation) {
-        String example = "";
-        if (!Strings.isNullOrEmpty(annotation.example())) {
-          example = annotation.example();
-        }
-        return example;
-      }
-    };
-  }
+    public static Function<ApiModelProperty, ResolvedType> toType(final TypeResolver resolver) {
+        return new Function<ApiModelProperty, ResolvedType>() {
+            @Override
+            public ResolvedType apply(ApiModelProperty annotation) {
+                try {
+                    return resolver.resolve(Class.forName(annotation.dataType()));
+                } catch (ClassNotFoundException e) {
+                    return resolver.resolve(Object.class);
+                }
+            }
+        };
+    }
+
+    public static Optional<ApiModelProperty> findApiModePropertyAnnotation(AnnotatedElement annotated) {
+        return Optional.fromNullable(AnnotationUtils.getAnnotation(annotated, ApiModelProperty.class));
+    }
+
+    public static Function<ApiModelProperty, Boolean> toHidden() {
+        return new Function<ApiModelProperty, Boolean>() {
+            @Override
+            public Boolean apply(ApiModelProperty annotation) {
+                return annotation.hidden();
+            }
+        };
+    }
+
+    public static Function<ApiModelProperty, String> toExample() {
+        return new Function<ApiModelProperty, String>() {
+            @Override
+            public String apply(ApiModelProperty annotation) {
+                String example = "";
+                if (!Strings.isNullOrEmpty(annotation.example())) {
+                    example = annotation.example();
+                }
+                return example;
+            }
+        };
+    }
 }

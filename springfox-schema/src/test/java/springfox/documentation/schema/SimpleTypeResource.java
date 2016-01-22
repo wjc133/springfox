@@ -22,7 +22,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 
 public class SimpleTypeResource extends Resource<SimpleType> {
-  public SimpleTypeResource(SimpleType content, Link... links) {
-    super(content, links);
-  }
+    public SimpleTypeResource(SimpleType content, Link... links) {
+        super(content, links);
+    }
 }

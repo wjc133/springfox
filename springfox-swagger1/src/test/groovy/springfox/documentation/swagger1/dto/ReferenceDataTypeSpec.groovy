@@ -21,10 +21,10 @@ package springfox.documentation.swagger1.dto
 
 class ReferenceDataTypeSpec extends InternalJsonSerializationSpec {
 
-  def "should serialize"() {
-    expect:
-      writePretty(new ReferenceDataType('Pet')) == '''{
+    def "should serialize"() {
+        expect:
+        writePretty(new ReferenceDataType('Pet')) == '''{
   "type" : "Pet"
 }'''
-  }
+    }
 }

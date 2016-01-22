@@ -40,79 +40,79 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Set;
 
-import static com.google.common.collect.FluentIterable.*;
-import static com.google.common.collect.Lists.*;
+import static com.google.common.collect.FluentIterable.from;
+import static com.google.common.collect.Lists.newArrayList;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class OperationParameterReader implements OperationBuilderPlugin {
-  private final TypeResolver typeResolver;
-  private final ModelAttributeParameterExpander expander;
+    private final TypeResolver typeResolver;
+    private final ModelAttributeParameterExpander expander;
 
-  @Autowired
-  private DocumentationPluginsManager pluginsManager;
+    @Autowired
+    private DocumentationPluginsManager pluginsManager;
 
-  @Autowired
-  public OperationParameterReader(TypeResolver typeResolver,
-                                  ModelAttributeParameterExpander expander) {
-    this.typeResolver = typeResolver;
-    this.expander = expander;
-  }
-
-  @Override
-  public void apply(OperationContext context) {
-    context.operationBuilder().parameters(context.getGlobalOperationParameters());
-    context.operationBuilder().parameters(readParameters(context));
-  }
-
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return true;
-  }
-
-  protected List<Parameter> readParameters(final OperationContext context) {
-    HandlerMethod handlerMethod = context.getHandlerMethod();
-    HandlerMethodResolver handlerMethodResolver = new HandlerMethodResolver(typeResolver);
-
-    List<ResolvedMethodParameter> methodParameters = handlerMethodResolver.methodParameters(handlerMethod);
-    List<Parameter> parameters = newArrayList();
-
-    for (ResolvedMethodParameter methodParameter : methodParameters) {
-
-      if (!shouldIgnore(methodParameter, context.getDocumentationContext().getIgnorableParameterTypes())) {
-
-        ParameterContext parameterContext = new ParameterContext(methodParameter,
-            new ParameterBuilder(),
-            context.getDocumentationContext(),
-            context.getDocumentationContext().getGenericsNamingStrategy(),
-            context);
-
-        if (shouldExpand(methodParameter)) {
-          expander.expand("", methodParameter.getResolvedParameterType().getErasedType(), parameters,
-                  context.getDocumentationContext());
-        } else {
-          parameters.add(pluginsManager.parameter(parameterContext));
-        }
-      }
+    @Autowired
+    public OperationParameterReader(TypeResolver typeResolver,
+                                    ModelAttributeParameterExpander expander) {
+        this.typeResolver = typeResolver;
+        this.expander = expander;
     }
-    return parameters;
-  }
 
-  private boolean shouldIgnore(final ResolvedMethodParameter parameter, final Set<Class> ignorableParamTypes) {
-    if (ignorableParamTypes.contains(parameter.getMethodParameter().getParameterType())) {
-      return true;
+    @Override
+    public void apply(OperationContext context) {
+        context.operationBuilder().parameters(context.getGlobalOperationParameters());
+        context.operationBuilder().parameters(readParameters(context));
     }
-    for (Annotation annotation : parameter.getMethodParameter().getParameterAnnotations()) {
-      if (ignorableParamTypes.contains(annotation.annotationType())) {
+
+    @Override
+    public boolean supports(DocumentationType delimiter) {
         return true;
-      }
     }
-    return false;
-  }
 
-  private boolean shouldExpand(final ResolvedMethodParameter parameter) {
-    return !from(newArrayList(parameter.getMethodParameter().getParameterAnnotations()))
-            .filter(ModelAttribute.class).isEmpty();
+    protected List<Parameter> readParameters(final OperationContext context) {
+        HandlerMethod handlerMethod = context.getHandlerMethod();
+        HandlerMethodResolver handlerMethodResolver = new HandlerMethodResolver(typeResolver);
 
-  }
+        List<ResolvedMethodParameter> methodParameters = handlerMethodResolver.methodParameters(handlerMethod);
+        List<Parameter> parameters = newArrayList();
+
+        for (ResolvedMethodParameter methodParameter : methodParameters) {
+
+            if (!shouldIgnore(methodParameter, context.getDocumentationContext().getIgnorableParameterTypes())) {
+
+                ParameterContext parameterContext = new ParameterContext(methodParameter,
+                        new ParameterBuilder(),
+                        context.getDocumentationContext(),
+                        context.getDocumentationContext().getGenericsNamingStrategy(),
+                        context);
+
+                if (shouldExpand(methodParameter)) {
+                    expander.expand("", methodParameter.getResolvedParameterType().getErasedType(), parameters,
+                            context.getDocumentationContext());
+                } else {
+                    parameters.add(pluginsManager.parameter(parameterContext));
+                }
+            }
+        }
+        return parameters;
+    }
+
+    private boolean shouldIgnore(final ResolvedMethodParameter parameter, final Set<Class> ignorableParamTypes) {
+        if (ignorableParamTypes.contains(parameter.getMethodParameter().getParameterType())) {
+            return true;
+        }
+        for (Annotation annotation : parameter.getMethodParameter().getParameterAnnotations()) {
+            if (ignorableParamTypes.contains(annotation.annotationType())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean shouldExpand(final ResolvedMethodParameter parameter) {
+        return !from(newArrayList(parameter.getMethodParameter().getParameterAnnotations()))
+                .filter(ModelAttribute.class).isEmpty();
+
+    }
 }

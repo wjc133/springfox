@@ -21,19 +21,19 @@ package springfox.documentation.schema;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TypeWithConstructorProperties {
-  private String foo;
-  private Integer bar;
+    private String foo;
+    private Integer bar;
 
-  public TypeWithConstructorProperties(@JsonProperty("foo") String foo, @JsonProperty("bar") Integer bar) {
-    this.foo = foo;
-    this.bar = bar;
-  }
+    public TypeWithConstructorProperties(@JsonProperty("foo") String foo, @JsonProperty("bar") Integer bar) {
+        this.foo = foo;
+        this.bar = bar;
+    }
 
-  public String getFoo() {
-    return foo;
-  }
+    public String getFoo() {
+        return foo;
+    }
 
-  public Integer getBar() {
-    return bar;
-  }
+    public Integer getBar() {
+        return bar;
+    }
 }

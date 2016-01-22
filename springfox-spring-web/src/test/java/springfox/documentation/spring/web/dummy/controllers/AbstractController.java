@@ -27,14 +27,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 public abstract class AbstractController<T, ID> {
 
-  @RequestMapping(value = "/create-t", method = RequestMethod.PUT)
-  public void create(T toCreate) {
-    throw new UnsupportedOperationException();
-  }
+    @RequestMapping(value = "/create-t", method = RequestMethod.PUT)
+    public void create(T toCreate) {
+        throw new UnsupportedOperationException();
+    }
 
-  @RequestMapping(value = "/get-t/{id}", method = RequestMethod.GET)
-  @ApiResponses(value = {@ApiResponse(code = 405, message = "Invalid input")})
-  public T get(@PathVariable("id")  ID id) {
-    throw new UnsupportedOperationException();
-  }
+    @RequestMapping(value = "/get-t/{id}", method = RequestMethod.GET)
+    @ApiResponses(value = {@ApiResponse(code = 405, message = "Invalid input")})
+    public T get(@PathVariable("id") ID id) {
+        throw new UnsupportedOperationException();
+    }
 }

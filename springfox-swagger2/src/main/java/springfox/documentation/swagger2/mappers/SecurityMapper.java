@@ -23,8 +23,8 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import io.swagger.models.auth.SecuritySchemeDefinition;
 import org.mapstruct.Mapper;
-import springfox.documentation.service.SecurityScheme;
 import springfox.documentation.service.ResourceListing;
+import springfox.documentation.service.SecurityScheme;
 
 import java.util.Map;
 
@@ -32,35 +32,35 @@ import static com.google.common.collect.Maps.*;
 
 @Mapper
 public class SecurityMapper {
-  private Map<String, SecuritySchemeFactory> factories = ImmutableMap.<String, SecuritySchemeFactory>builder()
-          .put("oauth2", new OAuth2AuthFactory())
-          .put("apiKey", new ApiKeyAuthFactory())
-          .put("basicAuth", new BasicAuthFactory())
-          .build();
+    private Map<String, SecuritySchemeFactory> factories = ImmutableMap.<String, SecuritySchemeFactory>builder()
+            .put("oauth2", new OAuth2AuthFactory())
+            .put("apiKey", new ApiKeyAuthFactory())
+            .put("basicAuth", new BasicAuthFactory())
+            .build();
 
-  public Map<String, SecuritySchemeDefinition> toSecuritySchemeDefinitions(ResourceListing from) {
-    if (from == null) {
-      return newHashMap();
+    public Map<String, SecuritySchemeDefinition> toSecuritySchemeDefinitions(ResourceListing from) {
+        if (from == null) {
+            return newHashMap();
+        }
+        return transformValues(uniqueIndex(from.getSecuritySchemes(), schemeName()), toSecuritySchemeDefinition());
     }
-    return transformValues(uniqueIndex(from.getSecuritySchemes(), schemeName()), toSecuritySchemeDefinition());
-  }
 
-  private Function<SecurityScheme, String> schemeName() {
-    return new Function<SecurityScheme, String>() {
-      @Override
-      public String apply(SecurityScheme input) {
-        return input.getName();
-      }
-    };
-  }
+    private Function<SecurityScheme, String> schemeName() {
+        return new Function<SecurityScheme, String>() {
+            @Override
+            public String apply(SecurityScheme input) {
+                return input.getName();
+            }
+        };
+    }
 
-  private Function<SecurityScheme, SecuritySchemeDefinition> toSecuritySchemeDefinition() {
-    return new Function<SecurityScheme, SecuritySchemeDefinition>() {
-      @Override
-      public SecuritySchemeDefinition apply(SecurityScheme input) {
-        return factories.get(input.getType()).create(input);
-      }
-    };
-  }
+    private Function<SecurityScheme, SecuritySchemeDefinition> toSecuritySchemeDefinition() {
+        return new Function<SecurityScheme, SecuritySchemeDefinition>() {
+            @Override
+            public SecuritySchemeDefinition apply(SecurityScheme input) {
+                return factories.get(input.getType()).create(input);
+            }
+        };
+    }
 
 }

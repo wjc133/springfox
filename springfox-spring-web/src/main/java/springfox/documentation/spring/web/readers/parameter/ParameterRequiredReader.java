@@ -23,12 +23,7 @@ import org.springframework.core.MethodParameter;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ValueConstants;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.ParameterBuilderPlugin;
 import springfox.documentation.spi.service.contexts.ParameterContext;
@@ -37,54 +32,54 @@ import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.google.common.base.Strings.*;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ParameterRequiredReader implements ParameterBuilderPlugin {
-  @Override
-  public void apply(ParameterContext context) {
-    MethodParameter methodParameter = context.methodParameter();
-    context.parameterBuilder().required(getAnnotatedRequired(methodParameter));
-  }
-
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return true;
-  }
-
-  private Boolean getAnnotatedRequired(MethodParameter methodParameter) {
-    Set<Boolean> requiredSet = new HashSet<Boolean>();
-    Annotation[] methodAnnotations = methodParameter.getParameterAnnotations();
-
-    // when the type is Optional, the required property of @RequestParam/@RequestHeader doesn't matter,
-    // since the value is always a non-null Optional after conversion
-    boolean optional = isOptional(methodParameter);
-
-    for (Annotation annotation : methodAnnotations) {
-      if (annotation instanceof RequestParam) {
-        requiredSet.add(!optional && isRequired((RequestParam) annotation));
-      } else if (annotation instanceof RequestHeader) {
-        requiredSet.add(!optional && ((RequestHeader) annotation).required());
-      } else if (annotation instanceof PathVariable) {
-        requiredSet.add(true);
-      } else if (annotation instanceof RequestBody) {
-        requiredSet.add(!optional && ((RequestBody) annotation).required());
-      } else if (annotation instanceof RequestPart) {
-        requiredSet.add(!optional && ((RequestPart) annotation).required());
-      }
+    @Override
+    public void apply(ParameterContext context) {
+        MethodParameter methodParameter = context.methodParameter();
+        context.parameterBuilder().required(getAnnotatedRequired(methodParameter));
     }
-    return requiredSet.contains(true);
-  }
 
-  private boolean isOptional(MethodParameter methodParameter) {
-    return methodParameter.getParameterType().getName().equals("java.util.Optional");
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return true;
+    }
 
-  private boolean isRequired(RequestParam annotation) {
-    String defaultValue = annotation.defaultValue();
-    boolean missingDefaultValue = ValueConstants.DEFAULT_NONE.equals(defaultValue) ||
-        isNullOrEmpty(defaultValue);
-    return annotation.required() && missingDefaultValue;
-  }
+    private Boolean getAnnotatedRequired(MethodParameter methodParameter) {
+        Set<Boolean> requiredSet = new HashSet<Boolean>();
+        Annotation[] methodAnnotations = methodParameter.getParameterAnnotations();
+
+        // when the type is Optional, the required property of @RequestParam/@RequestHeader doesn't matter,
+        // since the value is always a non-null Optional after conversion
+        boolean optional = isOptional(methodParameter);
+
+        for (Annotation annotation : methodAnnotations) {
+            if (annotation instanceof RequestParam) {
+                requiredSet.add(!optional && isRequired((RequestParam) annotation));
+            } else if (annotation instanceof RequestHeader) {
+                requiredSet.add(!optional && ((RequestHeader) annotation).required());
+            } else if (annotation instanceof PathVariable) {
+                requiredSet.add(true);
+            } else if (annotation instanceof RequestBody) {
+                requiredSet.add(!optional && ((RequestBody) annotation).required());
+            } else if (annotation instanceof RequestPart) {
+                requiredSet.add(!optional && ((RequestPart) annotation).required());
+            }
+        }
+        return requiredSet.contains(true);
+    }
+
+    private boolean isOptional(MethodParameter methodParameter) {
+        return methodParameter.getParameterType().getName().equals("java.util.Optional");
+    }
+
+    private boolean isRequired(RequestParam annotation) {
+        String defaultValue = annotation.defaultValue();
+        boolean missingDefaultValue = ValueConstants.DEFAULT_NONE.equals(defaultValue) ||
+                isNullOrEmpty(defaultValue);
+        return annotation.required() && missingDefaultValue;
+    }
 }

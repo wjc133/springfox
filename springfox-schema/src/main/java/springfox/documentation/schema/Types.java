@@ -25,56 +25,52 @@ import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Currency;
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
-import static com.google.common.collect.Sets.*;
+import static com.google.common.collect.Sets.newHashSet;
 
 public class Types {
-  private Types() {
-    throw new UnsupportedOperationException();
-  }
+    private Types() {
+        throw new UnsupportedOperationException();
+    }
 
-  private static final Set<String> baseTypes
-          = newHashSet("int", "date", "string", "double", "float", "boolean", "byte", "object", "long", "date-time");
-  private static final Map<Type, String> typeNameLookup = ImmutableMap.<Type, String>builder()
-          .put(Long.TYPE, "long")
-          .put(Short.TYPE, "int")
-          .put(Integer.TYPE, "int")
-          .put(Double.TYPE, "double")
-          .put(Float.TYPE, "float")
-          .put(Byte.TYPE, "byte")
-          .put(Boolean.TYPE, "boolean")
-          .put(Character.TYPE, "string")
+    private static final Set<String> baseTypes
+            = newHashSet("int", "date", "string", "double", "float", "boolean", "byte", "object", "long", "date-time");
+    private static final Map<Type, String> typeNameLookup = ImmutableMap.<Type, String>builder()
+            .put(Long.TYPE, "long")
+            .put(Short.TYPE, "int")
+            .put(Integer.TYPE, "int")
+            .put(Double.TYPE, "double")
+            .put(Float.TYPE, "float")
+            .put(Byte.TYPE, "byte")
+            .put(Boolean.TYPE, "boolean")
+            .put(Character.TYPE, "string")
 
-          .put(Date.class, "date-time")
-          .put(String.class, "string")
-          .put(Object.class, "object")
-          .put(Long.class, "long")
-          .put(Integer.class, "int")
-          .put(Short.class, "int")
-          .put(Double.class, "double")
-          .put(Float.class, "float")
-          .put(Boolean.class, "boolean")
-          .put(Byte.class, "byte")
-          .put(BigDecimal.class, "double")
-          .put(BigInteger.class, "long")
-          .put(Currency.class, "string")
-          .put(UUID.class, "string")
-          .build();
+            .put(Date.class, "date-time")
+            .put(String.class, "string")
+            .put(Object.class, "object")
+            .put(Long.class, "long")
+            .put(Integer.class, "int")
+            .put(Short.class, "int")
+            .put(Double.class, "double")
+            .put(Float.class, "float")
+            .put(Boolean.class, "boolean")
+            .put(Byte.class, "byte")
+            .put(BigDecimal.class, "double")
+            .put(BigInteger.class, "long")
+            .put(Currency.class, "string")
+            .put(UUID.class, "string")
+            .build();
 
-  public static String typeNameFor(Type type) {
-    return typeNameLookup.get(type);
-  }
+    public static String typeNameFor(Type type) {
+        return typeNameLookup.get(type);
+    }
 
-  public static boolean isBaseType(String typeName) {
-    return baseTypes.contains(typeName);
-  }
+    public static boolean isBaseType(String typeName) {
+        return baseTypes.contains(typeName);
+    }
 
-  public static boolean isVoid(ResolvedType returnType) {
-    return Void.class.equals(returnType.getErasedType()) || Void.TYPE.equals(returnType.getErasedType());
-  }
+    public static boolean isVoid(ResolvedType returnType) {
+        return Void.class.equals(returnType.getErasedType()) || Void.TYPE.equals(returnType.getErasedType());
+    }
 }

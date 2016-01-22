@@ -28,26 +28,26 @@ import java.util.List;
 import static com.google.common.collect.Lists.newArrayList;
 
 public class SecurityContextBuilder {
-  SecurityContextBuilder() {
-  }
-
-  private List<SecurityReference> securityReferences = newArrayList();
-  private Predicate<String> pathSelector = Predicates.alwaysTrue();
-
-  public SecurityContextBuilder securityReferences(List<SecurityReference> securityReferences) {
-    this.securityReferences = securityReferences;
-    return this;
-  }
-
-  public SecurityContext build() {
-    if (securityReferences == null) {
-      securityReferences = newArrayList();
+    SecurityContextBuilder() {
     }
-    return new SecurityContext(securityReferences, pathSelector);
-  }
 
-  public SecurityContextBuilder forPaths(Predicate<String> selector) {
-    this.pathSelector = selector;
-    return this;
-  }
+    private List<SecurityReference> securityReferences = newArrayList();
+    private Predicate<String> pathSelector = Predicates.alwaysTrue();
+
+    public SecurityContextBuilder securityReferences(List<SecurityReference> securityReferences) {
+        this.securityReferences = securityReferences;
+        return this;
+    }
+
+    public SecurityContext build() {
+        if (securityReferences == null) {
+            securityReferences = newArrayList();
+        }
+        return new SecurityContext(securityReferences, pathSelector);
+    }
+
+    public SecurityContextBuilder forPaths(Predicate<String> selector) {
+        this.pathSelector = selector;
+        return this;
+    }
 }

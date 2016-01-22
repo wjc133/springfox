@@ -22,40 +22,40 @@ package springfox.documentation.schema;
 import java.util.Map;
 
 public class MapsContainer {
-  private Map<ExampleEnum, SimpleType> enumToSimpleType;
-  private Map<String, SimpleType> stringToSimpleType;
-  private Map<Category, SimpleType> complexToSimpleType;
-  private Map<String, Map<String, SimpleType>> mapOfmapOfStringToSimpleType;
+    private Map<ExampleEnum, SimpleType> enumToSimpleType;
+    private Map<String, SimpleType> stringToSimpleType;
+    private Map<Category, SimpleType> complexToSimpleType;
+    private Map<String, Map<String, SimpleType>> mapOfmapOfStringToSimpleType;
 
-  public Map<ExampleEnum, SimpleType> getEnumToSimpleType() {
-    return enumToSimpleType;
-  }
+    public Map<ExampleEnum, SimpleType> getEnumToSimpleType() {
+        return enumToSimpleType;
+    }
 
-  public void setEnumToSimpleType(Map<ExampleEnum, SimpleType> enumToSimpleType) {
-    this.enumToSimpleType = enumToSimpleType;
-  }
+    public void setEnumToSimpleType(Map<ExampleEnum, SimpleType> enumToSimpleType) {
+        this.enumToSimpleType = enumToSimpleType;
+    }
 
-  public Map<String, SimpleType> getStringToSimpleType() {
-    return stringToSimpleType;
-  }
+    public Map<String, SimpleType> getStringToSimpleType() {
+        return stringToSimpleType;
+    }
 
-  public void setStringToSimpleType(Map<String, SimpleType> stringToSimpleType) {
-    this.stringToSimpleType = stringToSimpleType;
-  }
+    public void setStringToSimpleType(Map<String, SimpleType> stringToSimpleType) {
+        this.stringToSimpleType = stringToSimpleType;
+    }
 
-  public Map<Category, SimpleType> getComplexToSimpleType() {
-    return complexToSimpleType;
-  }
+    public Map<Category, SimpleType> getComplexToSimpleType() {
+        return complexToSimpleType;
+    }
 
-  public void setComplexToSimpleType(Map<Category, SimpleType> complexToSimpleType) {
-    this.complexToSimpleType = complexToSimpleType;
-  }
+    public void setComplexToSimpleType(Map<Category, SimpleType> complexToSimpleType) {
+        this.complexToSimpleType = complexToSimpleType;
+    }
 
-  public Map<String, Map<String, SimpleType>> getMapOfmapOfStringToSimpleType() {
-    return mapOfmapOfStringToSimpleType;
-  }
+    public Map<String, Map<String, SimpleType>> getMapOfmapOfStringToSimpleType() {
+        return mapOfmapOfStringToSimpleType;
+    }
 
-  public void setMapOfmapOfStringToSimpleType(Map<String, Map<String, SimpleType>> mapOfmapOfStringToSimpleType) {
-    this.mapOfmapOfStringToSimpleType = mapOfmapOfStringToSimpleType;
-  }
+    public void setMapOfmapOfStringToSimpleType(Map<String, Map<String, SimpleType>> mapOfmapOfStringToSimpleType) {
+        this.mapOfmapOfStringToSimpleType = mapOfmapOfStringToSimpleType;
+    }
 }

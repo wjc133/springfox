@@ -21,6 +21,7 @@
  */
 
 package springfox.test.contract.swaggertests
+
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonSlurper
@@ -54,51 +55,51 @@ import springfox.test.contract.swagger.listeners.ObjectMapperEventListener
         classes = Config)
 class ObjectMapperSanityCheck extends Specification {
 
-  @Value('${local.server.port}')
-  int port;
+    @Value('${local.server.port}')
+    int port;
 
-  def "should produce valid swagger json regardless of object mapper configuration"() {
+    def "should produce valid swagger json regardless of object mapper configuration"() {
 
-    given: "A customized object mapper always serializing empty attributes"
-      def http = new TestRestTemplate()
-      RequestEntity<Void> request = RequestEntity.get(new URI("http://localhost:$port/v2/api-docs?group=default"))
-        .accept(MediaType.APPLICATION_JSON)
-        .build()
+        given: "A customized object mapper always serializing empty attributes"
+        def http = new TestRestTemplate()
+        RequestEntity<Void> request = RequestEntity.get(new URI("http://localhost:$port/v2/api-docs?group=default"))
+                .accept(MediaType.APPLICATION_JSON)
+                .build()
 
-    when: "swagger json is produced"
-      def response = http.exchange(request, String)
+        when: "swagger json is produced"
+        def response = http.exchange(request, String)
 
-    then: "There should not be a null schemes element"
-      def slurper = new JsonSlurper()
-      def swagger = slurper.parseText(response.body)
-      !swagger.containsKey('schemes')
-  }
-
-  @Configuration
-  @EnableSwagger2
-  @ComponentScan(basePackageClasses = [SwaggerApplication.class])
-  static class Config {
-    @Bean
-    public Docket testCases() {
-      return new Docket(DocumentationType.SWAGGER_2).select().build()
+        then: "There should not be a null schemes element"
+        def slurper = new JsonSlurper()
+        def swagger = slurper.parseText(response.body)
+        !swagger.containsKey('schemes')
     }
 
-    @Bean
-    @Primary
-    public ObjectMapper objectMapperWithIncludeAlways(){
-      /* Replaces spring boots object mapper
-       * //http://docs.spring.io/spring-boot/docs/current/reference/html/howto-spring-mvc.html
-       */
-      ObjectMapper objectMapper = new ObjectMapper();
-      objectMapper.configure(com.fasterxml.jackson.databind.SerializationFeature.WRITE_EMPTY_JSON_ARRAYS, true )
-      objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS)
-      return objectMapper
-    }
+    @Configuration
+    @EnableSwagger2
+    @ComponentScan(basePackageClasses = [SwaggerApplication.class])
+    static class Config {
+        @Bean
+        public Docket testCases() {
+            return new Docket(DocumentationType.SWAGGER_2).select().build()
+        }
 
-    @Bean
-    public ObjectMapperEventListener objectMapperEventListener(){
-      //Register an ObjectMapperConfigured event listener
-      return new ObjectMapperEventListener()
+        @Bean
+        @Primary
+        public ObjectMapper objectMapperWithIncludeAlways() {
+            /* Replaces spring boots object mapper
+             * //http://docs.spring.io/spring-boot/docs/current/reference/html/howto-spring-mvc.html
+             */
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(com.fasterxml.jackson.databind.SerializationFeature.WRITE_EMPTY_JSON_ARRAYS, true)
+            objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS)
+            return objectMapper
+        }
+
+        @Bean
+        public ObjectMapperEventListener objectMapperEventListener() {
+            //Register an ObjectMapperConfigured event listener
+            return new ObjectMapperEventListener()
+        }
     }
-  }
 }

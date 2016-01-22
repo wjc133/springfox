@@ -22,45 +22,45 @@ package springfox.documentation.service;
 import springfox.documentation.schema.ModelReference;
 
 public class ResponseMessage {
-  private final int code;
-  private final String message;
-  private final ModelReference responseModel;
+    private final int code;
+    private final String message;
+    private final ModelReference responseModel;
 
-  public ResponseMessage(int code, String message, ModelReference responseModel) {
-    this.code = code;
-    this.message = message;
-    this.responseModel = responseModel;
-  }
-
-  public int getCode() {
-    return code;
-  }
-
-  public String getMessage() {
-    return message;
-  }
-
-  public ModelReference getResponseModel() {
-    return responseModel;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+    public ResponseMessage(int code, String message, ModelReference responseModel) {
+        this.code = code;
+        this.message = message;
+        this.responseModel = responseModel;
     }
 
-    ResponseMessage that = (ResponseMessage) o;
+    public int getCode() {
+        return code;
+    }
 
-    return code == that.code;
+    public String getMessage() {
+        return message;
+    }
 
-  }
+    public ModelReference getResponseModel() {
+        return responseModel;
+    }
 
-  @Override
-  public int hashCode() {
-    return code;
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ResponseMessage that = (ResponseMessage) o;
+
+        return code == that.code;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return code;
+    }
 }

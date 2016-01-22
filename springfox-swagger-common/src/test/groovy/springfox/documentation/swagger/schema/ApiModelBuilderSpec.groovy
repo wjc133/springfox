@@ -10,26 +10,27 @@ import springfox.documentation.spi.schema.AlternateTypeProvider
 import springfox.documentation.spi.schema.contexts.ModelContext
 
 class ApiModelBuilderSpec extends Specification {
-  @Shared def resolver = new TypeResolver()
+    @Shared
+    def resolver = new TypeResolver()
 
-  def "Api model builder parses ApiModel annotation as expected" () {
-    given:
-      ApiModelBuilder sut = new ApiModelBuilder(resolver)
-      ModelContext context = ModelContext.inputParam(type, DocumentationType.SWAGGER_12,
-          new AlternateTypeProvider([]), new DefaultGenericTypeNamingStrategy())
-    when:
-      sut.apply(context)
-    then:
-      context.builder.build().description == expected
-    where:
-      type                | expected
-      String              | null
-      AnnotatedTest       | "description"
+    def "Api model builder parses ApiModel annotation as expected"() {
+        given:
+        ApiModelBuilder sut = new ApiModelBuilder(resolver)
+        ModelContext context = ModelContext.inputParam(type, DocumentationType.SWAGGER_12,
+                new AlternateTypeProvider([]), new DefaultGenericTypeNamingStrategy())
+        when:
+        sut.apply(context)
+        then:
+        context.builder.build().description == expected
+        where:
+        type          | expected
+        String        | null
+        AnnotatedTest | "description"
 
-  }
+    }
 
-  @ApiModel(description = "description")
-  class AnnotatedTest {
+    @ApiModel(description = "description")
+    class AnnotatedTest {
 
-  }
+    }
 }

@@ -20,19 +20,19 @@
 package springfox.documentation.service;
 
 public abstract class SecurityScheme {
-  protected final String name;
-  protected final String type;
+    protected final String name;
+    protected final String type;
 
-  protected SecurityScheme(String name, String type) {
-    this.type = type;
-    this.name = name;
-  }
+    protected SecurityScheme(String name, String type) {
+        this.type = type;
+        this.name = name;
+    }
 
-  public String getType() {
-    return type;
-  }
+    public String getType() {
+        return type;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public String getName() {
+        return name;
+    }
 }

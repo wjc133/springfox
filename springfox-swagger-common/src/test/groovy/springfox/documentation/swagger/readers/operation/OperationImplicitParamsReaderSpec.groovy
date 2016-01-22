@@ -18,6 +18,7 @@
  */
 
 package springfox.documentation.swagger.readers.operation
+
 import com.fasterxml.classmate.TypeResolver
 import org.springframework.web.bind.annotation.RequestMethod
 import springfox.documentation.builders.OperationBuilder
@@ -33,45 +34,45 @@ import springfox.documentation.spring.web.readers.parameter.ModelAttributeParame
 @Mixin([RequestMappingSupport, ServicePluginsSupport])
 class OperationImplicitParamsReaderSpec extends DocumentationContextSpec {
 
-  def "Should add implicit parameters"() {
-    given:
-      OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
-              RequestMethod.GET, handlerMethod, 0, requestMappingInfo("/somePath"),
-              context(), "/anyPath")
+    def "Should add implicit parameters"() {
+        given:
+        OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
+                RequestMethod.GET, handlerMethod, 0, requestMappingInfo("/somePath"),
+                context(), "/anyPath")
 
 
-      def resolver = new TypeResolver()
+        def resolver = new TypeResolver()
 
-      def plugins = defaultWebPlugins()
-      def expander = new ModelAttributeParameterExpander(resolver)
-      expander.pluginsManager = plugins
-      OperationParameterReader sut = new OperationParameterReader(resolver, expander)
-      sut.pluginsManager = plugins
-      OperationImplicitParametersReader operationImplicitParametersReader = new OperationImplicitParametersReader()
-      OperationImplicitParameterReader operationImplicitParameterReader = new OperationImplicitParameterReader()
-    when:
-      sut.apply(operationContext)
-      operationImplicitParametersReader.apply(operationContext)
-      operationImplicitParameterReader.apply(operationContext)
-    and:
-      def operation = operationContext.operationBuilder().build()
-    then:
-      operation.parameters.size() == expectedSize
-    and:
-      !operationImplicitParametersReader.supports(DocumentationType.SPRING_WEB)
-      operationImplicitParametersReader.supports(DocumentationType.SWAGGER_12)
-      operationImplicitParametersReader.supports(DocumentationType.SWAGGER_2)
+        def plugins = defaultWebPlugins()
+        def expander = new ModelAttributeParameterExpander(resolver)
+        expander.pluginsManager = plugins
+        OperationParameterReader sut = new OperationParameterReader(resolver, expander)
+        sut.pluginsManager = plugins
+        OperationImplicitParametersReader operationImplicitParametersReader = new OperationImplicitParametersReader()
+        OperationImplicitParameterReader operationImplicitParameterReader = new OperationImplicitParameterReader()
+        when:
+        sut.apply(operationContext)
+        operationImplicitParametersReader.apply(operationContext)
+        operationImplicitParameterReader.apply(operationContext)
+        and:
+        def operation = operationContext.operationBuilder().build()
+        then:
+        operation.parameters.size() == expectedSize
+        and:
+        !operationImplicitParametersReader.supports(DocumentationType.SPRING_WEB)
+        operationImplicitParametersReader.supports(DocumentationType.SWAGGER_12)
+        operationImplicitParametersReader.supports(DocumentationType.SWAGGER_2)
 
-    and:
-      !operationImplicitParameterReader.supports(DocumentationType.SPRING_WEB)
-      operationImplicitParameterReader.supports(DocumentationType.SWAGGER_12)
-      operationImplicitParameterReader.supports(DocumentationType.SWAGGER_2)
-    where:
-      handlerMethod                                                             | expectedSize
-      dummyHandlerMethod('dummyMethod')                                         | 0
-      dummyHandlerMethod('methodWithApiImplicitParam')                          | 1
-      dummyHandlerMethod('methodWithApiImplicitParamAndInteger', Integer.class) | 2
-      dummyHandlerMethod('methodWithApiImplicitParams', Integer.class)          | 3
-      handlerMethodIn(apiImplicitParamsClass(), 'methodWithApiImplicitParam')   | 2
-  }
+        and:
+        !operationImplicitParameterReader.supports(DocumentationType.SPRING_WEB)
+        operationImplicitParameterReader.supports(DocumentationType.SWAGGER_12)
+        operationImplicitParameterReader.supports(DocumentationType.SWAGGER_2)
+        where:
+        handlerMethod                                                             | expectedSize
+        dummyHandlerMethod('dummyMethod')                                         | 0
+        dummyHandlerMethod('methodWithApiImplicitParam')                          | 1
+        dummyHandlerMethod('methodWithApiImplicitParamAndInteger', Integer.class) | 2
+        dummyHandlerMethod('methodWithApiImplicitParams', Integer.class)          | 3
+        handlerMethodIn(apiImplicitParamsClass(), 'methodWithApiImplicitParam')   | 2
+    }
 }

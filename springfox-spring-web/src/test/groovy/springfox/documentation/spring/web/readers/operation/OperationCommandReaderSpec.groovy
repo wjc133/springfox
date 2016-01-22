@@ -29,36 +29,36 @@ import springfox.documentation.spring.web.plugins.DocumentationContextSpec
 
 @Mixin([RequestMappingSupport])
 class OperationCommandReaderSpec extends DocumentationContextSpec {
-  private static final int CURRENT_COUNT = 3
+    private static final int CURRENT_COUNT = 3
 
-  @Unroll("property #property expected: #expected")
-  def "should set various properties based on method name or swagger annotation"() {
-    given:
-      OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
-              RequestMethod.GET, handlerMethod, CURRENT_COUNT, requestMappingInfo("somePath"),
-              context(), "/anyPath")
-    when:
-      command.apply(operationContext)
-      def operation = operationContext.operationBuilder().build()
+    @Unroll("property #property expected: #expected")
+    def "should set various properties based on method name or swagger annotation"() {
+        given:
+        OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
+                RequestMethod.GET, handlerMethod, CURRENT_COUNT, requestMappingInfo("somePath"),
+                context(), "/anyPath")
+        when:
+        command.apply(operationContext)
+        def operation = operationContext.operationBuilder().build()
 
-    then:
-      operation."$property" == expected
-    where:
-      command                         | property     | handlerMethod                              | expected
-      new DefaultOperationReader()    | 'notes'      | dummyHandlerMethod()                       | null
-      new DefaultOperationReader()    | 'uniqueId'   | dummyHandlerMethod()                       | 'dummyMethodUsingGET'
-      new DefaultOperationReader()    | 'position'   | dummyHandlerMethod()                       | CURRENT_COUNT
-      new OperationDeprecatedReader() | 'deprecated' | dummyHandlerMethod('methodWithDeprecated') | 'true'
-      new OperationDeprecatedReader() | 'deprecated' | dummyHandlerMethod()                       | 'false'
-  }
+        then:
+        operation."$property" == expected
+        where:
+        command                         | property     | handlerMethod                              | expected
+        new DefaultOperationReader()    | 'notes'      | dummyHandlerMethod()                       | null
+        new DefaultOperationReader()    | 'uniqueId'   | dummyHandlerMethod()                       | 'dummyMethodUsingGET'
+        new DefaultOperationReader()    | 'position'   | dummyHandlerMethod()                       | CURRENT_COUNT
+        new OperationDeprecatedReader() | 'deprecated' | dummyHandlerMethod('methodWithDeprecated') | 'true'
+        new OperationDeprecatedReader() | 'deprecated' | dummyHandlerMethod()                       | 'false'
+    }
 
-  def "Should support all documentation types"() {
-    expect:
-      sut.supports(DocumentationType.SPRING_WEB)
-      sut.supports(DocumentationType.SWAGGER_12)
-      sut.supports(DocumentationType.SWAGGER_2)
+    def "Should support all documentation types"() {
+        expect:
+        sut.supports(DocumentationType.SPRING_WEB)
+        sut.supports(DocumentationType.SWAGGER_12)
+        sut.supports(DocumentationType.SWAGGER_2)
 
-    where:
-      sut << [new OperationDeprecatedReader(), new DefaultOperationReader()]
-  }
+        where:
+        sut << [new OperationDeprecatedReader(), new DefaultOperationReader()]
+    }
 }

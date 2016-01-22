@@ -21,16 +21,16 @@ package springfox.documentation.schema;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TypeWithSetterButNoGetter {
-  @JsonProperty("property")
-  private String property;
+    @JsonProperty("property")
+    private String property;
 
-  private String unAnnotated;
+    private String unAnnotated;
 
-  public void setProperty(String property) {
-    this.property = property;
-  }
+    public void setProperty(String property) {
+        this.property = property;
+    }
 
-  public void setUnAnnotated(String unAnnotated) {
-    this.unAnnotated = unAnnotated;
-  }
+    public void setUnAnnotated(String unAnnotated) {
+        this.unAnnotated = unAnnotated;
+    }
 }

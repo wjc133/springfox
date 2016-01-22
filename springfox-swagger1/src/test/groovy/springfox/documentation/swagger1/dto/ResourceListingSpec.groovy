@@ -20,12 +20,13 @@
 package springfox.documentation.swagger1.dto
 
 import static com.google.common.collect.Lists.*
+import static com.google.common.collect.Lists.newArrayList
 
 class ResourceListingSpec extends InternalJsonSerializationSpec {
 
-  def "should serialize"() {
-    expect:
-      writePretty(resourceListing()) == """{
+    def "should serialize"() {
+        expect:
+        writePretty(resourceListing()) == """{
   "apiVersion" : "apiVersion",
   "apis" : [ {
     "description" : "description",
@@ -72,27 +73,27 @@ class ResourceListingSpec extends InternalJsonSerializationSpec {
   },
   "swaggerVersion" : "swagger version"
 }"""
-  }
+    }
 
-  def "should pass coverage"() {
-    expect:
-      ResourceListing api = resourceListing()
-      api.apis
-      api.apiVersion
-      api.authorizations
-      api.info
-      api.swaggerVersion
-  }
+    def "should pass coverage"() {
+        expect:
+        ResourceListing api = resourceListing()
+        api.apis
+        api.apiVersion
+        api.authorizations
+        api.info
+        api.swaggerVersion
+    }
 
-  def "should not initialize auth types"() {
-    expect:
-      writePretty(
-              new ResourceListing("apiVersion"
-                      , "swagger version"
-                      , [apiListingReference()]
-                      , null
-                      , apiInfo())
-      ) == """{
+    def "should not initialize auth types"() {
+        expect:
+        writePretty(
+                new ResourceListing("apiVersion"
+                        , "swagger version"
+                        , [apiListingReference()]
+                        , null
+                        , apiInfo())
+        ) == """{
   "apiVersion" : "apiVersion",
   "apis" : [ {
     "description" : "description",
@@ -110,55 +111,55 @@ class ResourceListingSpec extends InternalJsonSerializationSpec {
   "swaggerVersion" : "swagger version"
 }"""
 
-  }
+    }
 
 
-  def apiListingReference() {
-    new ApiListingReference("/path", "description", 3)
-  }
+    def apiListingReference() {
+        new ApiListingReference("/path", "description", 3)
+    }
 
 
-  def resourceListing() {
-    List<AuthorizationScope> authorizationScopeList = newArrayList();
-    authorizationScopeList.add(new AuthorizationScope("global", "access all"));
+    def resourceListing() {
+        List<AuthorizationScope> authorizationScopeList = newArrayList();
+        authorizationScopeList.add(new AuthorizationScope("global", "access all"));
 
-    List<GrantType> grantTypes = newArrayList();
+        List<GrantType> grantTypes = newArrayList();
 
-    LoginEndpoint loginEndpoint = new LoginEndpoint("http://petstore.swagger.io/oauth/dialog")
-    grantTypes.add(new ImplicitGrant(loginEndpoint, "access_token"))
+        LoginEndpoint loginEndpoint = new LoginEndpoint("http://petstore.swagger.io/oauth/dialog")
+        grantTypes.add(new ImplicitGrant(loginEndpoint, "access_token"))
 
-    TokenRequestEndpoint tokenRequestEndpoint = new TokenRequestEndpoint( "http://petstore.swagger.io/oauth/requestToken"
-            , "client_id"
-            , "client_secret")
+        TokenRequestEndpoint tokenRequestEndpoint = new TokenRequestEndpoint("http://petstore.swagger.io/oauth/requestToken"
+                , "client_id"
+                , "client_secret")
 
-    TokenEndpoint tokenEndpoint = new TokenEndpoint("http://petstore.swagger.io/oauth/token", "auth_code")
-    
-    AuthorizationCodeGrant authorizationCodeGrant = new AuthorizationCodeGrant(tokenRequestEndpoint, tokenEndpoint)
+        TokenEndpoint tokenEndpoint = new TokenEndpoint("http://petstore.swagger.io/oauth/token", "auth_code")
 
-    grantTypes.add(authorizationCodeGrant);
+        AuthorizationCodeGrant authorizationCodeGrant = new AuthorizationCodeGrant(tokenRequestEndpoint, tokenEndpoint)
+
+        grantTypes.add(authorizationCodeGrant);
 
 
-    OAuth oAuth = new OAuth(authorizationScopeList, grantTypes)
+        OAuth oAuth = new OAuth(authorizationScopeList, grantTypes)
 
-    ApiInfo apiInfo = apiInfo()
+        ApiInfo apiInfo = apiInfo()
 
-    new ResourceListing(
-            "apiVersion",
-            "swagger version",
-            [apiListingReference()],
-            [oAuth],
-            apiInfo)
-  }
+        new ResourceListing(
+                "apiVersion",
+                "swagger version",
+                [apiListingReference()],
+                [oAuth],
+                apiInfo)
+    }
 
-  private ApiInfo apiInfo() {
-    ApiInfo apiInfo = new ApiInfo(
-            " Title",
-            "Api Description",
-            "Api terms of service",
-            "Contact Email",
-            "Licence Type",
-            "License URL"
-    )
-    apiInfo
-  }
+    private ApiInfo apiInfo() {
+        ApiInfo apiInfo = new ApiInfo(
+                " Title",
+                "Api Description",
+                "Api terms of service",
+                "Contact Email",
+                "Licence Type",
+                "License URL"
+        )
+        apiInfo
+    }
 }

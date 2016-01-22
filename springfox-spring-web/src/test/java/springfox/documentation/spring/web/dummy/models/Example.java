@@ -28,113 +28,113 @@ import java.io.Serializable;
 
 public class Example extends Parent implements Serializable {
 
-  private static final long serialVersionUID = -8084678021874483017L;
+    private static final long serialVersionUID = -8084678021874483017L;
 
-  @ApiParam(value = "description of foo", required = true, allowableValues = "man,chu")
-  private String foo;
+    @ApiParam(value = "description of foo", required = true, allowableValues = "man,chu")
+    private String foo;
 
-  @ApiModelProperty(value = "description of bar", required = false)
-  private int bar;
+    @ApiModelProperty(value = "description of bar", required = false)
+    private int bar;
 
-  private EnumType enumType;
+    private EnumType enumType;
 
-  @ApiModelProperty(value = "A read only string", readOnly = true)
-  private String readOnlyString;
+    @ApiModelProperty(value = "A read only string", readOnly = true)
+    private String readOnlyString;
 
-  @ApiParam(value = "description of annotatedEnumType", required = false)
-  private EnumType annotatedEnumType;
+    @ApiParam(value = "description of annotatedEnumType", required = false)
+    private EnumType annotatedEnumType;
 
-  private NestedType nestedType;
+    private NestedType nestedType;
 
-  @JsonProperty("propertyWithNoGetterMethod")
-  private String propertyWithNoGetterMethod;
-  private String propertyWithNoSetterMethod;
+    @JsonProperty("propertyWithNoGetterMethod")
+    private String propertyWithNoGetterMethod;
+    private String propertyWithNoSetterMethod;
 
-  @ApiParam(value = "local date time desc dd-MM-yyyy hh:mm:ss", required = true)
-  private LocalDateTime localDateTime;
-  @ApiParam(value = "description of allCapsSet", required = false)
-  private CustomAllCapsStringHashSet allCapsSet;
+    @ApiParam(value = "local date time desc dd-MM-yyyy hh:mm:ss", required = true)
+    private LocalDateTime localDateTime;
+    @ApiParam(value = "description of allCapsSet", required = false)
+    private CustomAllCapsStringHashSet allCapsSet;
 
-  class InnerSynthetic {
-  }
+    class InnerSynthetic {
+    }
 
-  public Example(String foo, int bar, EnumType enumType, NestedType nestedType) {
-    this.foo = foo;
-    this.bar = bar;
-    this.enumType = enumType;
-    this.nestedType = nestedType;
-  }
+    public Example(String foo, int bar, EnumType enumType, NestedType nestedType) {
+        this.foo = foo;
+        this.bar = bar;
+        this.enumType = enumType;
+        this.nestedType = nestedType;
+    }
 
-  public String getFoo() {
-    return foo;
-  }
+    public String getFoo() {
+        return foo;
+    }
 
-  public int getBar() {
-    return bar;
-  }
+    public int getBar() {
+        return bar;
+    }
 
-  public void setFoo(String foo) {
-    this.foo = foo;
-  }
+    public void setFoo(String foo) {
+        this.foo = foo;
+    }
 
-  public void setBar(int bar) {
-    this.bar = bar;
-  }
+    public void setBar(int bar) {
+        this.bar = bar;
+    }
 
-  public EnumType getEnumType() {
-    return enumType;
-  }
+    public EnumType getEnumType() {
+        return enumType;
+    }
 
-  public void setEnumType(EnumType enumType) {
-    this.enumType = enumType;
-  }
+    public void setEnumType(EnumType enumType) {
+        this.enumType = enumType;
+    }
 
-  public EnumType getAnnotatedEnumType() {
-    return annotatedEnumType;
-  }
+    public EnumType getAnnotatedEnumType() {
+        return annotatedEnumType;
+    }
 
-  public void setAnnotatedEnumType(EnumType annotatedEnumType) {
-    this.annotatedEnumType = annotatedEnumType;
-  }
+    public void setAnnotatedEnumType(EnumType annotatedEnumType) {
+        this.annotatedEnumType = annotatedEnumType;
+    }
 
-  public NestedType getNestedType() {
-    return nestedType;
-  }
+    public NestedType getNestedType() {
+        return nestedType;
+    }
 
-  public void setNestedType(NestedType nestedType) {
-    this.nestedType = nestedType;
-  }
+    public void setNestedType(NestedType nestedType) {
+        this.nestedType = nestedType;
+    }
 
-  public void setPropertyWithNoGetterMethod(String propertyWithNoGetterMethod) {
-    this.propertyWithNoGetterMethod = propertyWithNoGetterMethod;
-  }
+    public void setPropertyWithNoGetterMethod(String propertyWithNoGetterMethod) {
+        this.propertyWithNoGetterMethod = propertyWithNoGetterMethod;
+    }
 
-  public String getPropertyWithNoSetterMethod() {
-    return this.propertyWithNoSetterMethod;
-  }
+    public String getPropertyWithNoSetterMethod() {
+        return this.propertyWithNoSetterMethod;
+    }
 
-  public CustomAllCapsStringHashSet getAllCapsSet() {
-    return allCapsSet;
-  }
+    public CustomAllCapsStringHashSet getAllCapsSet() {
+        return allCapsSet;
+    }
 
-  public void setAllCapsSet(CustomAllCapsStringHashSet allCapsSet) {
-    this.allCapsSet = allCapsSet;
-  }
+    public void setAllCapsSet(CustomAllCapsStringHashSet allCapsSet) {
+        this.allCapsSet = allCapsSet;
+    }
 
-  public LocalDateTime getLocalDateTime() {
-    return localDateTime;
-  }
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
+    }
 
-  public void setLocalDateTime(LocalDateTime localDateTime) {
-    this.localDateTime = localDateTime;
-  }
+    public void setLocalDateTime(LocalDateTime localDateTime) {
+        this.localDateTime = localDateTime;
+    }
 
-  public String getReadOnlyString() {
-    return readOnlyString;
-  }
+    public String getReadOnlyString() {
+        return readOnlyString;
+    }
 
-  public void setReadOnlyString(String readOnlyString) {
-    this.readOnlyString = readOnlyString;
-  }
+    public void setReadOnlyString(String readOnlyString) {
+        this.readOnlyString = readOnlyString;
+    }
 }
 

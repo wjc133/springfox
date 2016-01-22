@@ -30,48 +30,48 @@ import java.io.UnsupportedEncodingException;
 import static springfox.documentation.spring.web.paths.Paths.splitCamelCase;
 
 public class ControllerNamingUtils {
-  private static Logger log = LoggerFactory.getLogger(ControllerNamingUtils.class);
-  private static final String ISO_8859_1 = "ISO-8859-1";
+    private static Logger log = LoggerFactory.getLogger(ControllerNamingUtils.class);
+    private static final String ISO_8859_1 = "ISO-8859-1";
 
-  public static String pathRoot(String requestPattern) {
-    Assert.notNull(requestPattern);
-    Assert.hasText(requestPattern);
-    log.info("Resolving path root for {}", requestPattern);
-    requestPattern = requestPattern.startsWith("/") ? requestPattern : "/" + requestPattern;
-    int idx = requestPattern.indexOf("/", 1);
-    if (idx > -1) {
-      return requestPattern.substring(0, idx);
+    public static String pathRoot(String requestPattern) {
+        Assert.notNull(requestPattern);
+        Assert.hasText(requestPattern);
+        log.info("Resolving path root for {}", requestPattern);
+        requestPattern = requestPattern.startsWith("/") ? requestPattern : "/" + requestPattern;
+        int idx = requestPattern.indexOf("/", 1);
+        if (idx > -1) {
+            return requestPattern.substring(0, idx);
+        }
+        return requestPattern;
     }
-    return requestPattern;
-  }
 
-  public static String pathRootEncoded(String requestPattern) {
-    return encode(pathRoot(requestPattern));
-  }
-
-  public static String encode(String path) {
-    try {
-      path = UriUtils.encodePath(path, ISO_8859_1);
-    } catch (UnsupportedEncodingException e) {
-      log.error("Could not encode:" + path, e);
+    public static String pathRootEncoded(String requestPattern) {
+        return encode(pathRoot(requestPattern));
     }
-    return path;
-  }
 
-  public static String decode(String path) {
-    try {
-      path = UriUtils.decode(path, ISO_8859_1);
-    } catch (Exception e) {
-      log.error("Could not decode:" + path, e);
+    public static String encode(String path) {
+        try {
+            path = UriUtils.encodePath(path, ISO_8859_1);
+        } catch (UnsupportedEncodingException e) {
+            log.error("Could not encode:" + path, e);
+        }
+        return path;
     }
-    return path;
-  }
+
+    public static String decode(String path) {
+        try {
+            path = UriUtils.decode(path, ISO_8859_1);
+        } catch (Exception e) {
+            log.error("Could not decode:" + path, e);
+        }
+        return path;
+    }
 
 
-  public static String controllerNameAsGroup(HandlerMethod handlerMethod) {
-    Class<?> controllerClass = handlerMethod.getBeanType();
-    return splitCamelCase(controllerClass.getSimpleName(), "-")
-        .replace("/", "")
-        .toLowerCase();
-  }
+    public static String controllerNameAsGroup(HandlerMethod handlerMethod) {
+        Class<?> controllerClass = handlerMethod.getBeanType();
+        return splitCamelCase(controllerClass.getSimpleName(), "-")
+                .replace("/", "")
+                .toLowerCase();
+    }
 }

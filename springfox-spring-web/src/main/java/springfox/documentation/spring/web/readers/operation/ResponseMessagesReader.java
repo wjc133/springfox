@@ -40,82 +40,82 @@ import springfox.documentation.spi.service.contexts.OperationContext;
 
 import java.util.List;
 
-import static com.google.common.base.Optional.*;
-import static com.google.common.collect.Sets.*;
-import static org.springframework.core.annotation.AnnotationUtils.*;
-import static springfox.documentation.schema.ResolvedTypes.*;
-import static springfox.documentation.schema.Types.*;
+import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.collect.Sets.newHashSet;
+import static org.springframework.core.annotation.AnnotationUtils.getAnnotation;
+import static springfox.documentation.schema.ResolvedTypes.modelRefFactory;
+import static springfox.documentation.schema.Types.isVoid;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ResponseMessagesReader implements OperationBuilderPlugin {
 
-  private final TypeResolver typeResolver;
-  private final TypeNameExtractor typeNameExtractor;
+    private final TypeResolver typeResolver;
+    private final TypeNameExtractor typeNameExtractor;
 
-  @Autowired
-  public ResponseMessagesReader(TypeResolver typeResolver,
-                                TypeNameExtractor typeNameExtractor) {
-    this.typeResolver = typeResolver;
-    this.typeNameExtractor = typeNameExtractor;
-  }
-
-  @Override
-  public void apply(OperationContext context) {
-    List<ResponseMessage> responseMessages = context.getGlobalResponseMessages(context.httpMethod().toString());
-    context.operationBuilder().responseMessages(newHashSet(responseMessages));
-    applyReturnTypeOverride(context);
-  }
-
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return true;
-  }
-
-  private void applyReturnTypeOverride(OperationContext context) {
-
-    ResolvedType returnType = new HandlerMethodResolver(typeResolver).methodReturnType(context.getHandlerMethod());
-    returnType = context.alternateFor(returnType);
-    int httpStatusCode = httpStatusCode(context.getHandlerMethod());
-    String message = message(context.getHandlerMethod());
-    ModelReference modelRef = null;
-    if (!isVoid(returnType)) {
-      ModelContext modelContext = ModelContext.returnValue(returnType,
-          context.getDocumentationType(),
-          context.getAlternateTypeProvider(),
-          context.getDocumentationContext().getGenericsNamingStrategy());
-      modelRef = modelRefFactory(modelContext, typeNameExtractor).apply(returnType);
+    @Autowired
+    public ResponseMessagesReader(TypeResolver typeResolver,
+                                  TypeNameExtractor typeNameExtractor) {
+        this.typeResolver = typeResolver;
+        this.typeNameExtractor = typeNameExtractor;
     }
-    ResponseMessage built = new ResponseMessageBuilder()
-        .code(httpStatusCode)
-        .message(message)
-        .responseModel(modelRef)
-        .build();
-    context.operationBuilder().responseMessages(newHashSet(built));
-  }
 
-
-  public static int httpStatusCode(HandlerMethod handlerMethod) {
-    Optional<ResponseStatus> responseStatus
-        = fromNullable(getAnnotation(handlerMethod.getMethod(), ResponseStatus.class));
-    int httpStatusCode = HttpStatus.OK.value();
-    if (responseStatus.isPresent()) {
-      httpStatusCode = responseStatus.get().value().value();
+    @Override
+    public void apply(OperationContext context) {
+        List<ResponseMessage> responseMessages = context.getGlobalResponseMessages(context.httpMethod().toString());
+        context.operationBuilder().responseMessages(newHashSet(responseMessages));
+        applyReturnTypeOverride(context);
     }
-    return httpStatusCode;
-  }
 
-  public static String message(HandlerMethod handlerMethod) {
-    Optional<ResponseStatus> responseStatus
-        = fromNullable(getAnnotation(handlerMethod.getMethod(), ResponseStatus.class));
-    String reasonPhrase = HttpStatus.OK.getReasonPhrase();
-    if (responseStatus.isPresent()) {
-      reasonPhrase = responseStatus.get().reason();
-      if (reasonPhrase.isEmpty()) {
-        reasonPhrase = responseStatus.get().value().getReasonPhrase();
-      }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return true;
     }
-    return reasonPhrase;
-  }
+
+    private void applyReturnTypeOverride(OperationContext context) {
+
+        ResolvedType returnType = new HandlerMethodResolver(typeResolver).methodReturnType(context.getHandlerMethod());
+        returnType = context.alternateFor(returnType);
+        int httpStatusCode = httpStatusCode(context.getHandlerMethod());
+        String message = message(context.getHandlerMethod());
+        ModelReference modelRef = null;
+        if (!isVoid(returnType)) {
+            ModelContext modelContext = ModelContext.returnValue(returnType,
+                    context.getDocumentationType(),
+                    context.getAlternateTypeProvider(),
+                    context.getDocumentationContext().getGenericsNamingStrategy());
+            modelRef = modelRefFactory(modelContext, typeNameExtractor).apply(returnType);
+        }
+        ResponseMessage built = new ResponseMessageBuilder()
+                .code(httpStatusCode)
+                .message(message)
+                .responseModel(modelRef)
+                .build();
+        context.operationBuilder().responseMessages(newHashSet(built));
+    }
+
+
+    public static int httpStatusCode(HandlerMethod handlerMethod) {
+        Optional<ResponseStatus> responseStatus
+                = fromNullable(getAnnotation(handlerMethod.getMethod(), ResponseStatus.class));
+        int httpStatusCode = HttpStatus.OK.value();
+        if (responseStatus.isPresent()) {
+            httpStatusCode = responseStatus.get().value().value();
+        }
+        return httpStatusCode;
+    }
+
+    public static String message(HandlerMethod handlerMethod) {
+        Optional<ResponseStatus> responseStatus
+                = fromNullable(getAnnotation(handlerMethod.getMethod(), ResponseStatus.class));
+        String reasonPhrase = HttpStatus.OK.getReasonPhrase();
+        if (responseStatus.isPresent()) {
+            reasonPhrase = responseStatus.get().reason();
+            if (reasonPhrase.isEmpty()) {
+                reasonPhrase = responseStatus.get().value().getReasonPhrase();
+            }
+        }
+        return reasonPhrase;
+    }
 
 }

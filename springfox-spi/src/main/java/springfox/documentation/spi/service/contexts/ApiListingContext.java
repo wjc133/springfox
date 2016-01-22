@@ -24,28 +24,28 @@ import springfox.documentation.service.ResourceGroup;
 import springfox.documentation.spi.DocumentationType;
 
 public class ApiListingContext {
-  private final DocumentationType documentationType;
-  private final ResourceGroup resourceGroup;
-  private final ApiListingBuilder apiListingBuilder;
+    private final DocumentationType documentationType;
+    private final ResourceGroup resourceGroup;
+    private final ApiListingBuilder apiListingBuilder;
 
-  public ApiListingContext(DocumentationType documentationType,
-                           ResourceGroup resourceGroup,
-                           ApiListingBuilder apiListingBuilder) {
-    this.documentationType = documentationType;
-    this.resourceGroup = resourceGroup;
-    this.apiListingBuilder = apiListingBuilder;
-  }
+    public ApiListingContext(DocumentationType documentationType,
+                             ResourceGroup resourceGroup,
+                             ApiListingBuilder apiListingBuilder) {
+        this.documentationType = documentationType;
+        this.resourceGroup = resourceGroup;
+        this.apiListingBuilder = apiListingBuilder;
+    }
 
-  public DocumentationType getDocumentationType() {
-    return documentationType;
-  }
+    public DocumentationType getDocumentationType() {
+        return documentationType;
+    }
 
-  public ResourceGroup getResourceGroup() {
-    return resourceGroup;
-  }
+    public ResourceGroup getResourceGroup() {
+        return resourceGroup;
+    }
 
-  public ApiListingBuilder apiListingBuilder() {
-    return apiListingBuilder;
-  }
+    public ApiListingBuilder apiListingBuilder() {
+        return apiListingBuilder;
+    }
 
 }

@@ -28,15 +28,15 @@ import springfox.documentation.spring.web.json.JacksonModuleRegistrar;
 import springfox.documentation.swagger.configuration.SwaggerCommonConfiguration;
 
 @Configuration
-@Import({ SpringfoxWebMvcConfiguration.class, SwaggerCommonConfiguration.class })
+@Import({SpringfoxWebMvcConfiguration.class, SwaggerCommonConfiguration.class})
 @ComponentScan(basePackages = {
-    "springfox.documentation.swagger2.readers.parameter",
-    "springfox.documentation.swagger2.web",
-    "springfox.documentation.swagger2.mappers"
+        "springfox.documentation.swagger2.readers.parameter",
+        "springfox.documentation.swagger2.web",
+        "springfox.documentation.swagger2.mappers"
 })
 public class Swagger2DocumentationConfiguration {
-  @Bean
-  public JacksonModuleRegistrar swagger2Module() {
-    return new Swagger2JacksonModule();
-  }
+    @Bean
+    public JacksonModuleRegistrar swagger2Module() {
+        return new Swagger2JacksonModule();
+    }
 }

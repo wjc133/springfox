@@ -24,27 +24,29 @@ import springfox.documentation.RequestHandler;
 import springfox.documentation.annotations.ApiIgnore;
 import springfox.documentation.builders.PathSelectors;
 
-import static com.google.common.base.Predicates.*;
-import static springfox.documentation.builders.RequestHandlerSelectors.*;
+import static com.google.common.base.Predicates.and;
+import static com.google.common.base.Predicates.not;
+import static springfox.documentation.builders.RequestHandlerSelectors.withClassAnnotation;
+import static springfox.documentation.builders.RequestHandlerSelectors.withMethodAnnotation;
 
 public class ApiSelector {
-  public static final ApiSelector DEFAULT
-      = new ApiSelector(and(
-          not(withClassAnnotation(ApiIgnore.class)),
-          not(withMethodAnnotation(ApiIgnore.class))), PathSelectors.any());
-  private final Predicate<RequestHandler> requestHandlerSelector;
-  private final Predicate<String> pathSelector;
+    public static final ApiSelector DEFAULT
+            = new ApiSelector(and(
+            not(withClassAnnotation(ApiIgnore.class)),
+            not(withMethodAnnotation(ApiIgnore.class))), PathSelectors.any());
+    private final Predicate<RequestHandler> requestHandlerSelector;
+    private final Predicate<String> pathSelector;
 
-  public ApiSelector(Predicate<RequestHandler> requestHandlerSelector, Predicate<String> pathSelector) {
-    this.requestHandlerSelector = requestHandlerSelector;
-    this.pathSelector = pathSelector;
-  }
+    public ApiSelector(Predicate<RequestHandler> requestHandlerSelector, Predicate<String> pathSelector) {
+        this.requestHandlerSelector = requestHandlerSelector;
+        this.pathSelector = pathSelector;
+    }
 
-  public Predicate<RequestHandler> getRequestHandlerSelector() {
-    return requestHandlerSelector;
-  }
+    public Predicate<RequestHandler> getRequestHandlerSelector() {
+        return requestHandlerSelector;
+    }
 
-  public Predicate<String> getPathSelector() {
-    return pathSelector;
-  }
+    public Predicate<String> getPathSelector() {
+        return pathSelector;
+    }
 }

@@ -31,8 +31,8 @@ import springfox.documentation.spring.web.dummy.models.NestedType;
 
 @Controller
 public class ControllerWithNoRequestMappingService {
-  @RequestMapping(value = "/no-request-mapping", method = RequestMethod.GET)
-  public ResponseEntity<Example> exampleWithNoRequestMapping(UriComponentsBuilder builder) {
-    return new ResponseEntity<Example>(new Example("Hello", 1, EnumType.ONE, new NestedType("test")), HttpStatus.OK);
-  }
+    @RequestMapping(value = "/no-request-mapping", method = RequestMethod.GET)
+    public ResponseEntity<Example> exampleWithNoRequestMapping(UriComponentsBuilder builder) {
+        return new ResponseEntity<Example>(new Example("Hello", 1, EnumType.ONE, new NestedType("test")), HttpStatus.OK);
+    }
 }

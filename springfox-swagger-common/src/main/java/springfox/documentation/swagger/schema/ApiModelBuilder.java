@@ -30,34 +30,34 @@ import springfox.documentation.spi.schema.ModelBuilderPlugin;
 import springfox.documentation.spi.schema.contexts.ModelContext;
 import springfox.documentation.swagger.common.SwaggerPluginSupport;
 
-import static springfox.documentation.swagger.common.SwaggerPluginSupport.*;
+import static springfox.documentation.swagger.common.SwaggerPluginSupport.pluginDoesApply;
 
 @Component
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class ApiModelBuilder implements ModelBuilderPlugin {
-  private final TypeResolver typeResolver;
+    private final TypeResolver typeResolver;
 
-  @Autowired
-  public ApiModelBuilder(TypeResolver typeResolver) {
-    this.typeResolver = typeResolver;
-  }
-
-
-  @Override
-  public void apply(ModelContext context) {
-    ApiModel annotation = AnnotationUtils.findAnnotation(forClass(context), ApiModel.class);
-    if (annotation != null) {
-      context.getBuilder().description(annotation.description());
+    @Autowired
+    public ApiModelBuilder(TypeResolver typeResolver) {
+        this.typeResolver = typeResolver;
     }
-  }
-
-  private Class<?> forClass(ModelContext context) {
-    return typeResolver.resolve(context.getType()).getErasedType();
-  }
 
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return pluginDoesApply(delimiter);
-  }
+    @Override
+    public void apply(ModelContext context) {
+        ApiModel annotation = AnnotationUtils.findAnnotation(forClass(context), ApiModel.class);
+        if (annotation != null) {
+            context.getBuilder().description(annotation.description());
+        }
+    }
+
+    private Class<?> forClass(ModelContext context) {
+        return typeResolver.resolve(context.getType()).getErasedType();
+    }
+
+
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return pluginDoesApply(delimiter);
+    }
 }

@@ -25,25 +25,26 @@ import springfox.documentation.spi.service.contexts.DocumentationContext;
 import springfox.documentation.spi.service.contexts.DocumentationContextBuilder;
 
 public interface DocumentationPlugin extends Plugin<DocumentationType> {
-  /**
-   * @return indicator to determine if the plugin is enabled
-   */
-  boolean isEnabled();
+    /**
+     * @return indicator to determine if the plugin is enabled
+     */
+    boolean isEnabled();
 
-  DocumentationType getDocumentationType();
+    DocumentationType getDocumentationType();
 
-  /**
-   * Creates a documentation context based on a given DocumentationContextBuilder
-   *
-   * @param builder - @see springfox.documentation.spi.service.contexts.DocumentationContextBuilder
-   * @return context to use for building the documentation
-   */
-  DocumentationContext configure(DocumentationContextBuilder builder);
+    /**
+     * Creates a documentation context based on a given DocumentationContextBuilder
+     *
+     * @param builder - @see springfox.documentation.spi.service.contexts.DocumentationContextBuilder
+     * @return context to use for building the documentation
+     */
+    DocumentationContext configure(DocumentationContextBuilder builder);
 
-  /**
-   * Gets the group name for the plugin. This is expected to be unique for each instance of the plugin
-   * @return group the plugin belongs to
-   */
-  String getGroupName();
+    /**
+     * Gets the group name for the plugin. This is expected to be unique for each instance of the plugin
+     *
+     * @return group the plugin belongs to
+     */
+    String getGroupName();
 }
 

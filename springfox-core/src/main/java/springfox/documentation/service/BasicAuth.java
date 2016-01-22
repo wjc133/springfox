@@ -20,7 +20,7 @@
 package springfox.documentation.service;
 
 public class BasicAuth extends SecurityScheme {
-  public BasicAuth(String name) {
-    super(name, "basicAuth");
-  }
+    public BasicAuth(String name) {
+        super(name, "basicAuth");
+    }
 }

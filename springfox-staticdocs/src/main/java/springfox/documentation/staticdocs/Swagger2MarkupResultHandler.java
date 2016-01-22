@@ -87,7 +87,7 @@ public class Swagger2MarkupResultHandler implements ResultHandler {
          * @see org.springframework.test.web.servlet.ResultActions#andDo(org.springframework.test.web.servlet.ResultHandler)
          */
         public Swagger2MarkupResultHandler build() {
-              return new Swagger2MarkupResultHandler(outputDir, markupLanguage,
+            return new Swagger2MarkupResultHandler(outputDir, markupLanguage,
                     examplesFolderPath);
         }
 

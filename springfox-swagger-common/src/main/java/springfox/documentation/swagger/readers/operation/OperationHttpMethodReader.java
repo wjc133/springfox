@@ -36,27 +36,27 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
 @Component
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class OperationHttpMethodReader implements OperationBuilderPlugin {
-  private static final Logger log = LoggerFactory.getLogger(OperationHttpMethodReader.class);
+    private static final Logger log = LoggerFactory.getLogger(OperationHttpMethodReader.class);
 
-  @Override
-  public void apply(OperationContext context) {
-    HandlerMethod handlerMethod = context.getHandlerMethod();
+    @Override
+    public void apply(OperationContext context) {
+        HandlerMethod handlerMethod = context.getHandlerMethod();
 
-    ApiOperation apiOperationAnnotation = handlerMethod.getMethodAnnotation(ApiOperation.class);
+        ApiOperation apiOperationAnnotation = handlerMethod.getMethodAnnotation(ApiOperation.class);
 
-    if (apiOperationAnnotation != null && StringUtils.hasText(apiOperationAnnotation.httpMethod())) {
-      String apiMethod = apiOperationAnnotation.httpMethod();
-      try {
-        RequestMethod.valueOf(apiMethod);
-        context.operationBuilder().method(HttpMethod.valueOf(apiMethod));
-      } catch (IllegalArgumentException e) {
-        log.error("Invalid http method: " + apiMethod + "Valid ones are [" + RequestMethod.values() + "]", e);
-      }
+        if (apiOperationAnnotation != null && StringUtils.hasText(apiOperationAnnotation.httpMethod())) {
+            String apiMethod = apiOperationAnnotation.httpMethod();
+            try {
+                RequestMethod.valueOf(apiMethod);
+                context.operationBuilder().method(HttpMethod.valueOf(apiMethod));
+            } catch (IllegalArgumentException e) {
+                log.error("Invalid http method: " + apiMethod + "Valid ones are [" + RequestMethod.values() + "]", e);
+            }
+        }
     }
-  }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return SwaggerPluginSupport.pluginDoesApply(delimiter);
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return SwaggerPluginSupport.pluginDoesApply(delimiter);
+    }
 }

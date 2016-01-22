@@ -21,31 +21,31 @@ import org.gradle.api.tasks.TaskAction
 
 class CheckGitBranchTask extends DefaultTask {
 
-  public static final String TASK_NAME = "checkGitBranchTask"
-  String description = "Checks the current branch is master in sync with remote"
-  String group = "release"
+    public static final String TASK_NAME = "checkGitBranchTask"
+    String description = "Checks the current branch is master in sync with remote"
+    String group = "release"
 
-  @TaskAction
-  void check() {
-    String requiredBranch = "master"
-    project.exec {
-      commandLine "git", "fetch"
-    }
+    @TaskAction
+    void check() {
+        String requiredBranch = "master"
+        project.exec {
+            commandLine "git", "fetch"
+        }
 
-    def sout = new ByteArrayOutputStream()
-    project.exec {
-      commandLine "git", "rev-parse", "--abbrev-ref", "HEAD"
-      standardOutput = sout
-    }
-    def branch = sout.toString()
-    assert branch.trim() == requiredBranch: "Incorrect release branch: ${branch}. You must be on ${requiredBranch} to release"
+        def sout = new ByteArrayOutputStream()
+        project.exec {
+            commandLine "git", "rev-parse", "--abbrev-ref", "HEAD"
+            standardOutput = sout
+        }
+        def branch = sout.toString()
+        assert branch.trim() == requiredBranch: "Incorrect release branch: ${branch}. You must be on ${requiredBranch} to release"
 
-    sout = new ByteArrayOutputStream()
-    project.exec {
-      commandLine "git", "status", "-sb"
-      standardOutput = sout
+        sout = new ByteArrayOutputStream()
+        project.exec {
+            commandLine "git", "status", "-sb"
+            standardOutput = sout
+        }
+        def gitStatus = sout.toString()
+        assert !gitStatus.contains('['): "The local branch is not in sync with remote"
     }
-    def gitStatus = sout.toString()
-    assert !gitStatus.contains('['): "The local branch is not in sync with remote"
-  }
 }

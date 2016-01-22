@@ -24,21 +24,21 @@ import springfox.documentation.service.Documentation;
 import java.util.Collections;
 import java.util.Map;
 
-import static com.google.common.collect.Maps.*;
+import static com.google.common.collect.Maps.newLinkedHashMap;
 
 public class DocumentationCache {
-  private Map<String, Documentation> documentationLookup = newLinkedHashMap();
+    private Map<String, Documentation> documentationLookup = newLinkedHashMap();
 
-  public void addDocumentation(Documentation documentation) {
-    documentationLookup.put(documentation.getGroupName(), documentation);
-  }
+    public void addDocumentation(Documentation documentation) {
+        documentationLookup.put(documentation.getGroupName(), documentation);
+    }
 
-  public Documentation documentationByGroup(String groupName) {
-    return documentationLookup.get(groupName);
-  }
+    public Documentation documentationByGroup(String groupName) {
+        return documentationLookup.get(groupName);
+    }
 
-  public Map<String, Documentation> all() {
-    return Collections.unmodifiableMap(documentationLookup);
-  }
+    public Map<String, Documentation> all() {
+        return Collections.unmodifiableMap(documentationLookup);
+    }
 
 }

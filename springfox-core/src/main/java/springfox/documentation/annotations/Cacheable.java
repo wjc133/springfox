@@ -18,27 +18,20 @@
  */
 package springfox.documentation.annotations;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
+
 /**
  * Annotation indicating that a method (or all the methods on a class) can be cached.
- *
+ * <p/>
  * <p>The method arguments and signature are used for computing the key while the
  * returned instance is used as the cache value.
  *
- * @since 2.1.1
- *
  * @since 2.2.2 this is no longer is an aspect, but just serves as a marker for cached items
- *
  */
-@Target({ ElementType.METHOD, ElementType.TYPE})
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
 public @interface Cacheable {
-  String value();
+    String value();
 }

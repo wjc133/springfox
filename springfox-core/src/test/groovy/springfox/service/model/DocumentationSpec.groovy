@@ -18,6 +18,7 @@
  */
 
 package springfox.service.model
+
 import com.google.common.collect.LinkedListMultimap
 import spock.lang.Specification
 import springfox.documentation.builders.DocumentationBuilder
@@ -28,18 +29,18 @@ import springfox.documentation.service.Documentation
 import springfox.documentation.service.SecurityScheme
 
 class DocumentationSpec extends Specification {
-  def "Groups are built correctly" () {
-    given:
-      List<SecurityScheme> authorizations = [new ApiKey("api-key", "test", "header",)]
-      Documentation built = new DocumentationBuilder()
-              .resourceListing(new ResourceListingBuilder()
+    def "Groups are built correctly"() {
+        given:
+        List<SecurityScheme> authorizations = [new ApiKey("api-key", "test", "header",)]
+        Documentation built = new DocumentationBuilder()
+                .resourceListing(new ResourceListingBuilder()
                 .securitySchemes(authorizations)
                 .apis([Mock(ApiListingReference)])
                 .build())
-              .apiListingsByResourceGroupName(LinkedListMultimap.create())
-              .build()
-    expect:
-      built.apiListings.size() == 0
-      built.resourceListing.securitySchemes.size() == 1
-  }
+                .apiListingsByResourceGroupName(LinkedListMultimap.create())
+                .build()
+        expect:
+        built.apiListings.size() == 0
+        built.resourceListing.securitySchemes.size() == 1
+    }
 }

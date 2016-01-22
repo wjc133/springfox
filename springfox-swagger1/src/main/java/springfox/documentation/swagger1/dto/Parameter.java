@@ -23,112 +23,112 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 public class Parameter {
-  @JsonProperty
-  @JsonUnwrapped
-  private SwaggerDataType parameterType;
-  private String name;
-  private String description;
-  private String defaultValue;
-  private Boolean required;
-  private Boolean allowMultiple;
-  @JsonProperty
-  @JsonUnwrapped
-  private AllowableValues allowableValues;
-  private String paramType;
-  private String paramAccess;
+    @JsonProperty
+    @JsonUnwrapped
+    private SwaggerDataType parameterType;
+    private String name;
+    private String description;
+    private String defaultValue;
+    private Boolean required;
+    private Boolean allowMultiple;
+    @JsonProperty
+    @JsonUnwrapped
+    private AllowableValues allowableValues;
+    private String paramType;
+    private String paramAccess;
 
-  public Parameter() {
-  }
-
-  public Parameter(String name, String description, String defaultValue, Boolean required, Boolean allowMultiple,
-                   String dataType, AllowableValues allowableValues, String paramType, String paramAccess) {
-    this.description = description;
-    this.defaultValue = defaultValue;
-    this.required = required;
-    this.allowMultiple = allowMultiple;
-    this.allowableValues = allowableValues;
-    this.paramType = paramType;
-    this.paramAccess = paramAccess;
-    this.name = maybeOverrideName(name);
-    this.parameterType = new DataType(dataType);
-  }
-
-  private String maybeOverrideName(String aName) {
-    if ("body".equals(paramType)) {
-      return paramType;
+    public Parameter() {
     }
-    return aName;
-  }
 
-  public String getName() {
-    return name;
-  }
+    public Parameter(String name, String description, String defaultValue, Boolean required, Boolean allowMultiple,
+                     String dataType, AllowableValues allowableValues, String paramType, String paramAccess) {
+        this.description = description;
+        this.defaultValue = defaultValue;
+        this.required = required;
+        this.allowMultiple = allowMultiple;
+        this.allowableValues = allowableValues;
+        this.paramType = paramType;
+        this.paramAccess = paramAccess;
+        this.name = maybeOverrideName(name);
+        this.parameterType = new DataType(dataType);
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    private String maybeOverrideName(String aName) {
+        if ("body".equals(paramType)) {
+            return paramType;
+        }
+        return aName;
+    }
 
-  public String getDescription() {
-    return description;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public String getDefaultValue() {
-    return defaultValue;
-  }
+    public String getDescription() {
+        return description;
+    }
 
-  public void setDefaultValue(String defaultValue) {
-    this.defaultValue = defaultValue;
-  }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-  public Boolean isRequired() {
-    return required;
-  }
+    public String getDefaultValue() {
+        return defaultValue;
+    }
 
-  public Boolean isAllowMultiple() {
-    return allowMultiple;
-  }
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
 
-  public AllowableValues getAllowableValues() {
-    return allowableValues;
-  }
+    public Boolean isRequired() {
+        return required;
+    }
 
-  public void setAllowableValues(AllowableValues allowableValues) {
-    this.allowableValues = allowableValues;
-  }
+    public Boolean isAllowMultiple() {
+        return allowMultiple;
+    }
 
-  public String getParamType() {
-    return paramType;
-  }
+    public AllowableValues getAllowableValues() {
+        return allowableValues;
+    }
 
-  public void setParamType(String paramType) {
-    this.paramType = paramType;
-  }
+    public void setAllowableValues(AllowableValues allowableValues) {
+        this.allowableValues = allowableValues;
+    }
 
-  public String getParamAccess() {
-    return paramAccess;
-  }
+    public String getParamType() {
+        return paramType;
+    }
 
-  public void setParamAccess(String paramAccess) {
-    this.paramAccess = paramAccess;
-  }
+    public void setParamType(String paramType) {
+        this.paramType = paramType;
+    }
 
-  public SwaggerDataType getParameterType() {
-    return parameterType;
-  }
+    public String getParamAccess() {
+        return paramAccess;
+    }
 
-  public void setParameterType(SwaggerDataType parameterType) {
-    this.parameterType = parameterType;
-  }
+    public void setParamAccess(String paramAccess) {
+        this.paramAccess = paramAccess;
+    }
 
-  public void setRequired(Boolean required) {
-    this.required = required;
-  }
+    public SwaggerDataType getParameterType() {
+        return parameterType;
+    }
 
-  public void setAllowMultiple(Boolean allowMultiple) {
-    this.allowMultiple = allowMultiple;
-  }
+    public void setParameterType(SwaggerDataType parameterType) {
+        this.parameterType = parameterType;
+    }
+
+    public void setRequired(Boolean required) {
+        this.required = required;
+    }
+
+    public void setAllowMultiple(Boolean allowMultiple) {
+        this.allowMultiple = allowMultiple;
+    }
 }

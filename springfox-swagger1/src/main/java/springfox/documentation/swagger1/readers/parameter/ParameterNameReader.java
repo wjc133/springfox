@@ -31,43 +31,43 @@ import springfox.documentation.spi.service.contexts.ParameterContext;
 import springfox.documentation.swagger.common.SwaggerPluginSupport;
 import springfox.documentation.swagger.readers.parameter.ParameterAnnotationReader;
 
-import static com.google.common.base.Optional.*;
-import static com.google.common.base.Strings.*;
-import static springfox.documentation.spring.web.readers.parameter.ParameterTypeReader.*;
+import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Strings.emptyToNull;
+import static springfox.documentation.spring.web.readers.parameter.ParameterTypeReader.findParameterType;
 
 @Component("swagger1ParameterNameReader")
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class ParameterNameReader implements ParameterBuilderPlugin {
 
-  private ParameterAnnotationReader annotations = new ParameterAnnotationReader();
+    private ParameterAnnotationReader annotations = new ParameterAnnotationReader();
 
-  @Override
-  public void apply(ParameterContext context) {
-    MethodParameter methodParameter = context.methodParameter();
-    Optional<ApiParam> apiParam = apiParam(methodParameter);
-    String paramType = findParameterType(context);
-    String name = null;
-    if (apiParam.isPresent()) {
-      name = emptyToNull(apiParam.get().name());
+    @Override
+    public void apply(ParameterContext context) {
+        MethodParameter methodParameter = context.methodParameter();
+        Optional<ApiParam> apiParam = apiParam(methodParameter);
+        String paramType = findParameterType(context);
+        String name = null;
+        if (apiParam.isPresent()) {
+            name = emptyToNull(apiParam.get().name());
+        }
+        context.parameterBuilder().name(maybeOverrideName(name, paramType));
     }
-    context.parameterBuilder().name(maybeOverrideName(name, paramType));
-  }
 
-  @VisibleForTesting
-  Optional<ApiParam> apiParam(MethodParameter methodParameter) {
-    return fromNullable(methodParameter.getParameterAnnotation(ApiParam.class))
-        .or(annotations.fromHierarchy(methodParameter, ApiParam.class));
-  }
-
-  private String maybeOverrideName(String parameterName, String paramType) {
-    if ("body".equals(paramType)) {
-      return paramType;
+    @VisibleForTesting
+    Optional<ApiParam> apiParam(MethodParameter methodParameter) {
+        return fromNullable(methodParameter.getParameterAnnotation(ApiParam.class))
+                .or(annotations.fromHierarchy(methodParameter, ApiParam.class));
     }
-    return parameterName;
-  }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return DocumentationType.SWAGGER_12.equals(delimiter);
-  }
+    private String maybeOverrideName(String parameterName, String paramType) {
+        if ("body".equals(paramType)) {
+            return paramType;
+        }
+        return parameterName;
+    }
+
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return DocumentationType.SWAGGER_12.equals(delimiter);
+    }
 }

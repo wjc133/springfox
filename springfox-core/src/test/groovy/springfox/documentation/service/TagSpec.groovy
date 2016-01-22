@@ -22,36 +22,36 @@ package springfox.documentation.service
 import spock.lang.Specification
 
 class TagSpec extends Specification {
-  Tag tag = new Tag("pet", "Pet tag")
-  
-  def "should pass coverage"() {
-    expect:
-      tag.with {
-        getName()
-        getDescription()
-      }
-  }
+    Tag tag = new Tag("pet", "Pet tag")
 
-  def "equals works as expected"() {
-    given:
-      def tag1 = new Tag("Tag1", "Desc 1")
-      def tag2 = new Tag("Tag2", "Desc 2")
-      def tag3 = new Tag("Tag1", "Desc 1")
-      def tag4 = new Tag("Tag1", "Desc 2")
-      def tag5 = new Tag("Tag2", "Desc 1")
-    expect:
-      tag1 == tag3
-      tag1 != tag4
-      tag2 != tag5
-  }
+    def "should pass coverage"() {
+        expect:
+        tag.with {
+            getName()
+            getDescription()
+        }
+    }
 
-  def "hashcode works as expected"() {
-    given:
-      def tag1 = new Tag("Tag1", "Desc 1")
-      def tag2 = new Tag("Tag2", "Desc 2")
-      def tag3 = new Tag("Tag1", "Desc 1")
-    expect:
-      tag1.hashCode() == tag3.hashCode()
-      tag2.hashCode() != tag3.hashCode()
-  }
+    def "equals works as expected"() {
+        given:
+        def tag1 = new Tag("Tag1", "Desc 1")
+        def tag2 = new Tag("Tag2", "Desc 2")
+        def tag3 = new Tag("Tag1", "Desc 1")
+        def tag4 = new Tag("Tag1", "Desc 2")
+        def tag5 = new Tag("Tag2", "Desc 1")
+        expect:
+        tag1 == tag3
+        tag1 != tag4
+        tag2 != tag5
+    }
+
+    def "hashcode works as expected"() {
+        given:
+        def tag1 = new Tag("Tag1", "Desc 1")
+        def tag2 = new Tag("Tag2", "Desc 2")
+        def tag3 = new Tag("Tag1", "Desc 1")
+        expect:
+        tag1.hashCode() == tag3.hashCode()
+        tag2.hashCode() != tag3.hashCode()
+    }
 }

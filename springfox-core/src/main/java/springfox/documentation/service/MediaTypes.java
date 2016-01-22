@@ -28,29 +28,30 @@ import org.springframework.http.MediaType;
 import java.util.Set;
 
 public class MediaTypes {
-  private static final Logger LOGGER = LoggerFactory.getLogger(MediaTypes.class);
-  private MediaTypes() {
-    throw new UnsupportedOperationException();
-  }
+    private static final Logger LOGGER = LoggerFactory.getLogger(MediaTypes.class);
 
-  public static Set<MediaType> toMediaTypes(Set<String> consumes) {
-    return FluentIterable.from(consumes)
-        .transform(parsedMediaType())
-        .filter(Predicates.<MediaType>notNull())
-        .toSet();
-  }
+    private MediaTypes() {
+        throw new UnsupportedOperationException();
+    }
 
-  private static Function<String, MediaType> parsedMediaType() {
-    return new Function<String, MediaType>() {
-      @Override
-      public MediaType apply(String input) {
-        try {
-          return MediaType.valueOf(input);
-        } catch (Exception e) {
-          LOGGER.warn(String.format("Unable to parse media type %s", input));
-          return null;
-        }
-      }
-    };
-  }
+    public static Set<MediaType> toMediaTypes(Set<String> consumes) {
+        return FluentIterable.from(consumes)
+                .transform(parsedMediaType())
+                .filter(Predicates.<MediaType>notNull())
+                .toSet();
+    }
+
+    private static Function<String, MediaType> parsedMediaType() {
+        return new Function<String, MediaType>() {
+            @Override
+            public MediaType apply(String input) {
+                try {
+                    return MediaType.valueOf(input);
+                } catch (Exception e) {
+                    LOGGER.warn(String.format("Unable to parse media type %s", input));
+                    return null;
+                }
+            }
+        };
+    }
 }

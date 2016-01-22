@@ -32,16 +32,16 @@ import springfox.documentation.swagger.common.SwaggerPluginSupport;
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class OperationSummaryReader implements OperationBuilderPlugin {
 
-  @Override
-  public void apply(OperationContext context) {
-    ApiOperation apiOperationAnnotation = context.getHandlerMethod().getMethodAnnotation(ApiOperation.class);
-    if (null != apiOperationAnnotation && StringUtils.hasText(apiOperationAnnotation.value())) {
-      context.operationBuilder().summary(apiOperationAnnotation.value());
+    @Override
+    public void apply(OperationContext context) {
+        ApiOperation apiOperationAnnotation = context.getHandlerMethod().getMethodAnnotation(ApiOperation.class);
+        if (null != apiOperationAnnotation && StringUtils.hasText(apiOperationAnnotation.value())) {
+            context.operationBuilder().summary(apiOperationAnnotation.value());
+        }
     }
-  }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return SwaggerPluginSupport.pluginDoesApply(delimiter);
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return SwaggerPluginSupport.pluginDoesApply(delimiter);
+    }
 }

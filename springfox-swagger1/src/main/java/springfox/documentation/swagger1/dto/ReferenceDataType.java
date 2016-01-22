@@ -23,20 +23,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ReferenceDataType implements SwaggerDataType {
-  @JsonProperty("type")
-  private String reference;
+    @JsonProperty("type")
+    private String reference;
 
-  public ReferenceDataType(String reference) {
-    this.reference = reference;
-  }
+    public ReferenceDataType(String reference) {
+        this.reference = reference;
+    }
 
-  public String getReference() {
-    return reference;
-  }
+    public String getReference() {
+        return reference;
+    }
 
-  @Override
-  @JsonIgnore
-  public String getAbsoluteType() {
-    return reference;
-  }
+    @Override
+    @JsonIgnore
+    public String getAbsoluteType() {
+        return reference;
+    }
 }

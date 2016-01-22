@@ -27,69 +27,69 @@ import com.google.common.collect.Iterables;
 
 import java.util.List;
 
-import static com.google.common.collect.Lists.*;
+import static com.google.common.collect.Lists.newArrayList;
 
 public class ObjectVendorExtension implements VendorExtension<List<VendorExtension>> {
-  private final List<VendorExtension> properties = newArrayList();
-  private final String name;
+    private final List<VendorExtension> properties = newArrayList();
+    private final String name;
 
-  public ObjectVendorExtension(String name) {
-    this.name = name;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  @Override
-  public List<VendorExtension> getValue() {
-    return ImmutableList.copyOf(properties);
-  }
-
-
-  public void addProperty(VendorExtension property) {
-    properties.add(property);
-  }
-
-  public void replaceProperty(VendorExtension property) {
-    Optional<VendorExtension> vendorProperty = Iterables.tryFind(properties, withName(property.getName()));
-    if (vendorProperty.isPresent()) {
-      properties.remove(vendorProperty.get());
+    public ObjectVendorExtension(String name) {
+        this.name = name;
     }
-    properties.add(property);
-  }
 
-  private Predicate<VendorExtension> withName(final String name) {
-    return new Predicate<VendorExtension>() {
-      @Override
-      public boolean apply(VendorExtension input) {
-        return input.getName().equals(name);
-      }
-    };
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public String getName() {
+        return name;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    @Override
+    public List<VendorExtension> getValue() {
+        return ImmutableList.copyOf(properties);
     }
-    ObjectVendorExtension that = (ObjectVendorExtension) o;
-    return Objects.equal(properties, that.properties);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(properties);
-  }
 
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("properties", properties)
-        .add("name", name)
-        .toString();
-  }
+    public void addProperty(VendorExtension property) {
+        properties.add(property);
+    }
+
+    public void replaceProperty(VendorExtension property) {
+        Optional<VendorExtension> vendorProperty = Iterables.tryFind(properties, withName(property.getName()));
+        if (vendorProperty.isPresent()) {
+            properties.remove(vendorProperty.get());
+        }
+        properties.add(property);
+    }
+
+    private Predicate<VendorExtension> withName(final String name) {
+        return new Predicate<VendorExtension>() {
+            @Override
+            public boolean apply(VendorExtension input) {
+                return input.getName().equals(name);
+            }
+        };
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ObjectVendorExtension that = (ObjectVendorExtension) o;
+        return Objects.equal(properties, that.properties);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(properties);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("properties", properties)
+                .add("name", name)
+                .toString();
+    }
 }

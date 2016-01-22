@@ -30,37 +30,38 @@ import com.google.common.collect.ImmutableList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static com.google.common.collect.Lists.*;
-import static springfox.documentation.schema.property.bean.Accessors.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static springfox.documentation.schema.property.bean.Accessors.maybeAGetter;
+import static springfox.documentation.schema.property.bean.Accessors.maybeASetter;
 
 @Component
 public class AccessorsProvider {
 
-  private TypeResolver typeResolver;
+    private TypeResolver typeResolver;
 
-  @Autowired
-  public AccessorsProvider(TypeResolver typeResolver) {
-    this.typeResolver = typeResolver;
-  }
-
-  private Predicate<ResolvedMethod> onlyGettersAndSetters() {
-    return new Predicate<ResolvedMethod>() {
-      @Override
-      public boolean apply(ResolvedMethod input) {
-        return maybeAGetter(input.getRawMember()) || maybeASetter(input.getRawMember());
-      }
-    };
-  }
-
-  public com.google.common.collect.ImmutableList<ResolvedMethod> in(ResolvedType resolvedType) {
-    MemberResolver resolver = new MemberResolver(typeResolver);
-    resolver.setIncludeLangObject(false);
-    if (resolvedType.getErasedType() == Object.class) {
-      return ImmutableList.of();
+    @Autowired
+    public AccessorsProvider(TypeResolver typeResolver) {
+        this.typeResolver = typeResolver;
     }
-    ResolvedTypeWithMembers typeWithMembers = resolver.resolve(resolvedType, null, null);
-    return FluentIterable
-        .from(newArrayList(typeWithMembers.getMemberMethods()))
-        .filter(onlyGettersAndSetters()).toList();
-  }
+
+    private Predicate<ResolvedMethod> onlyGettersAndSetters() {
+        return new Predicate<ResolvedMethod>() {
+            @Override
+            public boolean apply(ResolvedMethod input) {
+                return maybeAGetter(input.getRawMember()) || maybeASetter(input.getRawMember());
+            }
+        };
+    }
+
+    public com.google.common.collect.ImmutableList<ResolvedMethod> in(ResolvedType resolvedType) {
+        MemberResolver resolver = new MemberResolver(typeResolver);
+        resolver.setIncludeLangObject(false);
+        if (resolvedType.getErasedType() == Object.class) {
+            return ImmutableList.of();
+        }
+        ResolvedTypeWithMembers typeWithMembers = resolver.resolve(resolvedType, null, null);
+        return FluentIterable
+                .from(newArrayList(typeWithMembers.getMemberMethods()))
+                .filter(onlyGettersAndSetters()).toList();
+    }
 }

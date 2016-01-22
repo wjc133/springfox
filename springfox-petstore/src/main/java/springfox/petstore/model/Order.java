@@ -25,64 +25,64 @@ import springfox.petstore.repository.Identifiable;
 import java.util.Date;
 
 public class Order implements Identifiable<Long> {
-  private long id;
-  private long petId;
-  private int quantity;
-  private Date shipDate;
-  private String status;
-  private boolean complete;
+    private long id;
+    private long petId;
+    private int quantity;
+    private Date shipDate;
+    private String status;
+    private boolean complete;
 
-  public long getId() {
-    return id;
-  }
+    public long getId() {
+        return id;
+    }
 
-  public void setId(long id) {
-    this.id = id;
-  }
+    public void setId(long id) {
+        this.id = id;
+    }
 
-  public boolean isComplete() {
-    return complete;
-  }
+    public boolean isComplete() {
+        return complete;
+    }
 
-  public void setComplete(boolean complete) {
-    this.complete = complete;
-  }
+    public void setComplete(boolean complete) {
+        this.complete = complete;
+    }
 
-  public long getPetId() {
-    return petId;
-  }
+    public long getPetId() {
+        return petId;
+    }
 
-  public void setPetId(long petId) {
-    this.petId = petId;
-  }
+    public void setPetId(long petId) {
+        this.petId = petId;
+    }
 
-  public int getQuantity() {
-    return quantity;
-  }
+    public int getQuantity() {
+        return quantity;
+    }
 
-  public void setQuantity(int quantity) {
-    this.quantity = quantity;
-  }
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
-  @ApiModelProperty(value = "Order Status", allowableValues = "placed, approved, delivered")
-  public String getStatus() {
-    return status;
-  }
+    @ApiModelProperty(value = "Order Status", allowableValues = "placed, approved, delivered")
+    public String getStatus() {
+        return status;
+    }
 
-  public void setStatus(String status) {
-    this.status = status;
-  }
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-  public Date getShipDate() {
-    return shipDate;
-  }
+    public Date getShipDate() {
+        return shipDate;
+    }
 
-  public void setShipDate(Date shipDate) {
-    this.shipDate = shipDate;
-  }
+    public void setShipDate(Date shipDate) {
+        this.shipDate = shipDate;
+    }
 
-  @Override
-  public Long getIdentifier() {
-    return id;
-  }
+    @Override
+    public Long getIdentifier() {
+        return id;
+    }
 }

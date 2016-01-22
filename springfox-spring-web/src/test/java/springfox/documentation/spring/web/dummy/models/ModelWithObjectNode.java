@@ -21,13 +21,13 @@ package springfox.documentation.spring.web.dummy.models;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class ModelWithObjectNode {
-  private ObjectNode anyObject;
+    private ObjectNode anyObject;
 
-  public ObjectNode getAnyObject() {
-    return anyObject;
-  }
+    public ObjectNode getAnyObject() {
+        return anyObject;
+    }
 
-  public void setAnyObject(ObjectNode anyObject) {
-    this.anyObject = anyObject;
-  }
+    public void setAnyObject(ObjectNode anyObject) {
+        this.anyObject = anyObject;
+    }
 }

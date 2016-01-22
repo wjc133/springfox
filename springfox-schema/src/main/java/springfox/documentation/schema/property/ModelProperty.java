@@ -23,19 +23,19 @@ import com.fasterxml.classmate.ResolvedType;
 import springfox.documentation.service.AllowableValues;
 
 public interface ModelProperty {
-  String getName();
+    String getName();
 
-  ResolvedType getType();
+    ResolvedType getType();
 
-  String qualifiedTypeName();
+    String qualifiedTypeName();
 
-  AllowableValues allowableValues();
+    AllowableValues allowableValues();
 
-  String propertyDescription();
+    String propertyDescription();
 
-  boolean isRequired();
+    boolean isRequired();
 
-  boolean isReadOnly();
+    boolean isReadOnly();
 
-  int position();
+    int position();
 }

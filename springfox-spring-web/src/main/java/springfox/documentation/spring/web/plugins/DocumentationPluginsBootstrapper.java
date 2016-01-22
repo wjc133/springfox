@@ -39,73 +39,73 @@ import javax.servlet.ServletContext;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static springfox.documentation.spi.service.contexts.Orderings.*;
+import static springfox.documentation.spi.service.contexts.Orderings.pluginOrdering;
 
 /**
  * After an application context refresh, builds and executes all DocumentationConfigurer instances found in the
  * application context.
- *
+ * <p/>
  * If no instances DocumentationConfigurer are found a default one is created and executed.
  */
 @Component
 public class DocumentationPluginsBootstrapper implements ApplicationListener<ContextRefreshedEvent> {
-  private static final Logger log = LoggerFactory.getLogger(DocumentationPluginsBootstrapper.class);
-  private final DocumentationPluginsManager documentationPluginsManager;
-  private final RequestHandlerProvider handlerProvider;
-  private final DocumentationCache scanned;
-  private final ApiDocumentationScanner resourceListing;
-  private final DefaultConfiguration defaultConfiguration;
+    private static final Logger log = LoggerFactory.getLogger(DocumentationPluginsBootstrapper.class);
+    private final DocumentationPluginsManager documentationPluginsManager;
+    private final RequestHandlerProvider handlerProvider;
+    private final DocumentationCache scanned;
+    private final ApiDocumentationScanner resourceListing;
+    private final DefaultConfiguration defaultConfiguration;
 
-  private AtomicBoolean initialized = new AtomicBoolean(false);
+    private AtomicBoolean initialized = new AtomicBoolean(false);
 
-  @Autowired
-  public DocumentationPluginsBootstrapper(DocumentationPluginsManager documentationPluginsManager,
-                                          RequestHandlerProvider handlerProvider,
-                                          DocumentationCache scanned,
-                                          ApiDocumentationScanner resourceListing,
-                                          TypeResolver typeResolver,
-                                          Defaults defaults,
-                                          ServletContext servletContext) {
+    @Autowired
+    public DocumentationPluginsBootstrapper(DocumentationPluginsManager documentationPluginsManager,
+                                            RequestHandlerProvider handlerProvider,
+                                            DocumentationCache scanned,
+                                            ApiDocumentationScanner resourceListing,
+                                            TypeResolver typeResolver,
+                                            Defaults defaults,
+                                            ServletContext servletContext) {
 
-    this.documentationPluginsManager = documentationPluginsManager;
-    this.handlerProvider = handlerProvider;
-    this.scanned = scanned;
-    this.resourceListing = resourceListing;
-    this.defaultConfiguration = new DefaultConfiguration(defaults, typeResolver, servletContext);
-  }
-
-  @Override
-  public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-    if (initialized.compareAndSet(false, true)) {
-      log.info("Context refreshed");
-      List<DocumentationPlugin> plugins = pluginOrdering()
-          .sortedCopy(documentationPluginsManager.documentationPlugins());
-      log.info("Found {} custom documentation plugin(s)", plugins.size());
-      for (DocumentationPlugin each : plugins) {
-        DocumentationType documentationType = each.getDocumentationType();
-        if (each.isEnabled()) {
-          scanDocumentation(buildContext(each));
-        } else {
-          log.info("Skipping initializing disabled plugin bean {} v{}",
-              documentationType.getName(), documentationType.getVersion());
-        }
-      }
+        this.documentationPluginsManager = documentationPluginsManager;
+        this.handlerProvider = handlerProvider;
+        this.scanned = scanned;
+        this.resourceListing = resourceListing;
+        this.defaultConfiguration = new DefaultConfiguration(defaults, typeResolver, servletContext);
     }
-  }
 
-  private DocumentationContext buildContext(DocumentationPlugin each) {
-    return each.configure(defaultContextBuilder(each));
-  }
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+        if (initialized.compareAndSet(false, true)) {
+            log.info("Context refreshed");
+            List<DocumentationPlugin> plugins = pluginOrdering()
+                    .sortedCopy(documentationPluginsManager.documentationPlugins());
+            log.info("Found {} custom documentation plugin(s)", plugins.size());
+            for (DocumentationPlugin each : plugins) {
+                DocumentationType documentationType = each.getDocumentationType();
+                if (each.isEnabled()) {
+                    scanDocumentation(buildContext(each));
+                } else {
+                    log.info("Skipping initializing disabled plugin bean {} v{}",
+                            documentationType.getName(), documentationType.getVersion());
+                }
+            }
+        }
+    }
 
-  private void scanDocumentation(DocumentationContext context) {
-    scanned.addDocumentation(resourceListing.scan(context));
-  }
+    private DocumentationContext buildContext(DocumentationPlugin each) {
+        return each.configure(defaultContextBuilder(each));
+    }
 
-  private DocumentationContextBuilder defaultContextBuilder(DocumentationPlugin each) {
-    DocumentationType documentationType = each.getDocumentationType();
-    return documentationPluginsManager
-        .createContextBuilder(documentationType, defaultConfiguration)
-        .requestHandlers(handlerProvider.requestHandlers());
-  }
+    private void scanDocumentation(DocumentationContext context) {
+        scanned.addDocumentation(resourceListing.scan(context));
+    }
+
+    private DocumentationContextBuilder defaultContextBuilder(DocumentationPlugin each) {
+        DocumentationType documentationType = each.getDocumentationType();
+        return documentationPluginsManager
+                .createContextBuilder(documentationType, defaultConfiguration)
+                .requestHandlers(handlerProvider.requestHandlers());
+    }
 
 }

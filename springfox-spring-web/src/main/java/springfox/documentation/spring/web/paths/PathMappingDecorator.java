@@ -31,18 +31,18 @@ import springfox.documentation.spi.service.contexts.PathContext;
 @Order(value = Ordered.HIGHEST_PRECEDENCE + 40)
 class PathMappingDecorator implements PathDecorator {
 
-  @Override
-  public Function<String, String> decorator(final PathContext context) {
-    return new Function<String, String>() {
-      @Override
-      public String apply(String input) {
-        return new PathMappingAdjuster(context.documentationContext()).adjustedPath(input);
-      }
-    };
-  }
+    @Override
+    public Function<String, String> decorator(final PathContext context) {
+        return new Function<String, String>() {
+            @Override
+            public String apply(String input) {
+                return new PathMappingAdjuster(context.documentationContext()).adjustedPath(input);
+            }
+        };
+    }
 
-  @Override
-  public boolean supports(DocumentationContext delimiter) {
-    return true;
-  }
+    @Override
+    public boolean supports(DocumentationContext delimiter) {
+        return true;
+    }
 }

@@ -27,23 +27,23 @@ import com.fasterxml.classmate.members.ResolvedField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static com.google.common.collect.Lists.*;
+import static com.google.common.collect.Lists.newArrayList;
 
 @Component
 public class FieldProvider {
-  private final TypeResolver typeResolver;
+    private final TypeResolver typeResolver;
 
-  @Autowired
-  public FieldProvider(TypeResolver typeResolver) {
-    this.typeResolver = typeResolver;
-  }
-
-  public Iterable<ResolvedField> in(ResolvedType resolvedType) {
-    MemberResolver memberResolver = new MemberResolver(typeResolver);
-    if (resolvedType.getErasedType() == Object.class) {
-      return newArrayList();
+    @Autowired
+    public FieldProvider(TypeResolver typeResolver) {
+        this.typeResolver = typeResolver;
     }
-    ResolvedTypeWithMembers resolvedMemberWithMembers = memberResolver.resolve(resolvedType, null, null);
-    return newArrayList(resolvedMemberWithMembers.getMemberFields());
-  }
+
+    public Iterable<ResolvedField> in(ResolvedType resolvedType) {
+        MemberResolver memberResolver = new MemberResolver(typeResolver);
+        if (resolvedType.getErasedType() == Object.class) {
+            return newArrayList();
+        }
+        ResolvedTypeWithMembers resolvedMemberWithMembers = memberResolver.resolve(resolvedType, null, null);
+        return newArrayList(resolvedMemberWithMembers.getMemberFields());
+    }
 }

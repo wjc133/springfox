@@ -32,61 +32,62 @@ import springfox.documentation.schema.configuration.ObjectMapperConfigured;
 
 import java.util.List;
 
-import static com.google.common.collect.FluentIterable.*;
-import static com.google.common.collect.Lists.*;
+import static com.google.common.collect.FluentIterable.from;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Lists.reverse;
 
 public class ObjectMapperConfigurer implements BeanPostProcessor, ApplicationEventPublisherAware {
 
-  private ApplicationEventPublisher applicationEventPublisher;
+    private ApplicationEventPublisher applicationEventPublisher;
 
-  @Override
-  public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 
-    if (bean instanceof RequestMappingHandlerAdapter) {
-      RequestMappingHandlerAdapter adapter = (RequestMappingHandlerAdapter) bean;
-      adapter.setMessageConverters(configureMessageConverters(adapter.getMessageConverters()));
+        if (bean instanceof RequestMappingHandlerAdapter) {
+            RequestMappingHandlerAdapter adapter = (RequestMappingHandlerAdapter) bean;
+            adapter.setMessageConverters(configureMessageConverters(adapter.getMessageConverters()));
+        }
+        return bean;
     }
-    return bean;
-  }
 
-  @Override
-  public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-    return bean;
-  }
-
-  @Override
-  public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-    this.applicationEventPublisher = applicationEventPublisher;
-  }
-
-  private List<HttpMessageConverter<?>> configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-    Iterable<MappingJackson2HttpMessageConverter> jackson2Converters = jackson2Converters(converters);
-    if (Iterables.size(jackson2Converters) > 0) {
-      for (MappingJackson2HttpMessageConverter each : jackson2Converters) {
-        fireObjectMapperConfiguredEvent(each.getObjectMapper());
-      }
-    } else {
-      converters.add(configuredMessageConverter());
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        return bean;
     }
-    return newArrayList(converters);
-  }
 
-  private Iterable<MappingJackson2HttpMessageConverter> jackson2Converters(
-      List<HttpMessageConverter<?>> messageConverters) {
-    return reverse(from(messageConverters)
-        .filter(MappingJackson2HttpMessageConverter.class)
-        .toList());
-  }
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventPublisher = applicationEventPublisher;
+    }
 
-  private MappingJackson2HttpMessageConverter configuredMessageConverter() {
-    MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
-    ObjectMapper objectMapper = new ObjectMapper();
-    messageConverter.setObjectMapper(objectMapper);
-    fireObjectMapperConfiguredEvent(objectMapper);
-    return messageConverter;
-  }
+    private List<HttpMessageConverter<?>> configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        Iterable<MappingJackson2HttpMessageConverter> jackson2Converters = jackson2Converters(converters);
+        if (Iterables.size(jackson2Converters) > 0) {
+            for (MappingJackson2HttpMessageConverter each : jackson2Converters) {
+                fireObjectMapperConfiguredEvent(each.getObjectMapper());
+            }
+        } else {
+            converters.add(configuredMessageConverter());
+        }
+        return newArrayList(converters);
+    }
 
-  private void fireObjectMapperConfiguredEvent(ObjectMapper objectMapper) {
-    applicationEventPublisher.publishEvent(new ObjectMapperConfigured(this, objectMapper));
-  }
+    private Iterable<MappingJackson2HttpMessageConverter> jackson2Converters(
+            List<HttpMessageConverter<?>> messageConverters) {
+        return reverse(from(messageConverters)
+                .filter(MappingJackson2HttpMessageConverter.class)
+                .toList());
+    }
+
+    private MappingJackson2HttpMessageConverter configuredMessageConverter() {
+        MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
+        ObjectMapper objectMapper = new ObjectMapper();
+        messageConverter.setObjectMapper(objectMapper);
+        fireObjectMapperConfiguredEvent(objectMapper);
+        return messageConverter;
+    }
+
+    private void fireObjectMapperConfiguredEvent(ObjectMapper objectMapper) {
+        applicationEventPublisher.publishEvent(new ObjectMapperConfigured(this, objectMapper));
+    }
 }

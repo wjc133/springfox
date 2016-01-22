@@ -39,57 +39,57 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import static springfox.documentation.schema.ResolvedTypes.*;
+import static springfox.documentation.schema.ResolvedTypes.resolvedTypeSignature;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class OperationModelsProvider implements OperationModelsProviderPlugin {
 
-  private static final Logger LOG = LoggerFactory.getLogger(OperationModelsProvider.class);
-  private final TypeResolver typeResolver;
+    private static final Logger LOG = LoggerFactory.getLogger(OperationModelsProvider.class);
+    private final TypeResolver typeResolver;
 
-  @Autowired
-  public OperationModelsProvider(TypeResolver typeResolver) {
-    this.typeResolver = typeResolver;
-  }
-
-  @Override
-  public void apply(RequestMappingContext context) {
-    collectFromReturnType(context);
-    collectParameters(context);
-  }
-
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return true;
-  }
-
-  private void collectFromReturnType(RequestMappingContext context) {
-    ResolvedType modelType = new HandlerMethodResolver(typeResolver).methodReturnType(context.getHandlerMethod());
-    modelType = context.alternateFor(modelType);
-    LOG.debug("Adding return parameter of type {}", resolvedTypeSignature(modelType).or("<null>"));
-    context.operationModelsBuilder().addReturn(modelType);
-  }
-
-  private void collectParameters(RequestMappingContext context) {
-
-    HandlerMethod handlerMethod = context.getHandlerMethod();
-    Method method = handlerMethod.getMethod();
-
-    LOG.debug("Reading parameters models for handlerMethod |{}|", handlerMethod.getMethod().getName());
-
-    HandlerMethodResolver handlerMethodResolver = new HandlerMethodResolver(typeResolver);
-    List<ResolvedMethodParameter> parameterTypes = handlerMethodResolver.methodParameters(handlerMethod);
-    for (ResolvedMethodParameter parameterType : parameterTypes) {
-      Annotation[] parameterAnnotations = parameterType.getMethodParameter().getParameterAnnotations();
-      for (Annotation annotation : parameterAnnotations) {
-        if (annotation instanceof RequestBody || annotation instanceof RequestPart) {
-          ResolvedType modelType = context.alternateFor(parameterType.getResolvedParameterType());
-          LOG.debug("Adding input parameter of type {}", resolvedTypeSignature(modelType).or("<null>"));
-          context.operationModelsBuilder().addInputParam(modelType);
-        }
-      }
+    @Autowired
+    public OperationModelsProvider(TypeResolver typeResolver) {
+        this.typeResolver = typeResolver;
     }
-    LOG.debug("Finished reading parameters models for handlerMethod |{}|", handlerMethod.getMethod().getName());
-  }
+
+    @Override
+    public void apply(RequestMappingContext context) {
+        collectFromReturnType(context);
+        collectParameters(context);
+    }
+
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return true;
+    }
+
+    private void collectFromReturnType(RequestMappingContext context) {
+        ResolvedType modelType = new HandlerMethodResolver(typeResolver).methodReturnType(context.getHandlerMethod());
+        modelType = context.alternateFor(modelType);
+        LOG.debug("Adding return parameter of type {}", resolvedTypeSignature(modelType).or("<null>"));
+        context.operationModelsBuilder().addReturn(modelType);
+    }
+
+    private void collectParameters(RequestMappingContext context) {
+
+        HandlerMethod handlerMethod = context.getHandlerMethod();
+        Method method = handlerMethod.getMethod();
+
+        LOG.debug("Reading parameters models for handlerMethod |{}|", handlerMethod.getMethod().getName());
+
+        HandlerMethodResolver handlerMethodResolver = new HandlerMethodResolver(typeResolver);
+        List<ResolvedMethodParameter> parameterTypes = handlerMethodResolver.methodParameters(handlerMethod);
+        for (ResolvedMethodParameter parameterType : parameterTypes) {
+            Annotation[] parameterAnnotations = parameterType.getMethodParameter().getParameterAnnotations();
+            for (Annotation annotation : parameterAnnotations) {
+                if (annotation instanceof RequestBody || annotation instanceof RequestPart) {
+                    ResolvedType modelType = context.alternateFor(parameterType.getResolvedParameterType());
+                    LOG.debug("Adding input parameter of type {}", resolvedTypeSignature(modelType).or("<null>"));
+                    context.operationModelsBuilder().addInputParam(modelType);
+                }
+            }
+        }
+        LOG.debug("Finished reading parameters models for handlerMethod |{}|", handlerMethod.getMethod().getName());
+    }
 }

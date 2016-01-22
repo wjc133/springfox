@@ -33,17 +33,17 @@ import springfox.documentation.swagger1.mixins.SwaggerPathProviderSupport
 
 import javax.servlet.ServletContext
 
-import static springfox.documentation.spring.web.paths.Paths.*
+import static springfox.documentation.spring.web.paths.Paths.sanitizeRequestMappingPattern
 
 @Mixin([RequestMappingSupport, SwaggerPathProviderSupport, ServicePluginsSupport])
 class SwaggerApiDescriptionReaderSpec extends DocumentationContextSpec {
 
-   def "should generate an api description for each request mapping pattern"() {
-      given:
+    def "should generate an api description for each request mapping pattern"() {
+        given:
         def operationReader = Mock(ApiOperationReader)
         ApiDescriptionReader sut =
-            new ApiDescriptionReader(operationReader, defaultWebPlugins(), new ApiDescriptionLookup())
-      and:
+                new ApiDescriptionReader(operationReader, defaultWebPlugins(), new ApiDescriptionLookup())
+        and:
         plugin.pathProvider(pathProvider)
         RequestMappingInfo requestMappingInfo = requestMappingInfo("/doesNotMatterForThisTest",
                 [patternsRequestCondition: patternsRequestCondition('/somePath/{businessId}', '/somePath/{businessId:\\d+}')]
@@ -51,10 +51,10 @@ class SwaggerApiDescriptionReaderSpec extends DocumentationContextSpec {
         RequestMappingContext mappingContext = new RequestMappingContext(context(), requestMappingInfo,
                 dummyHandlerMethod())
         operationReader.read(_) >> [Mock(Operation), Mock(Operation)]
-      when:
+        when:
         def descriptionList = sut.read(mappingContext)
 
-      then:
+        then:
         descriptionList.size() == 2
 
         ApiDescription apiDescription = descriptionList[0]
@@ -66,16 +66,16 @@ class SwaggerApiDescriptionReaderSpec extends DocumentationContextSpec {
         secondApiDescription.getPath() == '/somePath/{businessId}'
         secondApiDescription.getDescription() == dummyHandlerMethod().method.name
 
-      where:
+        where:
         pathProvider                                      | prefix
         relativeSwaggerPathProvider(Mock(ServletContext)) | ""
-   }
+    }
 
-   def "should sanitize request mapping endpoints"() {
-      expect:
+    def "should sanitize request mapping endpoints"() {
+        expect:
         sanitizeRequestMappingPattern(mappingPattern) == expected
 
-      where:
+        where:
         mappingPattern             | expected
         ""                         | "/"
         "/"                        | "/"
@@ -86,5 +86,5 @@ class SwaggerApiDescriptionReaderSpec extends DocumentationContextSpec {
         "/foo:{foo}/bar:{baz}"     | "/foo:{foo}/bar:{baz}"
         "/foo/bar:{baz:\\w+}"      | "/foo/bar:{baz}"
 
-   }
+    }
 }

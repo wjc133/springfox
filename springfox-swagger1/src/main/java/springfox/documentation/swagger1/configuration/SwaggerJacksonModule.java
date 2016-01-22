@@ -26,86 +26,61 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import springfox.documentation.spring.web.json.JacksonModuleRegistrar;
-import springfox.documentation.swagger1.dto.AllowableListValues;
-import springfox.documentation.swagger1.dto.AllowableRangeValues;
-import springfox.documentation.swagger1.dto.ApiDescription;
-import springfox.documentation.swagger1.dto.ApiInfo;
-import springfox.documentation.swagger1.dto.ApiKey;
-import springfox.documentation.swagger1.dto.ApiListing;
-import springfox.documentation.swagger1.dto.ApiListingReference;
-import springfox.documentation.swagger1.dto.Authorization;
-import springfox.documentation.swagger1.dto.AuthorizationCodeGrant;
-import springfox.documentation.swagger1.dto.AuthorizationScope;
-import springfox.documentation.swagger1.dto.BasicAuth;
-import springfox.documentation.swagger1.dto.ContainerDataType;
-import springfox.documentation.swagger1.dto.DataType;
-import springfox.documentation.swagger1.dto.ImplicitGrant;
-import springfox.documentation.swagger1.dto.LoginEndpoint;
-import springfox.documentation.swagger1.dto.ModelDto;
-import springfox.documentation.swagger1.dto.ModelPropertyDto;
-import springfox.documentation.swagger1.dto.OAuth;
-import springfox.documentation.swagger1.dto.Parameter;
-import springfox.documentation.swagger1.dto.PrimitiveDataType;
-import springfox.documentation.swagger1.dto.PrimitiveFormatDataType;
-import springfox.documentation.swagger1.dto.ReferenceDataType;
-import springfox.documentation.swagger1.dto.ResourceListing;
-import springfox.documentation.swagger1.dto.ResponseMessage;
-import springfox.documentation.swagger1.dto.TokenEndpoint;
-import springfox.documentation.swagger1.dto.TokenRequestEndpoint;
+import springfox.documentation.swagger1.dto.*;
 
 public class SwaggerJacksonModule extends SimpleModule implements JacksonModuleRegistrar {
 
-  public void maybeRegisterModule(ObjectMapper objectMapper) {
-    if (isModuleSetup(objectMapper)) {
-      objectMapper.registerModule(new SwaggerJacksonModule());
-      objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+    public void maybeRegisterModule(ObjectMapper objectMapper) {
+        if (isModuleSetup(objectMapper)) {
+            objectMapper.registerModule(new SwaggerJacksonModule());
+            objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        }
     }
-  }
 
-  private static boolean isModuleSetup(ObjectMapper objectMapper) {
-    return objectMapper.findMixInClassFor(ApiListing.class) == null;
-  }
+    private static boolean isModuleSetup(ObjectMapper objectMapper) {
+        return objectMapper.findMixInClassFor(ApiListing.class) == null;
+    }
 
-  @Override
-  public void setupModule(SetupContext module) {
-    super.setupModule(module);
-    module.setMixInAnnotations(ApiListing.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(ResourceListing.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(AllowableListValues.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(AllowableRangeValues.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(ApiDescription.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(ApiInfo.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(ApiKey.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(ApiListingReference.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(Authorization.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(AuthorizationCodeGrant.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(AuthorizationScope.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(BasicAuth.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(OAuth.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(ImplicitGrant.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(LoginEndpoint.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(ModelDto.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(ModelPropertyDto.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(DataType.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(ReferenceDataType.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(ContainerDataType.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(Parameter.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(PrimitiveDataType.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(PrimitiveFormatDataType.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(PrimitiveDataType.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(ResponseMessage.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(TokenEndpoint.class, CustomizedSwaggerSerializer.class);
-    module.setMixInAnnotations(TokenRequestEndpoint.class, CustomizedSwaggerSerializer.class);
-  }
+    @Override
+    public void setupModule(SetupContext module) {
+        super.setupModule(module);
+        module.setMixInAnnotations(ApiListing.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(ResourceListing.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(AllowableListValues.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(AllowableRangeValues.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(ApiDescription.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(ApiInfo.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(ApiKey.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(ApiListingReference.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(Authorization.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(AuthorizationCodeGrant.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(AuthorizationScope.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(BasicAuth.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(OAuth.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(ImplicitGrant.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(LoginEndpoint.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(ModelDto.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(ModelPropertyDto.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(DataType.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(ReferenceDataType.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(ContainerDataType.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(Parameter.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(PrimitiveDataType.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(PrimitiveFormatDataType.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(PrimitiveDataType.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(ResponseMessage.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(TokenEndpoint.class, CustomizedSwaggerSerializer.class);
+        module.setMixInAnnotations(TokenRequestEndpoint.class, CustomizedSwaggerSerializer.class);
+    }
 
-  @JsonAutoDetect(
-          fieldVisibility = JsonAutoDetect.Visibility.ANY,
-          getterVisibility = JsonAutoDetect.Visibility.NONE,
-          setterVisibility = JsonAutoDetect.Visibility.NONE,
-          creatorVisibility = JsonAutoDetect.Visibility.NONE
-  )
-  @JsonInclude(value = JsonInclude.Include.NON_NULL)
-  @JsonPropertyOrder(alphabetic = true)
-  private static class CustomizedSwaggerSerializer {
-  }
+    @JsonAutoDetect(
+            fieldVisibility = JsonAutoDetect.Visibility.ANY,
+            getterVisibility = JsonAutoDetect.Visibility.NONE,
+            setterVisibility = JsonAutoDetect.Visibility.NONE,
+            creatorVisibility = JsonAutoDetect.Visibility.NONE
+    )
+    @JsonInclude(value = JsonInclude.Include.NON_NULL)
+    @JsonPropertyOrder(alphabetic = true)
+    private static class CustomizedSwaggerSerializer {
+    }
 }

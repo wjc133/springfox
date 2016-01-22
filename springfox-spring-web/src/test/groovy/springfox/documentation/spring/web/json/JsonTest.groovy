@@ -23,8 +23,8 @@ import spock.lang.Specification
 
 class JsonTest extends Specification {
 
-  def "should pass coverage"() {
-    expect:
-      new Json("Something").value()
-  }
+    def "should pass coverage"() {
+        expect:
+        new Json("Something").value()
+    }
 }

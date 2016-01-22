@@ -33,44 +33,44 @@ import springfox.documentation.swagger.schema.ApiModelProperties;
 
 import java.lang.annotation.Annotation;
 
-import static com.google.common.base.Strings.*;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 @Component("swaggerParameterAllowableReader")
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
 public class ParameterAllowableReader implements ParameterBuilderPlugin {
 
-  @Override
-  public void apply(ParameterContext context) {
-    MethodParameter methodParameter = context.methodParameter();
-    AllowableValues allowableValues = null;
-    String allowableValueString = findAnnotatedAllowableValues(methodParameter);
-    if (!isNullOrEmpty(allowableValueString)) {
-      allowableValues = ApiModelProperties.allowableValueFromString(allowableValueString);
-    } else {
-      if (methodParameter.getParameterType().isEnum()) {
-        allowableValues = Enums.allowableValues(methodParameter.getParameterType());
-      }
-      if (methodParameter.getParameterType().isArray()) {
-        allowableValues = Enums.allowableValues(methodParameter.getParameterType().getComponentType());
-      }
-    }
-    context.parameterBuilder().allowableValues(allowableValues);
-  }
-
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return SwaggerPluginSupport.pluginDoesApply(delimiter);
-  }
-
-  private String findAnnotatedAllowableValues(MethodParameter methodParameter) {
-    Annotation[] methodAnnotations = methodParameter.getParameterAnnotations();
-    if (null != methodAnnotations) {
-      for (Annotation annotation : methodAnnotations) {
-        if (annotation instanceof ApiParam) {
-          return ((ApiParam) annotation).allowableValues();
+    @Override
+    public void apply(ParameterContext context) {
+        MethodParameter methodParameter = context.methodParameter();
+        AllowableValues allowableValues = null;
+        String allowableValueString = findAnnotatedAllowableValues(methodParameter);
+        if (!isNullOrEmpty(allowableValueString)) {
+            allowableValues = ApiModelProperties.allowableValueFromString(allowableValueString);
+        } else {
+            if (methodParameter.getParameterType().isEnum()) {
+                allowableValues = Enums.allowableValues(methodParameter.getParameterType());
+            }
+            if (methodParameter.getParameterType().isArray()) {
+                allowableValues = Enums.allowableValues(methodParameter.getParameterType().getComponentType());
+            }
         }
-      }
+        context.parameterBuilder().allowableValues(allowableValues);
     }
-    return null;
-  }
+
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return SwaggerPluginSupport.pluginDoesApply(delimiter);
+    }
+
+    private String findAnnotatedAllowableValues(MethodParameter methodParameter) {
+        Annotation[] methodAnnotations = methodParameter.getParameterAnnotations();
+        if (null != methodAnnotations) {
+            for (Annotation annotation : methodAnnotations) {
+                if (annotation instanceof ApiParam) {
+                    return ((ApiParam) annotation).allowableValues();
+                }
+            }
+        }
+        return null;
+    }
 }

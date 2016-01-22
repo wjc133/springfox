@@ -21,49 +21,49 @@ package springfox.documentation.spring.web.dummy.models;
 import java.util.List;
 
 public class ModelAttributeExample {
-  private String stringProp;
-  private int intProp;
-  private List<String> listProp;
-  private int[] arrayProp;
-  private Category complexProp;
+    private String stringProp;
+    private int intProp;
+    private List<String> listProp;
+    private int[] arrayProp;
+    private Category complexProp;
 
-  public String getStringProp() {
-    return stringProp;
-  }
+    public String getStringProp() {
+        return stringProp;
+    }
 
-  public void setStringProp(String stringProp) {
-    this.stringProp = stringProp;
-  }
+    public void setStringProp(String stringProp) {
+        this.stringProp = stringProp;
+    }
 
-  public int getIntProp() {
-    return intProp;
-  }
+    public int getIntProp() {
+        return intProp;
+    }
 
-  public void setIntProp(int intProp) {
-    this.intProp = intProp;
-  }
+    public void setIntProp(int intProp) {
+        this.intProp = intProp;
+    }
 
-  public List<String> getListProp() {
-    return listProp;
-  }
+    public List<String> getListProp() {
+        return listProp;
+    }
 
-  public void setListProp(List<String> listProp) {
-    this.listProp = listProp;
-  }
+    public void setListProp(List<String> listProp) {
+        this.listProp = listProp;
+    }
 
-  public int[] getArrayProp() {
-    return arrayProp;
-  }
+    public int[] getArrayProp() {
+        return arrayProp;
+    }
 
-  public void setArrayProp(int[] arrayProp) {
-    this.arrayProp = arrayProp;
-  }
+    public void setArrayProp(int[] arrayProp) {
+        this.arrayProp = arrayProp;
+    }
 
-  public Category getComplexProp() {
-    return complexProp;
-  }
+    public Category getComplexProp() {
+        return complexProp;
+    }
 
-  public void setComplexProp(Category complexProp) {
-    this.complexProp = complexProp;
-  }
+    public void setComplexProp(Category complexProp) {
+        this.complexProp = complexProp;
+    }
 }

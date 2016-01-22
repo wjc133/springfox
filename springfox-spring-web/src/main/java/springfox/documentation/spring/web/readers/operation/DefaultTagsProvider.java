@@ -22,13 +22,13 @@ import com.google.common.collect.ImmutableSet;
 import org.springframework.stereotype.Component;
 import springfox.documentation.spi.service.contexts.OperationContext;
 
-import static com.google.common.collect.ImmutableSet.*;
-import static com.google.common.collect.Sets.*;
-import static springfox.documentation.spring.web.ControllerNamingUtils.*;
+import static com.google.common.collect.ImmutableSet.copyOf;
+import static com.google.common.collect.Sets.newHashSet;
+import static springfox.documentation.spring.web.ControllerNamingUtils.controllerNameAsGroup;
 
 @Component
 public class DefaultTagsProvider {
-  public ImmutableSet<String> tags(OperationContext context) {
-    return copyOf(newHashSet(controllerNameAsGroup(context.getHandlerMethod())));
-  }
+    public ImmutableSet<String> tags(OperationContext context) {
+        return copyOf(newHashSet(controllerNameAsGroup(context.getHandlerMethod())));
+    }
 }

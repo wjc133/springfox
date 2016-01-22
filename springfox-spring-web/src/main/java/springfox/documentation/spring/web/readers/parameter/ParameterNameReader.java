@@ -38,103 +38,104 @@ import springfox.documentation.spi.service.contexts.ParameterContext;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
-import static com.google.common.base.Strings.*;
-import static com.google.common.collect.FluentIterable.*;
-import static com.google.common.collect.Lists.*;
-import static java.lang.String.*;
+import static com.google.common.base.Strings.emptyToNull;
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.FluentIterable.from;
+import static com.google.common.collect.Lists.newArrayList;
+import static java.lang.String.format;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ParameterNameReader implements ParameterBuilderPlugin {
 
-  public static final String SPRING4_DISCOVERER = "org.springframework.core.DefaultParameterNameDiscoverer";
-  private final ParameterNameDiscoverer parameterNameDiscover = parameterNameDiscoverer();
+    public static final String SPRING4_DISCOVERER = "org.springframework.core.DefaultParameterNameDiscoverer";
+    private final ParameterNameDiscoverer parameterNameDiscover = parameterNameDiscoverer();
 
-  @Override
-  public void apply(ParameterContext context) {
-    MethodParameter methodParameter = context.methodParameter();
-    String name = findParameterNameFromAnnotations(methodParameter);
-    if (isNullOrEmpty(name)) {
-      Optional<String> discoveredName = discoveredName(methodParameter);
-      name = discoveredName.isPresent()
-             ? discoveredName.get()
-             : format("param%s", methodParameter.getParameterIndex());
+    @Override
+    public void apply(ParameterContext context) {
+        MethodParameter methodParameter = context.methodParameter();
+        String name = findParameterNameFromAnnotations(methodParameter);
+        if (isNullOrEmpty(name)) {
+            Optional<String> discoveredName = discoveredName(methodParameter);
+            name = discoveredName.isPresent()
+                    ? discoveredName.get()
+                    : format("param%s", methodParameter.getParameterIndex());
+        }
+        context.parameterBuilder()
+                .name(name)
+                .description(name);
     }
-    context.parameterBuilder()
-        .name(name)
-        .description(name);
-  }
 
-  private Optional<String> discoveredName(MethodParameter methodParameter) {
-    String[] discoveredNames = parameterNameDiscover.getParameterNames(methodParameter.getMethod());
-    return discoveredNames != null && methodParameter.getParameterIndex() < discoveredNames.length
-           ? Optional.fromNullable(emptyToNull(discoveredNames[methodParameter.getParameterIndex()]))
-           : Optional.<String>absent();
-  }
-
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return true;
-  }
-
-  private String findParameterNameFromAnnotations(MethodParameter methodParameter) {
-    List<Annotation> methodAnnotations = newArrayList(methodParameter.getParameterAnnotations());
-    return from(methodAnnotations)
-        .filter(PathVariable.class).first().transform(pathVariableValue())
-        .or(first(methodAnnotations, ModelAttribute.class).transform(modelAttributeValue()))
-        .or(first(methodAnnotations, RequestParam.class).transform(requestParamValue()))
-        .or(first(methodAnnotations, RequestHeader.class).transform(requestHeaderValue()))
-        .orNull();
-  }
-
-  private ParameterNameDiscoverer parameterNameDiscoverer() {
-    ParameterNameDiscoverer dicoverer;
-    try {
-      dicoverer = (ParameterNameDiscoverer) Class.forName(SPRING4_DISCOVERER).newInstance();
-    } catch (Exception e) {
-      dicoverer = new LocalVariableTableParameterNameDiscoverer();
+    private Optional<String> discoveredName(MethodParameter methodParameter) {
+        String[] discoveredNames = parameterNameDiscover.getParameterNames(methodParameter.getMethod());
+        return discoveredNames != null && methodParameter.getParameterIndex() < discoveredNames.length
+                ? Optional.fromNullable(emptyToNull(discoveredNames[methodParameter.getParameterIndex()]))
+                : Optional.<String>absent();
     }
-    return dicoverer;
-  }
 
-  private <T> Optional<T> first(List<Annotation> methodAnnotations, Class<T> ofType) {
-    return from(methodAnnotations).filter(ofType).first();
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return true;
+    }
 
-  private Function<RequestHeader, String> requestHeaderValue() {
-    return new Function<RequestHeader, String>() {
-      @Override
-      public String apply(RequestHeader input) {
-        return input.value();
-      }
-    };
-  }
+    private String findParameterNameFromAnnotations(MethodParameter methodParameter) {
+        List<Annotation> methodAnnotations = newArrayList(methodParameter.getParameterAnnotations());
+        return from(methodAnnotations)
+                .filter(PathVariable.class).first().transform(pathVariableValue())
+                .or(first(methodAnnotations, ModelAttribute.class).transform(modelAttributeValue()))
+                .or(first(methodAnnotations, RequestParam.class).transform(requestParamValue()))
+                .or(first(methodAnnotations, RequestHeader.class).transform(requestHeaderValue()))
+                .orNull();
+    }
 
-  private Function<RequestParam, String> requestParamValue() {
-    return new Function<RequestParam, String>() {
-      @Override
-      public String apply(RequestParam input) {
-        return input.value();
-      }
-    };
-  }
+    private ParameterNameDiscoverer parameterNameDiscoverer() {
+        ParameterNameDiscoverer dicoverer;
+        try {
+            dicoverer = (ParameterNameDiscoverer) Class.forName(SPRING4_DISCOVERER).newInstance();
+        } catch (Exception e) {
+            dicoverer = new LocalVariableTableParameterNameDiscoverer();
+        }
+        return dicoverer;
+    }
 
-  private Function<ModelAttribute, String> modelAttributeValue() {
-    return new Function<ModelAttribute, String>() {
-      @Override
-      public String apply(ModelAttribute input) {
-        return input.value();
-      }
-    };
-  }
+    private <T> Optional<T> first(List<Annotation> methodAnnotations, Class<T> ofType) {
+        return from(methodAnnotations).filter(ofType).first();
+    }
 
-  private Function<PathVariable, String> pathVariableValue() {
-    return new Function<PathVariable, String>() {
-      @Override
-      public String apply(PathVariable input) {
-        return input.value();
-      }
-    };
-  }
+    private Function<RequestHeader, String> requestHeaderValue() {
+        return new Function<RequestHeader, String>() {
+            @Override
+            public String apply(RequestHeader input) {
+                return input.value();
+            }
+        };
+    }
+
+    private Function<RequestParam, String> requestParamValue() {
+        return new Function<RequestParam, String>() {
+            @Override
+            public String apply(RequestParam input) {
+                return input.value();
+            }
+        };
+    }
+
+    private Function<ModelAttribute, String> modelAttributeValue() {
+        return new Function<ModelAttribute, String>() {
+            @Override
+            public String apply(ModelAttribute input) {
+                return input.value();
+            }
+        };
+    }
+
+    private Function<PathVariable, String> pathVariableValue() {
+        return new Function<PathVariable, String>() {
+            @Override
+            public String apply(PathVariable input) {
+                return input.value();
+            }
+        };
+    }
 
 }

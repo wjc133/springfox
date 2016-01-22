@@ -23,5 +23,5 @@ import springfox.documentation.RequestHandler;
 import java.util.List;
 
 public interface RequestHandlerProvider {
-  List<RequestHandler> requestHandlers();
+    List<RequestHandler> requestHandlers();
 }

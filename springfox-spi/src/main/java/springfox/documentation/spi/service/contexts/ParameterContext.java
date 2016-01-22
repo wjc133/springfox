@@ -28,57 +28,57 @@ import springfox.documentation.spi.schema.AlternateTypeProvider;
 import springfox.documentation.spi.schema.GenericTypeNamingStrategy;
 
 public class ParameterContext {
-  private final ParameterBuilder parameterBuilder;
-  private final ResolvedMethodParameter resolvedMethodParameter;
-  private final DocumentationContext documentationContext;
-  private final GenericTypeNamingStrategy genericNamingStrategy;
-  private final OperationContext operationContext;
+    private final ParameterBuilder parameterBuilder;
+    private final ResolvedMethodParameter resolvedMethodParameter;
+    private final DocumentationContext documentationContext;
+    private final GenericTypeNamingStrategy genericNamingStrategy;
+    private final OperationContext operationContext;
 
-  public ParameterContext(ResolvedMethodParameter resolvedMethodParameter,
-                          ParameterBuilder parameterBuilder,
-                          DocumentationContext documentationContext,
-                          GenericTypeNamingStrategy genericNamingStrategy,
-                          OperationContext operationContext) {
-    this.parameterBuilder = parameterBuilder;
-    this.resolvedMethodParameter = resolvedMethodParameter;
-    this.documentationContext = documentationContext;
-    this.genericNamingStrategy = genericNamingStrategy;
-    this.operationContext = operationContext;
-  }
+    public ParameterContext(ResolvedMethodParameter resolvedMethodParameter,
+                            ParameterBuilder parameterBuilder,
+                            DocumentationContext documentationContext,
+                            GenericTypeNamingStrategy genericNamingStrategy,
+                            OperationContext operationContext) {
+        this.parameterBuilder = parameterBuilder;
+        this.resolvedMethodParameter = resolvedMethodParameter;
+        this.documentationContext = documentationContext;
+        this.genericNamingStrategy = genericNamingStrategy;
+        this.operationContext = operationContext;
+    }
 
-  public ResolvedMethodParameter resolvedMethodParameter() {
-    return resolvedMethodParameter;
-  }
+    public ResolvedMethodParameter resolvedMethodParameter() {
+        return resolvedMethodParameter;
+    }
 
-  public MethodParameter methodParameter() {
-    return resolvedMethodParameter.getMethodParameter();
-  }
+    public MethodParameter methodParameter() {
+        return resolvedMethodParameter.getMethodParameter();
+    }
 
-  public ParameterBuilder parameterBuilder() {
-    return parameterBuilder;
-  }
+    public ParameterBuilder parameterBuilder() {
+        return parameterBuilder;
+    }
 
-  public DocumentationContext getDocumentationContext() {
-    return documentationContext;
-  }
+    public DocumentationContext getDocumentationContext() {
+        return documentationContext;
+    }
 
-  public DocumentationType getDocumentationType() {
-    return documentationContext.getDocumentationType();
-  }
+    public DocumentationType getDocumentationType() {
+        return documentationContext.getDocumentationType();
+    }
 
-  public ResolvedType alternateFor(ResolvedType parameterType) {
-    return getAlternateTypeProvider().alternateFor(parameterType);
-  }
+    public ResolvedType alternateFor(ResolvedType parameterType) {
+        return getAlternateTypeProvider().alternateFor(parameterType);
+    }
 
-  public AlternateTypeProvider getAlternateTypeProvider() {
-    return documentationContext.getAlternateTypeProvider();
-  }
+    public AlternateTypeProvider getAlternateTypeProvider() {
+        return documentationContext.getAlternateTypeProvider();
+    }
 
-  public GenericTypeNamingStrategy getGenericNamingStrategy() {
-    return genericNamingStrategy;
-  }
+    public GenericTypeNamingStrategy getGenericNamingStrategy() {
+        return genericNamingStrategy;
+    }
 
-  public OperationContext getOperationContext() {
-    return operationContext;
-  }
+    public OperationContext getOperationContext() {
+        return operationContext;
+    }
 }

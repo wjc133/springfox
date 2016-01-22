@@ -23,30 +23,30 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import spock.lang.Specification
 
 class JsonSerializerTest extends Specification {
-  def "should serialize"() {
-    given:
-      JsonSerializer sut = new JsonSerializer([])
-      def objectMapper = Mock(ObjectMapper)
-      sut.objectMapper = objectMapper
-      String object = 'a string'
-    when:
-      sut.toJson(object)
-    then:
-      1 * objectMapper.writeValueAsString(object)
-  }
+    def "should serialize"() {
+        given:
+        JsonSerializer sut = new JsonSerializer([])
+        def objectMapper = Mock(ObjectMapper)
+        sut.objectMapper = objectMapper
+        String object = 'a string'
+        when:
+        sut.toJson(object)
+        then:
+        1 * objectMapper.writeValueAsString(object)
+    }
 
-  def "should serialize with custom registrars"() {
-    given: "mocks"
-      def registrar = Mock(JacksonModuleRegistrar)
-      def objectMapper = Mock(ObjectMapper)
-      def object = 'a string'
-    when:
-      JsonSerializer sut = new JsonSerializer([registrar])
-      sut.objectMapper = objectMapper
-    and:
-      sut.toJson(object)
-    then:
-      1 * objectMapper.writeValueAsString(object)
-      1 * registrar.maybeRegisterModule(_)
-  }
+    def "should serialize with custom registrars"() {
+        given: "mocks"
+        def registrar = Mock(JacksonModuleRegistrar)
+        def objectMapper = Mock(ObjectMapper)
+        def object = 'a string'
+        when:
+        JsonSerializer sut = new JsonSerializer([registrar])
+        sut.objectMapper = objectMapper
+        and:
+        sut.toJson(object)
+        then:
+        1 * objectMapper.writeValueAsString(object)
+        1 * registrar.maybeRegisterModule(_)
+    }
 }

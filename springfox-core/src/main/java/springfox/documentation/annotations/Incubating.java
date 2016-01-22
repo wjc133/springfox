@@ -24,14 +24,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.TYPE})
+@Target({ElementType.METHOD, ElementType.TYPE})
 /**
  * Annotation to keep track of which interfaces/methods/apis are less stable and may change
  */
 public @interface Incubating {
-  /**
-   * To keep track of which version this incubating feature was introduced
-   * @return version the annotation was introduced
-   */
-  String value() default "2.2.0";
+    /**
+     * To keep track of which version this incubating feature was introduced
+     *
+     * @return version the annotation was introduced
+     */
+    String value() default "2.2.0";
 }

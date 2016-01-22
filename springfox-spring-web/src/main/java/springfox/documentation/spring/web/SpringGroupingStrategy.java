@@ -27,8 +27,8 @@ import springfox.documentation.spi.service.ResourceGroupingStrategy;
 
 import java.util.Set;
 
-import static com.google.common.collect.Sets.*;
-import static springfox.documentation.spring.web.paths.Paths.*;
+import static com.google.common.collect.Sets.newHashSet;
+import static springfox.documentation.spring.web.paths.Paths.splitCamelCase;
 
 /**
  * TODO - fix or remove
@@ -38,33 +38,33 @@ import static springfox.documentation.spring.web.paths.Paths.*;
  * - Controllers without top level request mappings
  */
 public class SpringGroupingStrategy implements ResourceGroupingStrategy {
-  @Override
-  public Set<ResourceGroup> getResourceGroups(RequestMappingInfo requestMappingInfo, HandlerMethod handlerMethod) {
-    return groups(handlerMethod);
-  }
+    @Override
+    public Set<ResourceGroup> getResourceGroups(RequestMappingInfo requestMappingInfo, HandlerMethod handlerMethod) {
+        return groups(handlerMethod);
+    }
 
-  @Override
-  public String getResourceDescription(RequestMappingInfo requestMappingInfo, HandlerMethod handlerMethod) {
-    return getDescription(handlerMethod.getBeanType());
-  }
+    @Override
+    public String getResourceDescription(RequestMappingInfo requestMappingInfo, HandlerMethod handlerMethod) {
+        return getDescription(handlerMethod.getBeanType());
+    }
 
-  @Override
-  public Integer getResourcePosition(RequestMappingInfo requestMappingInfo, HandlerMethod handlerMethod) {
-    return 0;
-  }
+    @Override
+    public Integer getResourcePosition(RequestMappingInfo requestMappingInfo, HandlerMethod handlerMethod) {
+        return 0;
+    }
 
-  @Override
-  public boolean supports(DocumentationType delimiter) {
-    return true;
-  }
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return true;
+    }
 
-  private Set<ResourceGroup> groups(HandlerMethod handlerMethod) {
-    Class<?> controllerClazz = handlerMethod.getBeanType();
-    String controllerAsGroup = splitCamelCase(controllerClazz.getSimpleName(), "-").toLowerCase();
-    return newHashSet(new ResourceGroup(controllerAsGroup, controllerClazz));
-  }
+    private Set<ResourceGroup> groups(HandlerMethod handlerMethod) {
+        Class<?> controllerClazz = handlerMethod.getBeanType();
+        String controllerAsGroup = splitCamelCase(controllerClazz.getSimpleName(), "-").toLowerCase();
+        return newHashSet(new ResourceGroup(controllerAsGroup, controllerClazz));
+    }
 
-  private String getDescription(Class<?> controllerClass) {
-    return splitCamelCase(controllerClass.getSimpleName(), " ");
-  }
+    private String getDescription(Class<?> controllerClass) {
+        return splitCamelCase(controllerClass.getSimpleName(), " ");
+    }
 }

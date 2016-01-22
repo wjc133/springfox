@@ -31,67 +31,67 @@ import java.lang.annotation.Target;
 
 @Mapper
 public class DataTypeMapper {
-  @ResponseTypeName
-  public String responseTypeName(ModelReference modelRef) {
-    if (modelRef == null) {
-      return null;
+    @ResponseTypeName
+    public String responseTypeName(ModelReference modelRef) {
+        if (modelRef == null) {
+            return null;
+        }
+        if (modelRef.isCollection()) {
+            return "array";
+        }
+        return modelRef.getType();
     }
-    if (modelRef.isCollection()) {
-      return "array";
+
+    @OperationType
+    public DataType operationTypeFromModelRef(ModelReference modelRef) {
+        if (modelRef != null) {
+            return new DataType(operationTypeName(modelRef));
+        }
+        return null;
     }
-    return modelRef.getType();
-  }
 
-  @OperationType
-  public DataType operationTypeFromModelRef(ModelReference modelRef) {
-    if (modelRef !=null) {
-      return new DataType(operationTypeName(modelRef));
+    @Type
+    public DataType typeFromModelRef(ModelReference modelRef) {
+        if (modelRef != null) {
+            if (modelRef.isCollection()) {
+                return new DataType(String.format("%s[%s]", modelRef.getType(), modelRef.getItemType()));
+            }
+            return new DataType(modelRef.getType());
+        }
+        return null;
     }
-    return null;
-  }
 
-  @Type
-  public DataType typeFromModelRef(ModelReference modelRef) {
-    if (modelRef != null) {
-      if (modelRef.isCollection()) {
-        return new DataType(String.format("%s[%s]", modelRef.getType(), modelRef.getItemType()));
-      }
-      return new DataType(modelRef.getType());
+    private String operationTypeName(ModelReference modelRef) {
+        if (modelRef == null) {
+            return null;
+        }
+        if (modelRef.isCollection()) {
+            return String.format("%s[%s]", modelRef.getType(), modelRef.getItemType());
+        }
+        return modelRef.getType();
     }
-    return null;
-  }
 
-  private String operationTypeName(ModelReference modelRef) {
-    if (modelRef == null) {
-      return null;
+    @Qualifier
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface OperationType {
     }
-    if (modelRef.isCollection()) {
-      return String.format("%s[%s]", modelRef.getType(), modelRef.getItemType());
+
+    @Qualifier
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Type {
     }
-    return modelRef.getType();
-  }
 
-  @Qualifier
-  @Target(ElementType.METHOD)
-  @Retention(RetentionPolicy.SOURCE)
-  public @interface OperationType {
-  }
+    @Qualifier
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ResponseTypeName {
+    }
 
-  @Qualifier
-  @Target(ElementType.METHOD)
-  @Retention(RetentionPolicy.SOURCE)
-  public @interface Type {
-  }
-
-  @Qualifier
-  @Target(ElementType.METHOD)
-  @Retention(RetentionPolicy.SOURCE)
-  public @interface ResponseTypeName {
-  }
-
-  @Qualifier
-  @Target(ElementType.METHOD)
-  @Retention(RetentionPolicy.SOURCE)
-  public @interface ItemType {
-  }
+    @Qualifier
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ItemType {
+    }
 }

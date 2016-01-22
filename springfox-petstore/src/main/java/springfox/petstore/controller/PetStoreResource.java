@@ -19,11 +19,7 @@
 
 package springfox.petstore.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -36,72 +32,72 @@ import springfox.petstore.model.Pet;
 import springfox.petstore.repository.MapBackedRepository;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import static org.springframework.http.MediaType.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
-import static springfox.petstore.Responses.*;
+import static springfox.petstore.Responses.ok;
 
 @Controller
 @RequestMapping(value = "/api/store", produces = APPLICATION_JSON_VALUE)
 @Api(value = "/store", description = "Operations about store")
 public class PetStoreResource {
-  static StoreData storeData = new StoreData();
+    static StoreData storeData = new StoreData();
 
-  static class StoreData extends MapBackedRepository<Long, Order> {
-  }
-
-  @RequestMapping(value = "/order/{orderId}", method = GET)
-  @ApiOperation(
-      value = "Find purchase order by ID",
-      notes = "For valid response try integer IDs with value <= 5 or > 10. Other values will generated exceptions",
-      response = Order.class,
-      tags = { "Pet Store" })
-  @ApiResponses(value = {
-      @ApiResponse(code = 400, message = "Invalid ID supplied"),
-      @ApiResponse(code = 404, message = "Order not found") })
-  public ResponseEntity<Order> getOrderById(
-      @ApiParam(value = "ID of pet that needs to be fetched", allowableValues = "range[1,5]", required = true)
-      @PathVariable("orderId") String orderId)
-      throws NotFoundException {
-    Order order = storeData.get(Long.valueOf(orderId));
-    if (null != order) {
-      return ok(order);
-    } else {
-      throw new NotFoundException(404, "Order not found");
+    static class StoreData extends MapBackedRepository<Long, Order> {
     }
-  }
 
-  @RequestMapping(value = "/order", method = POST)
-  @ApiOperation(value = "Place an order for a pet", response = Order.class)
-  @ApiResponses({ @ApiResponse(code = 400, message = "Invalid Order") })
-  public ResponseEntity<String> placeOrder(
-      @ApiParam(value = "order placed for purchasing the pet", required = true) Order order) {
-    storeData.add(order);
-    return ok("");
-  }
+    @RequestMapping(value = "/order/{orderId}", method = GET)
+    @ApiOperation(
+            value = "Find purchase order by ID",
+            notes = "For valid response try integer IDs with value <= 5 or > 10. Other values will generated exceptions",
+            response = Order.class,
+            tags = {"Pet Store"})
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Invalid ID supplied"),
+            @ApiResponse(code = 404, message = "Order not found")})
+    public ResponseEntity<Order> getOrderById(
+            @ApiParam(value = "ID of pet that needs to be fetched", allowableValues = "range[1,5]", required = true)
+            @PathVariable("orderId") String orderId)
+            throws NotFoundException {
+        Order order = storeData.get(Long.valueOf(orderId));
+        if (null != order) {
+            return ok(order);
+        } else {
+            throw new NotFoundException(404, "Order not found");
+        }
+    }
 
-  @RequestMapping(value = "/order/{orderId}", method = DELETE)
-  @ApiOperation(
-      value = "Delete purchase order by ID", notes = "For valid response try integer IDs with value < 1000. " +
-      "Anything above 1000 or nonintegers will generate API errors"
-  )
-  @ApiResponses(value = { @ApiResponse(code = 400, message = "Invalid ID supplied"),
-      @ApiResponse(code = 404, message = "Order not found") })
-  public ResponseEntity<String> deleteOrder(
-      @ApiParam(value = "ID of the order that needs to be deleted", allowableValues = "range[1,infinity]", required
-          = true) @PathVariable("orderId") String orderId) {
-    storeData.delete(Long.valueOf(orderId));
-    return ok("");
-  }
+    @RequestMapping(value = "/order", method = POST)
+    @ApiOperation(value = "Place an order for a pet", response = Order.class)
+    @ApiResponses({@ApiResponse(code = 400, message = "Invalid Order")})
+    public ResponseEntity<String> placeOrder(
+            @ApiParam(value = "order placed for purchasing the pet", required = true) Order order) {
+        storeData.add(order);
+        return ok("");
+    }
 
-  @RequestMapping(value="search", method = RequestMethod.GET, produces = "application/json", params = "x=TX")
-  @ResponseStatus(value = HttpStatus.OK)
-  public ResponseEntity<Pet> getPetInTx() {
-    throw new NotImplementedException();
-  }
+    @RequestMapping(value = "/order/{orderId}", method = DELETE)
+    @ApiOperation(
+            value = "Delete purchase order by ID", notes = "For valid response try integer IDs with value < 1000. " +
+            "Anything above 1000 or nonintegers will generate API errors"
+    )
+    @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid ID supplied"),
+            @ApiResponse(code = 404, message = "Order not found")})
+    public ResponseEntity<String> deleteOrder(
+            @ApiParam(value = "ID of the order that needs to be deleted", allowableValues = "range[1,infinity]", required
+                    = true) @PathVariable("orderId") String orderId) {
+        storeData.delete(Long.valueOf(orderId));
+        return ok("");
+    }
 
-  @RequestMapping(value="search", method = RequestMethod.GET, produces = "application/json", params = "x=CA")
-  @ResponseStatus(value = HttpStatus.OK)
-  public ResponseEntity<Pet> getPetInCA() {
-    throw new NotImplementedException();
-  }
+    @RequestMapping(value = "search", method = RequestMethod.GET, produces = "application/json", params = "x=TX")
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<Pet> getPetInTx() {
+        throw new NotImplementedException();
+    }
+
+    @RequestMapping(value = "search", method = RequestMethod.GET, produces = "application/json", params = "x=CA")
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<Pet> getPetInCA() {
+        throw new NotImplementedException();
+    }
 }

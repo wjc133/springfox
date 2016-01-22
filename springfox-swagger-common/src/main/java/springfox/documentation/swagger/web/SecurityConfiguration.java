@@ -23,77 +23,77 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class SecurityConfiguration {
-  public static final SecurityConfiguration DEFAULT = new SecurityConfiguration();
+    public static final SecurityConfiguration DEFAULT = new SecurityConfiguration();
 
-  private final String clientId;
-  private final String clientSecret;
-  private final String realm;
-  private final String appName;
-  private final String apiKeyValue;
-  private final ApiKeyVehicle apiKeyVehicle;
-  private final String scopeSeparator;
-  private final String apiKeyName;
+    private final String clientId;
+    private final String clientSecret;
+    private final String realm;
+    private final String appName;
+    private final String apiKeyValue;
+    private final ApiKeyVehicle apiKeyVehicle;
+    private final String scopeSeparator;
+    private final String apiKeyName;
 
-  private SecurityConfiguration(){
-    this(null, null, null, null, null, ApiKeyVehicle.HEADER, "api_key", ",");
-  }
+    private SecurityConfiguration() {
+        this(null, null, null, null, null, ApiKeyVehicle.HEADER, "api_key", ",");
+    }
 
-  public SecurityConfiguration(
-          String clientId,
-          String clientSecret,
-          String realm,
-          String appName,
-          String apiKeyValue,
-          ApiKeyVehicle apiKeyVehicle,
-          String apiKeyName,
-          String scopeSeparator) {
-    this.clientId = clientId;
-    this.clientSecret = clientSecret;
-    this.realm = realm;
-    this.appName = appName;
-    this.apiKeyValue = apiKeyValue;
-    this.apiKeyVehicle = apiKeyVehicle;
-    this.apiKeyName = apiKeyName;
-    this.scopeSeparator = scopeSeparator;
-  }
+    public SecurityConfiguration(
+            String clientId,
+            String clientSecret,
+            String realm,
+            String appName,
+            String apiKeyValue,
+            ApiKeyVehicle apiKeyVehicle,
+            String apiKeyName,
+            String scopeSeparator) {
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
+        this.realm = realm;
+        this.appName = appName;
+        this.apiKeyValue = apiKeyValue;
+        this.apiKeyVehicle = apiKeyVehicle;
+        this.apiKeyName = apiKeyName;
+        this.scopeSeparator = scopeSeparator;
+    }
 
-  @JsonProperty("clientId")
-  public String getClientId() {
-    return clientId;
-  }
+    @JsonProperty("clientId")
+    public String getClientId() {
+        return clientId;
+    }
 
-  @JsonProperty("realm")
-  public String getRealm() {
-    return realm;
-  }
+    @JsonProperty("realm")
+    public String getRealm() {
+        return realm;
+    }
 
-  @JsonProperty("appName")
-  public String getAppName() {
-    return appName;
-  }
+    @JsonProperty("appName")
+    public String getAppName() {
+        return appName;
+    }
 
-  @JsonProperty("apiKey")
-  public String getApiKeyValue() {
-    return apiKeyValue;
-  }
+    @JsonProperty("apiKey")
+    public String getApiKeyValue() {
+        return apiKeyValue;
+    }
 
-  @JsonProperty("apiKeyName")
-  public String getApiKeyName() {
-    return apiKeyName;
-  }
+    @JsonProperty("apiKeyName")
+    public String getApiKeyName() {
+        return apiKeyName;
+    }
 
-  @JsonProperty("clientSecret")
-  public String getClientSecret() {
-    return clientSecret;
-  }
+    @JsonProperty("clientSecret")
+    public String getClientSecret() {
+        return clientSecret;
+    }
 
-  @JsonProperty("scopeSeparator")
-  public String scopeSeparator() {
-    return scopeSeparator;
-  }
+    @JsonProperty("scopeSeparator")
+    public String scopeSeparator() {
+        return scopeSeparator;
+    }
 
-  @JsonProperty("apiKeyVehicle")
-  public String getApiKeyVehicle() {
-    return apiKeyVehicle.getValue();
-  }
+    @JsonProperty("apiKeyVehicle")
+    public String getApiKeyVehicle() {
+        return apiKeyVehicle.getValue();
+    }
 }

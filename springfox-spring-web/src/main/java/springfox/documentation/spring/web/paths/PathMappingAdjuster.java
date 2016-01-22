@@ -24,18 +24,18 @@ import springfox.documentation.service.PathAdjuster;
 import springfox.documentation.spi.service.contexts.DocumentationContext;
 
 public class PathMappingAdjuster implements PathAdjuster {
-  private final DocumentationContext context;
+    private final DocumentationContext context;
 
-  public PathMappingAdjuster(DocumentationContext context) {
-    this.context = context;
-  }
+    public PathMappingAdjuster(DocumentationContext context) {
+        this.context = context;
+    }
 
-  @Override
-  public String adjustedPath(String path) {
-    return UriComponentsBuilder
-        .fromPath(this.context.getPathMapping().or("/"))
-        .path(path)
-        .build()
-        .toUriString();
-  }
+    @Override
+    public String adjustedPath(String path) {
+        return UriComponentsBuilder
+                .fromPath(this.context.getPathMapping().or("/"))
+                .path(path)
+                .build()
+                .toUriString();
+    }
 }

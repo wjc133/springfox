@@ -20,19 +20,19 @@
 package springfox.documentation.service;
 
 public class AuthorizationScope {
-  private final String scope;
-  private final String description;
+    private final String scope;
+    private final String description;
 
-  public AuthorizationScope(String scope, String description) {
-    this.description = description;
-    this.scope = scope;
-  }
+    public AuthorizationScope(String scope, String description) {
+        this.description = description;
+        this.scope = scope;
+    }
 
-  public String getScope() {
-    return scope;
-  }
+    public String getScope() {
+        return scope;
+    }
 
-  public String getDescription() {
-    return description;
-  }
+    public String getDescription() {
+        return description;
+    }
 }

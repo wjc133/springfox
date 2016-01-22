@@ -22,17 +22,17 @@ package springfox.gradlebuild
 import org.gradle.api.Project
 
 class BintrayCredentials {
-  private final Project project
+    private final Project project
 
-  BintrayCredentials(Project project) {
-    this.project = project
-  }
+    BintrayCredentials(Project project) {
+        this.project = project
+    }
 
-  String getUsername() {
-    return project.hasProperty('bintrayUsername') ? project.property('bintrayUsername') : 'admin'
-  }
+    String getUsername() {
+        return project.hasProperty('bintrayUsername') ? project.property('bintrayUsername') : 'admin'
+    }
 
-  String getPassword() {
-    return project.hasProperty('bintrayPassword') ? project.property('bintrayPassword') : 'password'
-  }
+    String getPassword() {
+        return project.hasProperty('bintrayPassword') ? project.property('bintrayPassword') : 'password'
+    }
 }

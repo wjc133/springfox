@@ -22,20 +22,20 @@ package springfox.documentation.builders;
 import springfox.documentation.service.LoginEndpoint;
 
 public class LoginEndpointBuilder {
-  private String url;
+    private String url;
 
-  /**
-   * Updates the url for the login endpoint
-   *
-   * @param url - Url for the login endpoint
-   * @return this
-   */
-  public LoginEndpointBuilder url(String url) {
-    this.url = BuilderDefaults.defaultIfAbsent(url, this.url);
-    return this;
-  }
+    /**
+     * Updates the url for the login endpoint
+     *
+     * @param url - Url for the login endpoint
+     * @return this
+     */
+    public LoginEndpointBuilder url(String url) {
+        this.url = BuilderDefaults.defaultIfAbsent(url, this.url);
+        return this;
+    }
 
-  public LoginEndpoint build() {
-    return new LoginEndpoint(url);
-  }
+    public LoginEndpoint build() {
+        return new LoginEndpoint(url);
+    }
 }

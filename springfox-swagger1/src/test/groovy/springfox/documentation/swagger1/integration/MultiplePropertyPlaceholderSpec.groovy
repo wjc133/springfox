@@ -33,15 +33,15 @@ import springfox.documentation.swagger1.configuration.SimpleBean
 @WebAppConfiguration
 class MultiplePropertyPlaceholderSpec extends Specification {
 
-  @Autowired
-  WebApplicationContext context;
+    @Autowired
+    WebApplicationContext context;
 
-  @Autowired
-  SimpleBean simpleBean
+    @Autowired
+    SimpleBean simpleBean
 
-  def "should ignore when a property placeholder cannot be resolved"() {
-    expect:
-      simpleBean.aValue == 'Some Value'
-      simpleBean.anotherValue == '${com.yourapp.missingValue}'
-  }
+    def "should ignore when a property placeholder cannot be resolved"() {
+        expect:
+        simpleBean.aValue == 'Some Value'
+        simpleBean.anotherValue == '${com.yourapp.missingValue}'
+    }
 }

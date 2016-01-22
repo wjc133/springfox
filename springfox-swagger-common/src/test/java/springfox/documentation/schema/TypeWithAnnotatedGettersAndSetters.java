@@ -23,74 +23,74 @@ import io.swagger.annotations.ApiModelProperty;
 import org.joda.time.LocalDate;
 
 public class TypeWithAnnotatedGettersAndSetters {
-  @ApiModelProperty(notes = "int Property Field", required = true)
-  private int intProp;
-  private boolean boolProp;
-  private ExampleEnum enumProp;
-  private GenericType<String> genericProp;
-  private int hiddenProp;
-  private LocalDate validOverride;
-  private LocalDate invalidOverride;
-  private int readOnlyProp;
+    @ApiModelProperty(notes = "int Property Field", required = true)
+    private int intProp;
+    private boolean boolProp;
+    private ExampleEnum enumProp;
+    private GenericType<String> genericProp;
+    private int hiddenProp;
+    private LocalDate validOverride;
+    private LocalDate invalidOverride;
+    private int readOnlyProp;
 
-  public int getIntProp() {
-    return intProp;
-  }
+    public int getIntProp() {
+        return intProp;
+    }
 
-  public void setIntProp(int intProp) {
-    this.intProp = intProp;
-  }
+    public void setIntProp(int intProp) {
+        this.intProp = intProp;
+    }
 
-  @ApiModelProperty(notes = "bool Property Getter", required = false)
-  public boolean isBoolProp() {
-    return boolProp;
-  }
+    @ApiModelProperty(notes = "bool Property Getter", required = false)
+    public boolean isBoolProp() {
+        return boolProp;
+    }
 
-  public void setBoolProp(boolean boolProp) {
-    this.boolProp = boolProp;
-  }
+    public void setBoolProp(boolean boolProp) {
+        this.boolProp = boolProp;
+    }
 
-  public void getVoid() {
-  }
+    public void getVoid() {
+    }
 
-  public int isNotGetter() {
-    return 0;
-  }
+    public int isNotGetter() {
+        return 0;
+    }
 
-  public int getWithParam(int param) {
-    return 0;
-  }
+    public int getWithParam(int param) {
+        return 0;
+    }
 
-  public int setNotASetter() {
-    return 0;
-  }
+    public int setNotASetter() {
+        return 0;
+    }
 
-  @ApiModelProperty(value = "enum Prop Getter value", notes = "enum note", allowableValues = "ONE", required = true, readOnly = false)
-  public ExampleEnum getEnumProp() {
-    return enumProp;
-  }
+    @ApiModelProperty(value = "enum Prop Getter value", notes = "enum note", allowableValues = "ONE", required = true, readOnly = false)
+    public ExampleEnum getEnumProp() {
+        return enumProp;
+    }
 
-  public void setEnumProp(ExampleEnum enumProp) {
-    this.enumProp = enumProp;
-  }
+    public void setEnumProp(ExampleEnum enumProp) {
+        this.enumProp = enumProp;
+    }
 
-  @ApiModelProperty(hidden = true)
-  public int getHiddenProp() {
-    return hiddenProp;
-  }
+    @ApiModelProperty(hidden = true)
+    public int getHiddenProp() {
+        return hiddenProp;
+    }
 
-  @ApiModelProperty(value = "readOnly property getter", readOnly = true)
-  public int getReadOnlyProp() {
-    return readOnlyProp;
-  }
+    @ApiModelProperty(value = "readOnly property getter", readOnly = true)
+    public int getReadOnlyProp() {
+        return readOnlyProp;
+    }
 
-  @ApiModelProperty(dataType = "UnknownType")
-  public LocalDate getInvalidOverride() {
-    return invalidOverride;
-  }
+    @ApiModelProperty(dataType = "UnknownType")
+    public LocalDate getInvalidOverride() {
+        return invalidOverride;
+    }
 
-  @ApiModelProperty(dataType = "java.lang.String")
-  public LocalDate getValidOverride() {
-    return validOverride;
-  }
+    @ApiModelProperty(dataType = "java.lang.String")
+    public LocalDate getValidOverride() {
+        return validOverride;
+    }
 }

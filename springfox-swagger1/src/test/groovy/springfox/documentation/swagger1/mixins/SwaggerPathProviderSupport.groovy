@@ -25,7 +25,7 @@ import javax.servlet.ServletContext
 
 @SuppressWarnings("GrMethodMayBeStatic")
 class SwaggerPathProviderSupport {
-  RelativePathProvider relativeSwaggerPathProvider(ServletContext servletContext) {
-    new RelativePathProvider(servletContext)
-  }
+    RelativePathProvider relativeSwaggerPathProvider(ServletContext servletContext) {
+        new RelativePathProvider(servletContext)
+    }
 }

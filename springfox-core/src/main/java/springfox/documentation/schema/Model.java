@@ -26,78 +26,78 @@ import java.util.Map;
 
 public class Model {
 
-  private final String id;
-  private final String name;
-  private final ResolvedType type;
-  private final String qualifiedType;
-  private final Map<String, ModelProperty> properties;
-  private final String description;
-  private final String baseModel;
-  private final String discriminator;
-  private final List<String> subTypes;
-  private final String example;
+    private final String id;
+    private final String name;
+    private final ResolvedType type;
+    private final String qualifiedType;
+    private final Map<String, ModelProperty> properties;
+    private final String description;
+    private final String baseModel;
+    private final String discriminator;
+    private final List<String> subTypes;
+    private final String example;
 
-  public Model(
-      String id,
-      String name,
-      ResolvedType type,
-      String qualifiedType,
-      Map<String, ModelProperty> properties,
-      String description,
-      String baseModel,
-      String discriminator,
-      List<String> subTypes,
-      String example) {
+    public Model(
+            String id,
+            String name,
+            ResolvedType type,
+            String qualifiedType,
+            Map<String, ModelProperty> properties,
+            String description,
+            String baseModel,
+            String discriminator,
+            List<String> subTypes,
+            String example) {
 
-    this.id = id;
-    this.name = name;
-    this.type = type;
-    this.qualifiedType = qualifiedType;
-    this.properties = properties;
-    this.description = description;
-    this.baseModel = baseModel;
-    this.discriminator = discriminator;
-    this.subTypes = subTypes;
-    this.example = example;
-  }
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.qualifiedType = qualifiedType;
+        this.properties = properties;
+        this.description = description;
+        this.baseModel = baseModel;
+        this.discriminator = discriminator;
+        this.subTypes = subTypes;
+        this.example = example;
+    }
 
-  public String getId() {
-    return id;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public String getQualifiedType() {
-    return qualifiedType;
-  }
+    public String getQualifiedType() {
+        return qualifiedType;
+    }
 
-  public Map<String, ModelProperty> getProperties() {
-    return properties;
-  }
+    public Map<String, ModelProperty> getProperties() {
+        return properties;
+    }
 
-  public String getDescription() {
-    return description;
-  }
+    public String getDescription() {
+        return description;
+    }
 
-  public String getBaseModel() {
-    return baseModel;
-  }
+    public String getBaseModel() {
+        return baseModel;
+    }
 
-  public String getDiscriminator() {
-    return discriminator;
-  }
+    public String getDiscriminator() {
+        return discriminator;
+    }
 
-  public List<String> getSubTypes() {
-    return subTypes;
-  }
+    public List<String> getSubTypes() {
+        return subTypes;
+    }
 
-  public ResolvedType getType() {
-    return type;
-  }
+    public ResolvedType getType() {
+        return type;
+    }
 
-  public String getExample() {
-    return example;
-  }
+    public String getExample() {
+        return example;
+    }
 }

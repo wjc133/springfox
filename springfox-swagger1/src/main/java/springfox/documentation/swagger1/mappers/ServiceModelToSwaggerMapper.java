@@ -25,60 +25,52 @@ import org.mapstruct.Mappings;
 import springfox.documentation.schema.Model;
 import springfox.documentation.schema.ModelProperty;
 import springfox.documentation.service.ApiListingReference;
-import springfox.documentation.swagger1.dto.ApiDescription;
-import springfox.documentation.swagger1.dto.ApiInfo;
-import springfox.documentation.swagger1.dto.ApiListing;
-import springfox.documentation.swagger1.dto.ModelDto;
-import springfox.documentation.swagger1.dto.ModelPropertyDto;
-import springfox.documentation.swagger1.dto.Operation;
-import springfox.documentation.swagger1.dto.Parameter;
-import springfox.documentation.swagger1.dto.ResourceListing;
-import springfox.documentation.swagger1.dto.ResponseMessage;
+import springfox.documentation.swagger1.dto.*;
 
 
 @Mapper(uses = {AllowableValuesMapper.class, DataTypeMapper.class, AuthorizationTypesMapper.class})
 public interface ServiceModelToSwaggerMapper {
-  //Api related
-  ApiDescription toSwaggerApiDescription(springfox.documentation.service.ApiDescription from);
+    //Api related
+    ApiDescription toSwaggerApiDescription(springfox.documentation.service.ApiDescription from);
 
-  ApiInfo toSwaggerApiInfo(springfox.documentation.service.ApiInfo from);
+    ApiInfo toSwaggerApiInfo(springfox.documentation.service.ApiInfo from);
 
-  @Mappings({
-          @Mapping(target = "responseModel", source = "responseModel", qualifiedBy = DataTypeMapper.ResponseTypeName
-                  .class)
-  })
-  ResponseMessage toSwaggerResponseMessage(springfox.documentation.service.ResponseMessage from);
+    @Mappings({
+            @Mapping(target = "responseModel", source = "responseModel", qualifiedBy = DataTypeMapper.ResponseTypeName
+                    .class)
+    })
+    ResponseMessage toSwaggerResponseMessage(springfox.documentation.service.ResponseMessage from);
 
-  springfox.documentation.swagger1.dto.ApiListingReference toSwaggerApiListingReference(ApiListingReference from);
+    springfox.documentation.swagger1.dto.ApiListingReference toSwaggerApiListingReference(ApiListingReference from);
 
-  ModelDto toSwaggerModelDto(Model from);
+    ModelDto toSwaggerModelDto(Model from);
 
-  @Mappings({
-       @Mapping(target = "swaggerVersion", constant = "1.2"),
-       @Mapping(target = "authorizations", source = "securityReferences")
-  })
-  ApiListing toSwaggerApiListing(springfox.documentation.service.ApiListing from);
+    @Mappings({
+            @Mapping(target = "swaggerVersion", constant = "1.2"),
+            @Mapping(target = "authorizations", source = "securityReferences")
+    })
+    ApiListing toSwaggerApiListing(springfox.documentation.service.ApiListing from);
 
-  @Mappings({
-          @Mapping(target = "type", source = "modelRef", qualifiedBy = DataTypeMapper.Type.class)
-  })
-  ModelPropertyDto toSwaggerModelPropertyDto(ModelProperty from);
+    @Mappings({
+            @Mapping(target = "type", source = "modelRef", qualifiedBy = DataTypeMapper.Type.class)
+    })
+    ModelPropertyDto toSwaggerModelPropertyDto(ModelProperty from);
 
-  @Mappings({
-      @Mapping(target = "dataType", source = "responseModel", qualifiedBy = DataTypeMapper.OperationType.class),
-      @Mapping(target = "nickname", source = "uniqueId"),
-      @Mapping(target = "authorizations", source = "securityReferences")
-  })
-  Operation toSwaggerOperation(springfox.documentation.service.Operation from);
+    @Mappings({
+            @Mapping(target = "dataType", source = "responseModel", qualifiedBy = DataTypeMapper.OperationType.class),
+            @Mapping(target = "nickname", source = "uniqueId"),
+            @Mapping(target = "authorizations", source = "securityReferences")
+    })
+    Operation toSwaggerOperation(springfox.documentation.service.Operation from);
 
-  @Mappings({
-          @Mapping(target = "parameterType", source = "modelRef", qualifiedBy = DataTypeMapper.OperationType.class)
-  })
-  Parameter toSwaggerParameter(springfox.documentation.service.Parameter from);
+    @Mappings({
+            @Mapping(target = "parameterType", source = "modelRef", qualifiedBy = DataTypeMapper.OperationType.class)
+    })
+    Parameter toSwaggerParameter(springfox.documentation.service.Parameter from);
 
-  @Mappings({
-          @Mapping(target = "swaggerVersion", constant = "1.2"),
-          @Mapping(target = "authorizations", source = "securitySchemes")
-  })
-  ResourceListing toSwaggerResourceListing(springfox.documentation.service.ResourceListing from);
+    @Mappings({
+            @Mapping(target = "swaggerVersion", constant = "1.2"),
+            @Mapping(target = "authorizations", source = "securitySchemes")
+    })
+    ResourceListing toSwaggerResourceListing(springfox.documentation.service.ResourceListing from);
 }

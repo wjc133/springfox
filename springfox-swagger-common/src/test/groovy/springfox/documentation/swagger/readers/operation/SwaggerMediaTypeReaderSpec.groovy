@@ -18,6 +18,7 @@
  */
 
 package springfox.documentation.swagger.readers.operation
+
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo
@@ -28,41 +29,41 @@ import springfox.documentation.spring.web.mixins.RequestMappingSupport
 import springfox.documentation.spring.web.plugins.DocumentationContextSpec
 import springfox.documentation.spring.web.readers.operation.CachingOperationNameGenerator
 
-import static com.google.common.collect.Sets.*
+import static com.google.common.collect.Sets.newHashSet
 
 @Mixin([RequestMappingSupport])
 class SwaggerMediaTypeReaderSpec extends DocumentationContextSpec {
-  def "handler method should override spring media types"() {
-    RequestMappingInfo requestMappingInfo =
-            requestMappingInfo('/somePath',
-                    [
-                            'consumesRequestCondition': consumesRequestCondition(['application/json'] as String[]),
-                            'producesRequestCondition': producesRequestCondition(['application/json'] as String[])
-                    ]
-            )
-    OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
-            RequestMethod.GET, handlerMethod, 0, requestMappingInfo,
-            context(), "")
+    def "handler method should override spring media types"() {
+        RequestMappingInfo requestMappingInfo =
+                requestMappingInfo('/somePath',
+                        [
+                                'consumesRequestCondition': consumesRequestCondition(['application/json'] as String[]),
+                                'producesRequestCondition': producesRequestCondition(['application/json'] as String[])
+                        ]
+                )
+        OperationContext operationContext = new OperationContext(new OperationBuilder(new CachingOperationNameGenerator()),
+                RequestMethod.GET, handlerMethod, 0, requestMappingInfo,
+                context(), "")
 
-    when:
-      def sut = new SwaggerMediaTypeReader()
-      sut.apply(operationContext)
-      def operation = operationContext.operationBuilder().build()
+        when:
+        def sut = new SwaggerMediaTypeReader()
+        sut.apply(operationContext)
+        def operation = operationContext.operationBuilder().build()
 
-    then:
-      operation.consumes == expectedConsumes
-      operation.produces == expectedProduces
-    and:
-      !sut.supports(DocumentationType.SPRING_WEB)
-      sut.supports(DocumentationType.SWAGGER_12)
-      sut.supports(DocumentationType.SWAGGER_2)
-    where:
-      expectedConsumes                                  | expectedProduces                                  | handlerMethod
-      newHashSet('application/xml')                     | newHashSet()                                      | dummyHandlerMethod('methodWithXmlConsumes')
-      newHashSet()                                      | newHashSet('application/xml')                     |  dummyHandlerMethod('methodWithXmlProduces')
-      newHashSet('application/xml')                     | newHashSet('application/json')                    | dummyHandlerMethod ('methodWithMediaTypeAndFile', MultipartFile)
-      newHashSet('application/xml')                     | newHashSet('application/xml')                     | dummyHandlerMethod  ('methodWithBothXmlMediaTypes')
-      newHashSet('application/xml', 'application/json') | newHashSet('application/xml', 'application/json') | dummyHandlerMethod('methodWithMultipleMediaTypes')
+        then:
+        operation.consumes == expectedConsumes
+        operation.produces == expectedProduces
+        and:
+        !sut.supports(DocumentationType.SPRING_WEB)
+        sut.supports(DocumentationType.SWAGGER_12)
+        sut.supports(DocumentationType.SWAGGER_2)
+        where:
+        expectedConsumes                                  | expectedProduces                                  | handlerMethod
+        newHashSet('application/xml')                     | newHashSet()                                      | dummyHandlerMethod('methodWithXmlConsumes')
+        newHashSet()                                      | newHashSet('application/xml')                     | dummyHandlerMethod('methodWithXmlProduces')
+        newHashSet('application/xml')                     | newHashSet('application/json')                    | dummyHandlerMethod('methodWithMediaTypeAndFile', MultipartFile)
+        newHashSet('application/xml')                     | newHashSet('application/xml')                     | dummyHandlerMethod('methodWithBothXmlMediaTypes')
+        newHashSet('application/xml', 'application/json') | newHashSet('application/xml', 'application/json') | dummyHandlerMethod('methodWithMultipleMediaTypes')
 
-  }
+    }
 }

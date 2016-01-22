@@ -1,138 +1,138 @@
 {
-    "apiVersion": "1.0",
-    "swaggerVersion": "1.2",
-    "basePath": "/",
-    "resourcePath": "/foo",
-    "produces": [
-    ],
-    "consumes": [
-    ],
-    "apis": [
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "/",
+  "resourcePath": "/foo",
+  "produces": [
+  ],
+  "consumes": [
+  ],
+  "apis": [
+    {
+      "path": "/foo/create-t",
+      "description": "create",
+      "operations": [
         {
-            "path": "/foo/create-t",
-            "description": "create",
-            "operations": [
-                {
-                    "method": "PUT",
-                    "summary": "create",
-                    "nickname": "createUsingPUT",
-                    "produces": [
-                        "*/*"
-                    ],
-                    "consumes": [
-                        "application/json"
-                    ],
-                    "parameters": [
-                        {
-                            "allowMultiple": false,
-                            "defaultValue": "",
-                            "description": "toCreate",
-                            "name": "body",
-                            "paramType": "body",
-                            "type": "Pet",
-                            "required": false
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 200,
-                            "message": "OK"
-                        },
-                        {
-                            "code": 201,
-                            "message": "Created"
-                        },
-                        {
-                            "code": 401,
-                            "message": "Unauthorized"
-                        },
-                        {
-                            "code": 403,
-                            "message": "Forbidden"
-                        },
-                        {
-                            "code": 404,
-                            "message": "Not Found"
-                        }
-                    ],
-                    "deprecated": "false",
-                    "type": "void"
-                }
-            ]
-        },
-        {
-            "path": "/foo/get-t/{id}",
-            "description": "get",
-            "operations": [
-                {
-                    "method": "GET",
-                    "summary": "get",
-                    "nickname": "getUsingGET",
-                    "produces": [
-                        "*/*"
-                    ],
-                    "consumes": [
-                        "application/json"
-                    ],
-                    "parameters": [
-                      {
-                        "allowMultiple": false,
-                        "defaultValue": "",
-                        "description": "id",
-                        "name": "id",
-                        "paramType": "path",
-                        "type": "string",
-                        "required": true
-                      }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 200,
-                            "message": "OK",
-                            "responseModel": "Pet"
-                        },
-                        {
-                            "code": 401,
-                            "message": "Unauthorized"
-                        },
-                        {
-                            "code": 403,
-                            "message": "Forbidden"
-                        },
-                        {
-                            "code": 404,
-                            "message": "Not Found"
-                        },
-                        {
-                            "code": 405,
-                            "message": "Invalid input"
-                        }
-                    ],
-                    "deprecated": "false",
-                    "type": "Pet"
-                }
-            ]
-        }
-    ],
-    "models": {
-        "Pet": {
-            "description": "",
-            "id": "Pet",
-            "properties": {
-                "age": {
-                    "format": "int32",
-                    "required": false,
-                    "type": "integer"
-                },
-                "id": {
-                    "required": false,
-                    "type": "string"
-                },
-                "name": {
-                    "required": false,
-                    "type": "string"
-                }
+          "method": "PUT",
+          "summary": "create",
+          "nickname": "createUsingPUT",
+          "produces": [
+            "*/*"
+          ],
+          "consumes": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "allowMultiple": false,
+              "defaultValue": "",
+              "description": "toCreate",
+              "name": "body",
+              "paramType": "body",
+              "type": "Pet",
+              "required": false
             }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "message": "OK"
+            },
+            {
+              "code": 201,
+              "message": "Created"
+            },
+            {
+              "code": 401,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 403,
+              "message": "Forbidden"
+            },
+            {
+              "code": 404,
+              "message": "Not Found"
+            }
+          ],
+          "deprecated": "false",
+          "type": "void"
         }
+      ]
+    },
+    {
+      "path": "/foo/get-t/{id}",
+      "description": "get",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "get",
+          "nickname": "getUsingGET",
+          "produces": [
+            "*/*"
+          ],
+          "consumes": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "allowMultiple": false,
+              "defaultValue": "",
+              "description": "id",
+              "name": "id",
+              "paramType": "path",
+              "type": "string",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "message": "OK",
+              "responseModel": "Pet"
+            },
+            {
+              "code": 401,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 403,
+              "message": "Forbidden"
+            },
+            {
+              "code": 404,
+              "message": "Not Found"
+            },
+            {
+              "code": 405,
+              "message": "Invalid input"
+            }
+          ],
+          "deprecated": "false",
+          "type": "Pet"
+        }
+      ]
     }
+  ],
+  "models": {
+    "Pet": {
+      "description": "",
+      "id": "Pet",
+      "properties": {
+        "age": {
+          "format": "int32",
+          "required": false,
+          "type": "integer"
+        },
+        "id": {
+          "required": false,
+          "type": "string"
+        },
+        "name": {
+          "required": false,
+          "type": "string"
+        }
+      }
+    }
+  }
 }

@@ -21,61 +21,61 @@ package springfox.documentation.service;
 
 import java.util.List;
 
-import static com.google.common.collect.Lists.*;
+import static com.google.common.collect.Lists.newArrayList;
 import static springfox.documentation.builders.BuilderDefaults.defaultIfAbsent;
 
 public class SecurityReference {
-  private final String reference;
-  private final List<AuthorizationScope> scopes;
+    private final String reference;
+    private final List<AuthorizationScope> scopes;
 
-  public SecurityReference(String reference, AuthorizationScope[] scopes) {
-    this.scopes = newArrayList(scopes);
-    this.reference = reference;
-  }
-
-  public String getReference() {
-    return reference;
-  }
-
-  public List<AuthorizationScope> getScopes() {
-    return scopes;
-  }
-
-  public static SecurityReferenceBuilder builder() {
-    return new SecurityReferenceBuilder();
-  }
-
-  public static class SecurityReferenceBuilder {
-    SecurityReferenceBuilder() {
+    public SecurityReference(String reference, AuthorizationScope[] scopes) {
+        this.scopes = newArrayList(scopes);
+        this.reference = reference;
     }
 
-    private String reference;
-    private AuthorizationScope[] scopes;
-
-    /**
-     * Updates the authorization reference for the api.
-     *
-     * @param reference - Valid values for the authorization types are.
-     * @return this
-     */
-    public SecurityReferenceBuilder reference(String reference) {
-      this.reference = defaultIfAbsent(reference, this.reference);
-      return this;
+    public String getReference() {
+        return reference;
     }
 
-    /**
-     * Updates the authorization scopes that this authorization applies to.
-     *
-     * @param scopes - Scopes that this authorization applies to.
-     * @return this
-     */
-    public SecurityReferenceBuilder scopes(AuthorizationScope[] scopes) {
-      this.scopes = defaultIfAbsent(scopes, this.scopes);
-      return this;
+    public List<AuthorizationScope> getScopes() {
+        return scopes;
     }
 
-    public SecurityReference build() {
-      return new SecurityReference(reference, scopes);
+    public static SecurityReferenceBuilder builder() {
+        return new SecurityReferenceBuilder();
     }
-  }
+
+    public static class SecurityReferenceBuilder {
+        SecurityReferenceBuilder() {
+        }
+
+        private String reference;
+        private AuthorizationScope[] scopes;
+
+        /**
+         * Updates the authorization reference for the api.
+         *
+         * @param reference - Valid values for the authorization types are.
+         * @return this
+         */
+        public SecurityReferenceBuilder reference(String reference) {
+            this.reference = defaultIfAbsent(reference, this.reference);
+            return this;
+        }
+
+        /**
+         * Updates the authorization scopes that this authorization applies to.
+         *
+         * @param scopes - Scopes that this authorization applies to.
+         * @return this
+         */
+        public SecurityReferenceBuilder scopes(AuthorizationScope[] scopes) {
+            this.scopes = defaultIfAbsent(scopes, this.scopes);
+            return this;
+        }
+
+        public SecurityReference build() {
+            return new SecurityReference(reference, scopes);
+        }
+    }
 }
